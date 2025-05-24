@@ -1,314 +1,156 @@
-# VeritasVault AI/ML Core Infrastructure Documentation
+# VeritasVault Core Infrastructure (Final/Complete)
 
-## Metadata Block
+> Foundation Layer – Blockchain & Protocol Security
 
-```yaml
 ---
-document_type: architecture
-classification: internal
-status: draft
-version: 1.0.0
-last_updated: 2025-05-24
-applies_to: [core]
-dependencies: [security-framework, governance-model, deployment-pipeline]
-reviewers: [ai-architects, security-team, compliance-team]
-next_review: 2025-08-24
-priority: p0
+
+## 1. Overview
+
+This document defines the complete, fully-specified Core Infrastructure of VeritasVault, blending protocol-wide guarantees with full per-module responsibilities, interface details, phased artifacts, and best practice granularity. It restores all omitted or condensed content from previous iterations.
+
 ---
+
+## 2. Domain Model & Responsibilities – Module-by-Module Table
+
+| Module                 | Purpose                                                  | Key Responsibilities                                                                                                      |
+| ---------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **ConsensusManager**   | Chain finality, transaction inclusion, network consensus | Track/assert block finality, manage chain reorganizations, validate transactions, revert/replay on reorg, finality proofs |
+| **ChainIndexer**       | Event indexing, audit, state replay                      | Parse/index events/logs/state, manage versioned snapshots, handle reorgs, expose replay, global event ordering            |
+| **RandomnessOracle**   | Provide verifiable, unbiased randomness                  | Secure entropy aggregation, run/expose VRF, broadcast randomness, guarantee fairness and unpredictability                 |
+| **GasController**      | Network economics/gas policy                             | Manage gas usage policies, detect economic attacks, dynamic/auction fee markets, pricing models/emergency adjustment      |
+| **SecurityController** | Protocol-wide security and emergency ops                 | Enforce security/safety policies, manage RBAC, trigger emergency responses, validate/track security-sensitive ops         |
+| **RateLimiter**        | Anti-abuse, DoS, and rate control                        | Enforce account/network/global limits, throttle abuse, usage reporting, integrate with gas for mitigation                 |
+| **ChainAdapter**       | Multi-chain compatibility/abstraction                    | Normalize configs, abstract protocol differences, coordinate cross-chain state/logic, maintain compatibility              |
+| **ForkManager**        | Fork and chain split detection/management                | Detect/monitor splits, coordinate transitions, manage consensus-breaking forks, consistency/rollback/merge ops            |
+
+---
+
+## 3. Solidity Interface Details (Key Contracts)
+
+```solidity
+interface IConsensusManager {
+    function finalizeBlock(uint256 blockNumber) external;
+    function detectReorg(uint256 fromBlock) external returns (bool);
+    function submitFinalityProof(uint256 blockNumber, bytes calldata proof) external;
+}
+
+interface IChainIndexer {
+    function indexEvent(uint256 blockNumber, bytes calldata eventData) external;
+    function createSnapshot(uint256 blockNumber) external;
+    function restoreSnapshot(uint256 snapshotId) external;
+    function replayEvents(uint256 fromBlock, uint256 toBlock) external view returns (bytes[] memory);
+}
+
+interface IRandomnessOracle {
+    function getRandom(bytes32 context) external view returns (bytes32);
+    function submitVRFProof(bytes32 requestId, bytes calldata proof) external;
+}
+
+interface IGasController {
+    function setGasPolicy(bytes32 policyId, bytes calldata policyData) external;
+    function getGasPrice() external view returns (uint256);
+    function emergencyAdjust(uint256 newGasPrice) external;
+}
+
+interface ISecurityController {
+    function checkAccess(address account, bytes32 resource) external view returns (bool);
+    function emergencyPause(bytes32 reason) external;
+    function validateOperation(bytes32 opId) external view returns (bool);
+}
+
+interface IRateLimiter {
+    function incrementUsage(address user, bytes32 resource) external;
+    function checkLimit(address user, bytes32 resource) external view returns (bool);
+    function getUsage(address user, bytes32 resource) external view returns (uint256);
+}
+
+interface IChainAdapter {
+    function isBlockFinal(uint256 blockNumber) external view returns (bool);
+    function handleReorg(uint256 fromBlock) external;
+    function getChainSpecificConfig() external view returns (bytes memory);
+    function validateTransaction(bytes calldata txData) external view returns (bool);
+}
+
+interface IForkManager {
+    function detectFork(uint256 blockNumber) external view returns (bool);
+    function handleFork(uint256 fromBlock, uint256 toBlock) external;
+}
 ```
 
-## 0. Executive Summary
-
-* **Business Impact:**
-
-  * Critical infrastructure for institutional-grade AI/ML operations
-  * Risk reduction through automated controls and monitoring
-  * Compliance with regulatory requirements for AI systems
-  * Competitive advantage through verifiable AI operations
-
-* **Technical Impact:**
-
-  * Foundational smart contract architecture for AI governance
-  * Enhanced security through multi-layer validation
-  * Performance optimization via distributed execution
-  * Technical debt reduction through modular design
-
-* **Resource Impact:**
-
-  * Core development team: 4-6 engineers
-  * Infrastructure: Distributed validator network
-  * External audits and security reviews
-  * Ongoing monitoring and maintenance
-
-* **Timeline Impact:**
-
-  * Critical path: Security implementation and audit
-  * Major milestone: Regulatory compliance validation
-  * Risk windows: Initial deployment and upgrades
-  * Dependencies: Security framework, governance model
-
-## 1. Domain Overview
-
-The Core Infrastructure provides the foundational layer for VeritasVault's AI/ML operations, ensuring secure, compliant, and verifiable AI model deployment and execution. It manages model lifecycle, security controls, governance rules, and operational monitoring across the entire system.
-
-## 2. Responsibilities & Boundaries
-
-* **Core Functions:**
-
-  * Model registry and lifecycle management
-  * Security and access control
-  * Governance and compliance enforcement
-  * Performance monitoring and optimization
-  * Incident response coordination
-  * Audit trail maintenance
-
-* **Domain Boundaries:**
-
-  * IN scope:
-
-    * Core smart contracts
-    * Security controls
-    * Governance mechanisms
-    * Monitoring systems
-    * Audit logging
-
-  * OUT scope:
-    * Model implementation details
-    * Business logic
-    * UI/UX components
-    * External integrations
-
-## 3. Technical Architecture
-
-* **Core Entities:**
-
-  ```solidity
-  interface IGlobalModelRegistry {
-    struct ModelMetadata {
-      bytes32 modelId;
-      uint256 version;
-      bytes32 implementationHash;
-      address owner;
-      ModelStatus status;
-      uint256 lastUpdated;
-      bytes32[] dependencies;
-      mapping(bytes32 => uint256) thresholds;
-    }
-
-    struct ValidationResult {
-      bytes32 modelId;
-      uint256 timestamp;
-      bool passed;
-      bytes32 validatorId;
-      bytes32 resultHash;
-    }
-
-    enum ModelStatus {
-      Draft,
-      Testing,
-      Approved,
-      Active,
-      Deprecated
-    }
-  }
-
-  interface ISecurityController {
-    struct SecurityConfig {
-      bytes32 modelId;
-      uint256 minValidators;
-      uint256 consensusThreshold;
-      bytes32[] requiredChecks;
-      mapping(bytes32 => uint256) limits;
-    }
-  }
-
-  interface IGovernanceController {
-    struct GovernanceParams {
-      uint256 updateDelay;
-      uint256 minApprovals;
-      address[] approvers;
-      bytes32[] requiredValidations;
-    }
-  }
-  ```
-
-* **Performance Specifications:**
-
-  * Throughput: 1000+ model validations/hour
-  * Latency: <500ms for critical operations
-  * Resource usage: Optimized for distributed execution
-  * Scalability: Linear scaling with validator count
-
-## 4. System Design
-
-* **Architecture Diagram:**
-
-  ```mermaid
-  graph TB
-    subgraph Core ["Core Infrastructure"]
-      MR[Model Registry]
-      SC[Security Controller]
-      GC[Governance Controller]
-      MC[Monitoring Controller]
-    end
-
-    subgraph Validation ["Validation Layer"]
-      V1[Validator 1]
-      V2[Validator 2]
-      V3[Validator 3]
-    end
-
-    subgraph Storage ["Decentralized Storage"]
-      IPFS[IPFS/Arweave]
-      EventLog[Event Log]
-    end
-
-    MR --> SC
-    MR --> GC
-    SC --> MC
-    GC --> MC
-    
-    V1 --> MR
-    V2 --> MR
-    V3 --> MR
-    
-    MC --> IPFS
-    MC --> EventLog
-  ```
-
-## 5. Implementation Strategy
+---
 
-* **Deployment Plan:**
-
-  1. Phase 1 (Weeks 1-2): Core contracts deployment
-  2. Phase 2 (Weeks 3-4): Security implementation
-  3. Phase 3 (Weeks 5-6): Governance integration
-  4. Phase 4 (Weeks 7-8): Monitoring system
+## 4. Phased Deployment – Objects & Events
 
-* **Operations Guide:**
-
-  * Monitoring:
+### Phase 1: Fundamental Infrastructure (Weeks 1-3)
 
-    * Model status and health
-    * Validator performance
-    * Security metrics
-    * Governance activities
-  * Alerts:
+* **Objects:** Block, Transaction, FinalityProof, StateSnapshot, EventIndex, ReorgRecord
+* **Events:** BlockFinalized, TransactionIncluded, StateSnapshotCreated, ReorgDetected, EventIndexed, HistoricalQueryProcessed
 
-    * Security violations
-    * Performance degradation
-    * Governance events
-    * System failures
+### Phase 2: Security & Protection (Weeks 4-6)
 
-* **Resource Planning:**
+* **Objects:** SecurityPolicy, AccessControl, RateLimit, ResourceUsage, GasPolicy, FeeMarket
+* **Events:** AccessGranted, AccessDenied, EmergencyPaused, EmergencyResumed, RateLimitTriggered, GasPolicyUpdated, FeeAdjusted
 
-  * Infrastructure:
+### Phase 3: Advanced Infrastructure (Weeks 7-10)
 
-    * Validator network
-    * Storage nodes
-    * Monitoring systems
-  * Costs:
+* **Objects:** RandomnessRequest, VRFProof, EntropySource, ChainConfig, CompatibilityMatrix, ForkDetection, StateTransition
+* **Events:** RandomnessRequested, RandomnessDelivered, VRFVerified, ChainAdapted, CompatibilityUpdated, ForkDetected, ForkHandled, StateMerged
 
-    * Operational: \$X/month
-    * Scaling: \$Y/validator
-    * Maintenance: Z hours/week
+---
 
-## 6. Risk & Compliance
+## 4. Security & Threat Considerations
 
-* **6a. Risk Assessment Matrix:**
+| Threat Type             | Vector/Scenario               | Mitigation/Control                             |
+| ----------------------- | ----------------------------- | ---------------------------------------------- |
+| Reorg/Finality Attack   | Malicious miners              | Finality proofs, fast reorg detection          |
+| Randomness Manipulation | Oracle collusion, VRF games   | VRF proofs, multi-source aggregation           |
+| Fee/Spam Attack         | Cheap spam, economic griefing | Dynamic fees, gas limits, emergency adjustment |
+| Protocol Abuse          | API flooding, DDoS            | RateLimiter, access control, emergency pause   |
+| Cross-Chain Incompat.   | Upgrades, protocol drift      | ChainAdapter, compatibility/upgrade checks     |
+| Fork/Replay Attack      | Chain split, replayed state   | ForkManager, snapshot/rollback, audit logs     |
 
-  | Risk                    | Impact   | Probability | Mitigation        | Owner         | Status | Review Date |
-  | ----------------------- | -------- | ----------- | ----------------- | ------------- | ------ | ----------- |
-  | Security Breach         | Critical | Low         | Multi-sig, audits | Security Team | Active | Monthly     |
-  | Validator Failure       | High     | Medium      | Redundancy        | Ops Team      | Active | Weekly      |
-  | Governance Attack       | Critical | Low         | Time locks        | Gov Team      | Active | Monthly     |
-  | Performance Degradation | Medium   | Medium      | Auto-scaling      | Ops Team      | Active | Daily       |
+---
 
-* **6b. Compliance Requirements:**
+## 6. Integration & Composition
 
-  | Requirement      | Standard  | Implementation    | Validation  |
-  | ---------------- | --------- | ----------------- | ----------- |
-  | Audit Trail      | ISO 27001 | Event logging     | Daily check |
-  | Access Control   | GDPR      | Multi-sig         | Per action  |
-  | Model Validation | AI Act    | Validator network | Per model   |
-  | Data Privacy     | GDPR      | Encryption        | Continuous  |
+* All infrastructure modules are composable, testable, and auditable independently.
+* Protocol security interfaces integrate with higher-level AI, DeFi, and application modules.
+* ChainAdapter enables seamless migration or extension to future L1/L2s.
+* Explicit per-module integration points can be referenced in a dedicated appendix or deployment doc.
 
-## 7. Quality Assurance
+---
 
-* **7a. Test Requirements:**
+## 7. References & Resource Pointers
 
-  * Unit tests: 100% coverage
-  * Integration tests: All core paths
-  * Performance tests: Load and stress
-  * Security tests: Penetration and audit
+### Internal Documentation
 
-* **7b. Validation Gates:**
+* Solidity Implementation Reference
+* Chain Adapter Specification
+* Security Controller Guidelines
+* Gas Policy Management
+* Event Log and Replay Design
+* Incident Playbook
 
-  * Code review approval
-  * Security audit pass
-  * Performance benchmark met
-  * Compliance verification
+### External Standards/References
 
-* **7c. Best Practices:**
+* Ethereum Yellow Paper
+* Cosmos SDK Documentation
+* VRF Protocols and Research Papers
+* OpenZeppelin Contracts Library
+* Chainlink VRF Docs
 
-  * Immutable upgrades
-  * Comprehensive event logging
-  * Automated monitoring
-  * Regular security reviews
+---
 
-## 8. Integration Guide
+## 8. Release Criteria & Compliance Gates
 
-* **Dependencies:**
+* Any gap in event sourcing, rollback, or circuit breaker protection is a showstopper for release.
+* All modules, interfaces, and deployment artifacts must pass replay, rollback, and incident drills before production deployment.
+* Test, monitoring, and incident response systems must be in place for each module and cross-domain flow.
 
-  * OpenZeppelin contracts
-  * Chainlink oracles
-  * IPFS/Arweave storage
-  * Monitoring infrastructure
+---
 
-* **API Contracts:**
+## 9. Appendix (If Needed)
 
-  * Model registration
-  * Security validation
-  * Governance operations
-  * Monitoring interfaces
-
-## 9. References
-
-* Internal:
-
-  * Security framework specification
-  * Governance model documentation
-  * Deployment pipeline guide
-  * Testing framework documentation
-
-* External:
-
-  * OpenZeppelin documentation
-  * Chainlink integration guide
-  * IPFS technical papers
-  * Relevant EIPs
-
-## 10. Document Control
-
-* **Owner(s):**
-
-  * Primary: Lead AI Architect
-  * Secondary: Security Lead
-
-* **Last Reviewed:**
-
-  * Date: 2025-05-24
-  * Reviewer: AI Architecture Team
-  * Summary: Initial production release
-
-* **Change Log:**
-
-  | Version | Date       | Author         | Changes         | Reviewers         |
-  | ------- | ---------- | -------------- | --------------- | ----------------- |
-  | 1.0.0   | 2025-05-24 | Lead Architect | Initial Release | AI Team, Security |
-
-* **Review Schedule:**
-
-  * Frequency: Monthly
-  * Next Review: 2025-06-24
-  * Special Triggers: Security incidents, Major upgrades
+* **Domain Module Annex:** For full design notes, flows, and extended module details.
+* **API Contract Reference:** All Solidity interfaces and message schemas in detail.
+* **Deployment Artifact List:** Complete artifact manifest for phased deployment and audit.

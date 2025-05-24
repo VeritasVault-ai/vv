@@ -1,8 +1,8 @@
-# VeritasVault Artifact 2 – Risk, Compliance & Audit Domain
+# VeritasVault Artifact 6 – Risk & Compliance Domain (Unified Architecture)
 
 ---
 
-# 1. Metadata Block
+## 1. Metadata Block
 
 ```yaml
 ---
@@ -10,167 +10,304 @@ document_type: architecture
 classification: internal
 status: draft
 version: 1.0.0
-last_updated: YYYY-MM-DD
-applies_to: risk-compliance-audit-domain
-dependencies: [core-infrastructure, asset-trading-settlement, ai-ml-domain]
-reviewers: [risk-lead, compliance-lead, audit-lead, security-lead]
-next_review: YYYY-MM-DD
+last_updated: 2025-05-24
+applies_to: risk-compliance-domain
+source_of_truth: true
+dependencies:
+  - core-infrastructure-v2.1
+  - security-framework-v1.5
+  - compliance-model-v1.2
+reviewers:
+  - risk-architecture-board
+  - domain-experts
+  - security-team-lead
+next_review: 2025-06-24
 priority: p0
 ---
 ```
 
 ---
 
-# 2. Executive Summary
+## 2. Executive Summary
 
-## Business Impact
+### Business Impact
 
-* Ensures institutional-grade risk management, compliance, and audit trails for all VeritasVault activity.
-* Enables regulatory onboarding, reputation protection, and incident response.
-* Mandatory for DeFi adoption by traditional finance and regulated institutions.
+* Ensures institutional-grade, provable risk management, compliance, and audit trails for VeritasVault.
+* Delivers regulatory onboarding, reputation defense, and fast incident response.
+* Forms a critical foundation for DeFi adoption by traditional finance and regulated entities.
 
-## Technical Impact
+### Technical Impact
 
-* Real-time risk assessment, immutable audit logging, and event-driven compliance reporting.
-* Cross-domain event hooks for infrastructure, asset/trade, and governance events.
-* Modular DDD structure for safe extension and regulatory change.
+* Real-time, multi-factor risk scoring and compliance analysis.
+* Immutable, append-only audit logs with cryptographic proofs.
+* Modular, DDD-aligned structure for regulatory and technical extension.
 
-## Timeline Impact
+### Timeline Impact
 
-* Phase 1 MVP: RiskModel, AuditLogger, minimal ComplianceManager (KYC/AML, reporting), core event hooks.
-* Phase 2: Advanced risk analytics, deeper compliance automation, enhanced reporting.
-* Phase 3: Full regulator integration, real-time analytics, automated dispute resolution.
-* Phase 4: Cross-chain and AI-driven risk/compliance modules.
-
----
-
-# 3. Domain Overview
-
-The Risk, Compliance & Audit domain is the protocol’s nerve center for risk controls, compliance enforcement, and full event traceability. All major protocol actions are logged, scored, and, if necessary, escalated for compliance and response.
+* **Phase 1:** Core risk engine, audit logging, and MVP compliance manager (KYC/AML, reporting, event hooks).
+* **Phase 2:** Advanced analytics, compliance automation, flexible reporting.
+* **Phase 3:** Regulator integration, real-time analytics, dispute resolution.
+* **Phase 4:** Cross-chain and AI/ML-driven risk/compliance modules.
 
 ---
 
-# 4. Responsibilities & Boundaries
+## 3. Domain Overview
 
-## Core Functions
+The Risk & Compliance domain is the protocol's control center for risk, compliance, and full event traceability. Every protocol action is scored, logged, and—where required—escalated for compliance and audit.
 
-* Risk profile management and real-time risk scoring
-* Immutable event/audit logging
-* Regulatory compliance enforcement (KYC/AML, basic reporting)
+---
+
+## 4. Responsibilities & Boundaries
+
+### Core Functions
+
+* Risk scoring and profile management
+* Immutable audit/event logging
+* Regulatory compliance (KYC/AML, automated reporting)
 * Protocol-wide incident and escalation hooks
-* Exportable audit and compliance records
+* Exportable audit/compliance records
 
-## Scope Definition
+### Scope Definition
 
-* **In Scope:**
-
-  * RiskModel, AuditLogger, ComplianceManager, risk scoring/reporting, KYC/AML, audit trail, core cross-domain events
-* **Out of Scope:**
-
-  * Advanced analytics, third-party regulator integration, dispute automation, AI-driven risk (future phase)
+* **In Scope:** RiskModel, RiskFactor, ComplianceManager, AuditLogger, scoring, KYC/AML, audit trail, reporting, event hooks
+* **Out of Scope:** Dispute automation, AI-driven analytics, future external modules (tracked as dependencies)
 
 ---
 
-# 5. Domain Model Structure (DDD)
+## 5. Domain Model Structure (DDD)
 
-## MVP Subset Table
+### Aggregate Roots
 
-| Component         | In MVP | Out (Future Phase) |
-| ----------------- | ------ | ------------------ |
-| RiskModel         | ✓      |                    |
-| AuditLogger       | ✓      |                    |
-| ComplianceManager | ✓      | Advanced Policy    |
-| RiskProfile       | ✓      |                    |
-| AuditRecord       | ✓      |                    |
-| ComplianceReport  | ✓      | Advanced Reporting |
-| RiskFactor        |        | ✓                  |
-| DisputeEngine     |        | ✓                  |
-| AI/ML Analytics   |        | ✓                  |
+* **RiskProfile:** Aggregates all risk assessments, scoring, escalation state.
+* **AuditRecord:** Aggregates all event/audit logs and protocol links.
+* **ComplianceCase:** Aggregates KYC/AML, compliance actions, reporting.
 
-## Aggregate Roots
+### Entities
 
-* **RiskProfile:** Aggregates risk assessments, scoring, escalation state.
-* **AuditRecord:** Aggregates all audit trail events and links to protocol state.
-* **ComplianceCase:** Aggregates KYC/AML status, compliance actions, and reporting.
-
-## Entities
-
-* **RiskAssessment:** Individual event or transaction risk score.
-* **ComplianceReport:** Periodic or ad-hoc compliance output.
+* **RiskAssessment:** Individual event or transaction risk score, multi-factor.
+* **RiskFactor:** Modular analysis unit (market, counterparty, oracle, contract).
+* **ComplianceReport:** Periodic or ad-hoc compliance result.
 * **AuditEntry:** Immutable event log record.
 
-## Value Objects
+### Value Objects
 
 * **RiskScore:** { type, value, confidence, timestamp }
-* **ComplianceRule:** Configurable compliance trigger or rule.
-* **Signature:** Cryptographic proof for audit entries.
+* **ComplianceRule:** Configurable trigger or enforcement rule.
+* **Signature:** Cryptographic proof for audit entry.
 
-## Domain Events
+### Domain Events
 
-* **RiskAssessed:** Risk profile updated/triggered.
-* **AuditLogAppended:** New audit entry created.
+* **RiskAssessed:** Profile update/trigger.
+* **AuditLogAppended:** New event added to log.
 * **ComplianceReportGenerated:** Compliance status/report issued.
-* **IncidentEscalated:** Protocol incident requiring review.
+* **IncidentEscalated:** Protocol incident flagged for review.
 
-## Repository Contracts
+### Repository Contracts
 
-* **IRiskProfileRepository:** Manage aggregate lifecycle and scoring.
-* **IAuditRecordRepository:** Manage immutable audit trails.
-* **IComplianceCaseRepository:** Track compliance state and reporting.
+* **IRiskProfileRepository:** Score/lifecycle management.
+* **IAuditRecordRepository:** Immutable audit log management.
+* **IComplianceCaseRepository:** Compliance lifecycle, reporting, KYC.
 
-## Invariants / Business Rules
+### Invariants / Business Rules
 
 * No protocol state change without audit entry.
-* Every transaction/event receives risk score.
-* No compliance case closes without full KYC/AML check.
-* Audit log must be cryptographically verifiable.
+* All events/transactions receive risk scoring.
+* All compliance cases require full KYC/AML and signed closure.
+* Audit logs must be cryptographically verifiable and append-only.
 
 ---
 
-# 6. Interfaces & Example Code (MVP)
+## 6. Unified Interfaces & Example Code
 
 ```typescript
 interface IRiskModel {
     assessRisk(target: Target): Promise<RiskAssessment>;
     getRiskProfile(target: Target): Promise<RiskProfile>;
+    updateRiskPolicy(policy: RiskPolicy): Promise<void>;
+    getAssessmentHistory(target: Target): Promise<RiskAssessment[]>;
+}
+
+interface IRiskFactor {
+    evaluateRisk(source: RiskSource): Promise<RiskScore>;
+    updateFactorWeights(weights: FactorWeights): Promise<void>;
+    getFactorHistory(source: RiskSource): Promise<RiskScore[]>;
 }
 
 interface IAuditLogger {
     logEvent(event: AuditEvent): Promise<void>;
     getAuditTrail(target: Target): Promise<AuditEntry[]>;
+    generateProof(eventId: EventId): Promise<CryptographicProof>;
+    verifyProof(proof: CryptographicProof): Promise<boolean>;
 }
 
 interface IComplianceManager {
     enforceKYC(user: Address): Promise<KYCStatus>;
     generateComplianceReport(period: TimePeriod): Promise<ComplianceReport>;
+    enforceRules(target: Target): Promise<ComplianceResult>;
+    updateRules(rules: ComplianceRules): Promise<void>;
 }
 ```
 
 ---
 
-# 7. Example Workflow (MVP)
+## 7. Implementation Patterns & Visuals
+
+### Component Relationships & Data Flow
 
 ```mermaid
 graph TD
-    A[Protocol Event: Asset Trade] --> B[RiskModel: Assess Risk]
-    B --> C[AuditLogger: Log Event]
-    C --> D[ComplianceManager: Enforce KYC/Reporting]
-    D --> E[ComplianceReport/AuditRecord]
+  subgraph Risk & Compliance
+    RM[RiskModel] --> RF[RiskFactor]
+    RM --> CM[ComplianceManager]
+    RM --> AL[AuditLogger]
+    RF --> AL
+    CM --> AL
+  end
+  subgraph External
+    REG[Regulators]
+    AUD[Auditors]
+    MON[Monitoring]
+  end
+  CM --> REG
+  AL --> AUD
+  RM --> MON
+```
+
+### Domain Event Flow & Error Handling
+
+```mermaid
+sequenceDiagram
+  participant RM as RiskModel
+  participant RF as RiskFactor
+  participant CM as ComplianceManager
+  participant AL as AuditLogger
+  RM->>RF: assessRisk()
+  activate RF
+  alt Success
+      RF-->>RM: RiskScore
+      RM->>AL: logEvent()
+      RM->>CM: validateCompliance()
+  else Failure
+      RF-->>RM: ErrorResult
+      RM->>AL: logFailure()
+      RM->>RM: applyFallbackPolicy()
+  end
+  deactivate RF
+```
+
+### Error Handling Patterns
+
+```typescript
+interface ErrorResult {
+  code: ErrorCode;
+  severity: ErrorSeverity;
+  retryable: boolean;
+  context: ErrorContext;
+  timestamp: DateTime;
+}
+
+interface FaultTolerance {
+  readonly maxRetries: number;
+  readonly backoffStrategy: BackoffStrategy;
+  readonly circuitBreakerConfig: CircuitBreakerConfig;
+  handleError(error: ErrorResult): Promise<void>;
+  applyFallbackPolicy(): Promise<void>;
+  notifyStakeholders(error: ErrorResult): Promise<void>;
+}
+```
+
+### Regulatory Standards Mapping
+
+| Component     | Standard    | Requirement       | Implementation                           |
+| ------------- | ----------- | ----------------- | ---------------------------------------- |
+| AuditLogger   | SEC 17a-4   | Immutable Records | Append-only logs, cryptographic proofs   |
+| ComplianceMgr | MiCA Art 30 | Risk Monitoring   | Real-time assessment, reporting          |
+| RiskModel     | ISO 31000   | Risk Framework    | Structured assessment, policy management |
+| RiskFactor    | Basel III   | Risk Categories   | Modular risk-source analytics            |
+
+### Deployment Phasing & Success Criteria
+
+**Phase 1: Core Infrastructure**
+
+* Deploy AuditLogger, RiskFactor, foundational RiskModel.
+* **Metrics:** <5s risk assessment, 100% audit log coverage, no data loss.
+* **Rollback:** >10s latency, audit log inconsistency, >5m component outage.
+
+**Phase 2: Compliance & Reporting**
+
+* Deploy ComplianceManager, rule engine, reporting infra.
+* **Metrics:** <30s report gen, live compliance status, regulatory exports.
+* **Rollback:** Failed export, >1m rule delay, report gen failure.
+
+**Phase 3: Advanced Automation**
+
+* Real-time analytics, regulator integration, predictive risk, dispute mgmt.
+* **Metrics:** SLA-defined, automated alerting, regulator hand-off.
+
+### On/Off-chain Event Reconciliation
+
+```mermaid
+graph TD
+  subgraph On-Chain
+    SC[Smart Contract Events]
+    BP[Blockchain Proofs]
+  end
+  subgraph Off-Chain
+    AL[Audit Logs]
+    RP[Risk Proofs]
+  end
+  SC --> |Hash Chain| BP
+  BP --> |Verify| AL
+  RP --> |Sync| AL
+  AL --> |Attestation| BP
+```
+
+### Upgrade & Migration Patterns
+
+```typescript
+interface UpgradeableContract {
+  readonly version: string;
+  readonly upgradeHistory: UpgradeRecord[];
+  prepareUpgrade(): Promise<void>;
+  validateState(): Promise<boolean>;
+  migrateData(newSchema: Schema): Promise<void>;
+  rollbackUpgrade(): Promise<void>;
+}
 ```
 
 ---
 
-# 8. Cross-Domain Integration Points
+## 8. Security & Threat Considerations
 
-* Hooks from core infra (block finalized, incident)
-* Asset/trade execution (risk/audit triggers)
-* Governance (audit required for proposals, upgrades)
+| Threat Type            | Vector/Scenario                  | Mitigation/Control                             |
+| ---------------------- | -------------------------------- | ---------------------------------------------- |
+| Risk Model Evasion     | Manual overrides, hidden flows   | Immutable logs, signed attestations            |
+| Audit Tampering        | Log manipulation, silent edit    | Append-only, cryptographic proofs, access logs |
+| Compliance Gaps        | Out-of-date rules, missed events | Policy versioning, automated triggers          |
+| Data Retention Failure | Silent deletes, selective loss   | Tamper-proof storage, regular audits           |
 
 ---
 
-# 9. Document Control
+## 9. Integration Points
 
-* **Owner:** Risk & Compliance Architect
-* **Last Reviewed:** YYYY-MM-DD
-* **Change Log:** Initial MVP alignment and clarifications
-* **Next Review:** YYYY-MM-DD
+* Risk and audit logs plug into core infra (Ops, Security, Analytics)
+* ComplianceManager accessible to external regulators
+* Reports exportable in PDF, JSON, XBRL
+* Real-time event streaming to monitoring and compliance systems
+
+---
+
+## 10. Document Control
+
+* **Owner(s):** Risk & Compliance Architect
+* **Last Reviewed:** 2025-05-24, by Risk Board
+* **Change Log:**
+
+  | Version | Date       | Author         | Changes       | Reviewers      |
+  | ------- | ---------- | -------------- | ------------- | -------------- |
+  | 1.0.0   | 2025-05-24 | Risk Architect | Unified draft | Domain Experts |
+* **Review Schedule:** Quarterly, or after major protocol change.
+
+---
+
+**This document is the SINGLE source of truth for the VeritasVault risk, compliance, and audit domain. All technical, operational, and reporting references must be aligned here before deployment or integration.**

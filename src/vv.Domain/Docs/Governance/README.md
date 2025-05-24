@@ -1,27 +1,74 @@
-# VeritasVault Protocol Governance & Management
+# VeritasVault Protocol Governance & Management (Refined)
 
 > Protocol Governance, Operations, and Asset Management
 
-## 1. Overview
+---
 
-Defines the full-stack, on-chain governance, treasury, and protocol operations for VeritasVault. All changes, votes, assets, and upgrades are auditable and time-locked. No off-chain "wink and nudge" governance—just provable, contract-enforced rule of law.
+## 1. Metadata Block
 
-## 2. Domain Model & Responsibilities
+```yaml
+---
+document_type: architecture
+classification: internal
+status: draft
+version: 1.1.0
+last_updated: YYYY-MM-DD
+applies_to: protocol-governance-domain
+dependencies: [core-infrastructure, integration-gateway, asset-trading-settlement]
+reviewers: [governance-lead, security-lead, compliance-lead]
+next_review: YYYY-MM-DD
+priority: p0
+---
+```
+
+---
+
+## 2. Executive Summary
+
+### Business Impact
+
+* Provable, contract-enforced governance, treasury, upgrades, and custody.
+* No off-chain ambiguity—full on-chain auditability and time-locks.
+* Institutional and regulatory credibility via transparent, defensible processes.
+
+### Technical Impact
+
+* Modular, domain-driven architecture with strong separation of concerns.
+* Security-first: multi-sig, quorum, audit trail, time-locks, emergency protocols.
+* Full on-chain state, parameter, and asset management with rollback and dispute resolution.
+
+### Timeline Impact
+
+* **Phase 1:** Core governance, proposal/voting, security controls, audit trails.
+* **Phase 2:** Treasury, insurance, escrow, cross-chain verification, state management.
+* **Phase 3:** Upgrades, automation, dispute management, advanced monitoring.
+
+---
+
+## 3. Domain Model & Responsibilities
 
 ### A. Governance Domain
 
 #### 1. GovernanceController
 
-**Purpose**: Protocol-wide proposal, voting, and delegation management.
-
-**Key Responsibilities**:
-
-- Manage proposal lifecycle (creation, queue, vote, execute)
-- Control on-chain voting and delegate management
-- Coordinate parameter updates with full audit trails
-- Enforce quorum, time locks, and multi-sig on critical ops
+* Proposal lifecycle (creation, queue, vote, execute, rollback)
+* On-chain delegation, voting, and parameter management
+* Quorum, time-lock, multi-sig, emergency override, full audit trail
 
 ```solidity
+interface IGovernanceExtension {
+    struct SecurityConfig {
+        uint256 minTimelock;
+        uint256 maxTimelock;
+        uint256 emergencyDelay;
+        uint256 minQuorum;
+        bytes32[] requiredSigners;
+    }
+    function validateGovernanceAction(bytes32 actionId) external view returns (bool);
+    function enforceTimelock(bytes32 actionId) external;
+    function checkQuorum(bytes32 proposalId) external view returns (bool);
+}
+
 interface IGovernance {
     struct Proposal {
         bytes32 id;
@@ -43,18 +90,18 @@ interface IGovernance {
         Succeeded,
         Queued,
         Expired,
-        Executed
+        Executed,
+        RolledBack
     }
 
     function propose(
         string calldata description,
         bytes[] calldata actions
     ) external returns (bytes32);
-
     function castVote(bytes32 proposalId, bool support) external;
     function delegate(address delegatee) external;
     function execute(bytes32 proposalId) external;
-
+    function rollback(bytes32 proposalId) external;
     // Parameter management
     function setParameter(bytes32 paramId, bytes calldata value) external;
     function getParameter(bytes32 paramId) external view returns (bytes memory);
@@ -62,15 +109,43 @@ interface IGovernance {
 
 interface IParameterStore {
     event ParameterUpdated(bytes32 indexed paramId, bytes value);
-
     function updateParameter(
         bytes32 paramId,
         bytes calldata value,
         bytes calldata proof
     ) external;
-
     function getParameter(bytes32 paramId) external view returns (bytes memory);
     function validateUpdate(bytes32 paramId, bytes calldata value) external view returns (bool);
+}
+```
+
+#### SecurityManager & AuditLogger
+
+```solidity
+interface ISecurityManager {
+    struct AuditTrail {
+        bytes32 actionId;
+        address[] signers;
+        uint256 timestamp;
+        bytes32 proofHash;
+        SecurityState state;
+    }
+    function validateAction(bytes32 actionId) external returns (bool);
+    function enforceMultiSig(bytes32 actionId) external;
+    function logAuditTrail(AuditTrail memory trail) external;
+}
+
+interface IAuditLogger {
+    struct AuditRecord {
+        bytes32 recordId;
+        address actor;
+        bytes32 action;
+        uint256 timestamp;
+        bytes32 proofHash;
+    }
+    function logAction(AuditRecord memory record) external;
+    function verifyAudit(bytes32 recordId) external view returns (bool);
+    function getAuditTrail(bytes32 actionId) external view returns (AuditRecord[] memory);
 }
 ```
 
@@ -78,35 +153,20 @@ interface IParameterStore {
 
 #### 2. Treasury
 
-**Purpose**: Central protocol asset and reserve manager.
-
-**Key Responsibilities**:
-
-- Manage all protocol assets, endowments, and reserves
-- Approve DAO grant disbursement and spend proposals
-- Track and audit all inflows/outflows
+* Manage protocol assets, reserves, and grant disbursement.
+* Full audit and role-based approval flows.
 
 #### 3. InsuranceFund
 
-**Purpose**: Protocol-level risk coverage and claims system.
-
-**Key Responsibilities**:
-
-- Manage insurance/coverage pools
-- Calculate premiums and validate claims
-- Process payouts, handle emergency coverage
+* Risk pools, premium logic, claim processing, emergency payouts.
+* Full claim audit, approval, and post-mortem event logging.
 
 ### C. Protocol Management Domain
 
 #### 4. UpgradeController
 
-**Purpose**: Secure, auditable contract upgrade/migration system.
-
-**Key Responsibilities**:
-
-- Propose, approve, and execute upgrades and rollbacks
-- Handle user state migration and contract proxy logic
-- Enforce upgrade/versioning policies
+* Propose, approve, execute/rollback upgrades, user state migration.
+* Quorum, time-locks, emergency, multi-sig required for upgrades.
 
 ```solidity
 interface IUpgradeController {
@@ -117,47 +177,70 @@ interface IUpgradeController {
         bytes[] migrationData;
         bool requiresUserMigration;
     }
-
     function proposeUpgrade(Upgrade calldata upgrade) external returns (bytes32);
     function approveUpgrade(bytes32 upgradeId) external;
     function executeUpgrade(bytes32 upgradeId) external;
     function rollbackUpgrade(bytes32 upgradeId) external;
-
-    // User state migration
     function migrateUserState(address user, bytes32 upgradeId) external;
     function verifyMigration(address user, bytes32 upgradeId) external view returns (bool);
 }
 ```
 
-#### 5. TaskScheduler
+#### State Management & Cross-Chain Verification
 
-**Purpose**: Automation for recurring protocol tasks/events.
+```solidity
+interface IStateManager {
+    struct StateTransition {
+        bytes32 fromState;
+        bytes32 toState;
+        bytes32 transitionProof;
+        uint256 timestamp;
+    }
+    function validateTransition(StateTransition memory transition) external returns (bool);
+    function rollbackState(bytes32 stateId) external;
+    function getStateHistory(bytes32 stateId) external view returns (StateTransition[] memory);
+}
 
-**Key Responsibilities**:
+interface ICrossChainVerifier {
+    struct ChainProof {
+        bytes32 sourceChain;
+        bytes32 targetChain;
+        bytes32 messageHash;
+        bytes signature;
+        uint256 timestamp;
+    }
+    function verifyProof(ChainProof memory proof) external returns (bool);
+    function validateChainState(bytes32 chainId) external view returns (bool);
+}
+```
 
-- Manage cron/scheduled tasks, recurring jobs
-- Coordinate system timeouts and trigger-based events
+#### 5. TaskScheduler & DisputeManager
 
-#### 6. DisputeManager
+* Recurring tasks, system timeouts, event triggers.
+* On-chain dispute/challenge/arbitration with fraud proofs and penalties.
 
-**Purpose**: On-chain arbitration and dispute resolution.
+#### EmergencyController
 
-**Key Responsibilities**:
-
-- Handle challenge/appeal windows, fraud proofs, and claims
-- Trigger slashing/penalties and audit all dispute outcomes
+```solidity
+interface IEmergencyController {
+    struct EmergencyAction {
+        bytes32 actionId;
+        uint256 severity;
+        address[] approvers;
+        bytes32 recoveryPlan;
+    }
+    function triggerEmergency(EmergencyAction memory action) external;
+    function executeRecovery(bytes32 actionId) external;
+    function validateRecovery(bytes32 actionId) external view returns (bool);
+}
+```
 
 ### D. Asset Custody Domain
 
 #### 7. EscrowController
 
-**Purpose**: On-chain, cross-chain, and time-locked asset custody/settlement.
-
-**Key Responsibilities**:
-
-- Manage asset locks, releases, atomic swaps, and time locks
-- Handle custody for bridge/settlement workflows
-- Enforce emergency and multi-sig unlocks
+* On-chain, cross-chain, time-locked custody and settlement with proof and version control.
+* Multi-sig, emergency unlocks, swap logic.
 
 ```solidity
 interface IEscrow {
@@ -170,115 +253,97 @@ interface IEscrow {
         bytes32 condition;
         LockState state;
     }
-
     enum LockState {
         Active,
         Released,
         Refunded,
         Expired
     }
-
     function createLock(
         address asset,
         uint256 amount,
         uint256 duration,
         bytes32 condition
     ) external returns (bytes32);
-
     function releaseLock(bytes32 lockId) external;
     function refundLock(bytes32 lockId) external;
     function extendLock(bytes32 lockId, uint256 extension) external;
-
-    // Atomic swaps
     function createSwap(bytes32 lockIdA, bytes32 lockIdB) external returns (bytes32);
     function executeSwap(bytes32 swapId) external;
     function cancelSwap(bytes32 swapId) external;
 }
 ```
 
-## 3. Implementation Guidelines
+---
+
+## 4. Implementation Guidelines
 
 ### 1. Governance Implementation
 
-- Multi-sig required for all critical actions (proposals, upgrades, treasury ops)
-- Time-locked execution and voting delays to prevent rushed changes
-- On-chain delegation and vote tracking, no off-chain "soft votes"
-- Emergency override with transparent post-mortem logging
-- Clear upgrade paths for contracts, parameters, and state
+* Multi-sig required for critical ops
+* Time-locked execution and voting delays
+* Full on-chain delegation/vote tracking
+* Emergency override with post-mortem logging
+* Clear upgrade/revert paths
 
-### 2. Parameter Management
+### 2. Parameter & State Management
 
-- Versioning and history for every protocol parameter
-- Access controls (who can propose, who can execute)
-- Validation on every update (format, range, policy compliance)
-- Audit log for every change, revert, and challenge
+* Version/history for every parameter/state
+* Strict access, validation, challenge, rollback
+* Real-time anomaly detection
+* Cross-chain proof required for bridge/atomic ops
 
-### 3. Escrow Security
+### 3. Escrow & Custody
 
-- Multi-signature enforcement on releases and swaps
-- Mandatory time-locks on all custody operations
-- Cross-chain proof requirement for all atomic swaps
-- Emergency recovery protocols for stuck/failed states
+* Multi-sig, time-lock, expiry enforcement
+* Cross-chain proof and audit on all actions
+* Emergency unlock, dispute, arbitration protocols
 
-## 4. Deployment Strategy
+---
+
+## 5. Deployment Strategy
 
 ### Phase 1: Core Governance (Weeks 1-2)
 
-- Deploy GovernanceController and ParameterStore with full access controls
-- Onboard initial delegates, quorum parameters, and emergency policies
-- Deploy core objects and events:
-  - Objects: Proposal, Vote, Delegate, Parameter, GovernanceConfig, TimeDelay
-  - Events: ProposalCreated, ProposalActivated, VoteCast, ProposalExecuted, DelegateChanged, ParameterUpdated, QuorumAdjusted
+* Deploy GovernanceController, ParameterStore, Security/Audit loggers
+* Onboard delegates, set quorum/time-locks, enable emergency policies
+* Objects/Events: Proposal, Vote, Delegate, Parameter, TimeDelay, AuditTrail, ProposalCreated, VoteCast, ProposalExecuted, ParameterUpdated
 
 ### Phase 2: Asset Management (Weeks 3-4)
 
-- Launch Treasury and InsuranceFund for asset and risk management
-- Deploy EscrowController for cross-chain custody workflows
-- Deploy additional objects and events:
-  - Objects: Asset, Reserve, Grant, Claim, InsurancePool, Premium, Lock, Swap, TimeCondition
-  - Events: AssetRegistered, ReserveUpdated, GrantApproved, GrantRejected, ClaimFiled, ClaimProcessed, PremiumCollected, LockCreated, LockReleased, SwapExecuted
+* Launch Treasury/Insurance/Escrow, Cross-chain/custody, Monitoring
+* Objects/Events: Asset, Reserve, Grant, Claim, Pool, Lock, Swap, StateTransition, Proof, AssetRegistered, GrantApproved, ClaimProcessed, LockCreated, SwapExecuted
 
 ### Phase 3: Protocol Operations (Weeks 5-6)
 
-- Bring up UpgradeController, TaskScheduler, and DisputeManager
-- Integrate all logs, audits, and security checks
-- Deploy advanced objects and events:
-  - Objects: Upgrade, Migration, Version, Task, Schedule, Trigger, Dispute, Challenge, Appeal, Evidence
-  - Events: UpgradeProposed, UpgradeApproved, MigrationCompleted, VersionUpdated, TaskScheduled, TaskExecuted, TaskCancelled, DisputeCreated, ChallengeSubmitted, AppealFiled, DisputeResolved
+* UpgradeController, TaskScheduler, DisputeManager, EmergencyController
+* Advanced monitoring, logs, audit trails, automation
+* Objects/Events: Upgrade, Migration, Task, Dispute, Appeal, EmergencyAction, UpgradeProposed, TaskScheduled, DisputeResolved, EmergencyTriggered
 
-## 5. Security Considerations
+---
 
-### 1. Governance Security Considerations
+## 6. Security & Audit Considerations
 
-- Quorum and voting delay to prevent rushed/hostile actions
-- Execution timeouts and multi-sig on parameter/upgrade ops
-- Emergency override and rollback with audit and disclosure
+* All actions signed, time-locked, multi-sig, logged
+* Full audit/recovery on all governance, treasury, escrow events
+* Emergency rollback with audit trail
+* Monitoring for quorum, fraud, anomaly, challenge windows
 
-### 2. Parameter Security Considerations
+---
 
-- Versioning and strict access for updates
-- Validation and update-frequency limits
-- Full audit logging and real-time anomaly detection
+## 7. Best Practices
 
-### 3. Escrow Security Considerations
+* On-chain only for critical actions
+* Mandatory test and drill of all emergency/rollback flows
+* Versioned contract/state for upgrades
+* Independent, external audits before/after major changes
 
-- Multi-sig for all custodial actions
-- Enforced time locks and expiry policies
-- Cross-chain verification for bridge/atomic ops
-- Emergency unlock and dispute handling
+---
 
-## 6. Best Practices
+## 8. References & Resources
 
-- Every proposal, parameter, upgrade, and custody op is signed, versioned, and auditable
-- Never allow off-chain governance for critical ops—on-chain only
-- Emergency controls and rollbacks must be tested and reviewable
-- No upgrade, release, or payout is ever final without full audit trail
+* Governance/DAO Spec, Security Guidelines, Audit/Recovery Runbooks, Asset/Escrow Policy, Upgrade/Dispute Reference
 
-## 7. References & Resources
+---
 
-- Governance & DAO Spec
-- Treasury & Insurance Guidelines
-- Upgrade & Migration Reference
-- Escrow & Custody Policies
-
-If you don't trust your own governance, why would anyone else? Everything here is built for public scrutiny, hostile takeovers, and post-mortem survivability. Build your protocol like you expect someone to attack it—because they will.
+**Trust in governance is earned with every block. Assume attack, plan recovery, and never settle for unauditable control.**

@@ -1,25 +1,58 @@
-# VeritasVault Integration Gateway
+# VeritasVault Integration Gateway – Enhanced Spec (Post-Critique)
 
-> External Integration and API Management
+---
 
-## 1. Overview
+# 1. Metadata Block
 
-Defines VeritasVault's foundation for secure external API access, protocol adapter orchestration, and automated integration management. Built for adversarial environments and rapid change: every API call, adapter, and bot is tracked, rate-limited, and auditable—no black boxes, no wildcards.
+```yaml
+---
+document_type: architecture
+classification: internal
+status: draft
+version: 1.1.0
+last_updated: YYYY-MM-DD
+applies_to: integration-gateway
+dependencies: [core-infrastructure, risk-compliance-audit, asset-trading-settlement, integration-analytics-access, ai-ml-domain]
+reviewers: [lead-architect, secops-lead, integration-lead, compliance-officer]
+next_review: YYYY-MM-DD
+priority: p0
+---
+```
 
-## 2. Domain Model & Responsibilities
+---
 
-### A. API Management Domain [NEW]
+# 2. Executive Summary
 
-#### 1. APIGateway
+## Business Impact
 
-**Purpose**: Gatekeeper for all external API access.
+* Provides a secure, composable, and auditable perimeter for all external integrations and protocol adapters.
+* Protects against data leakage, API abuse, and rogue automation (bots/adapters).
+* Enables institutional-grade DeFi composability, regulatory compliance, and cross-chain expansion.
 
-**Key Responsibilities**:
+## Technical Impact
 
-- Create, revoke, and manage API keys and permissions
-- Enforce authentication and role-based access control
-- Apply dynamic, per-key and per-resource rate limiting
-- Monitor, log, and alert on API usage and abuse
+* Enforces strong API authentication, dynamic rate limiting, and resource isolation.
+* Integrates circuit breaker, versioning, and replay protection for all API and message flows.
+* Supports protocol upgrades, cross-chain integration, and automated rollback/quarantine.
+
+---
+
+# 3. Domain Model & Responsibilities
+
+## A. API Management Domain
+
+### 1. APIGateway
+
+**Purpose:** Secure API entrypoint, versioning, and throttling.
+
+**Key Responsibilities:**
+
+* Issue/revoke API keys and granular permissions
+* Enforce authentication (HMAC/JWT/OAuth2)
+* Dynamic rate limiting per resource/key (see IRateLimiter below)
+* Circuit breaker and request throttling
+* Full API call audit, webhook, and version management
+* Webhook/event subscription management
 
 ```solidity
 interface IAPIGateway {
@@ -30,29 +63,39 @@ interface IAPIGateway {
         mapping(bytes32 => bool) permissions;
         uint256 validUntil;
     }
-
-    function createAPIKey(
-        address owner,
-        uint256 rateLimit,
-        bytes32[] calldata permissions
-    ) external returns (bytes32);
-
+    function createAPIKey(address owner, uint256 rateLimit, bytes32[] calldata permissions) external returns (bytes32);
     function revokeAPIKey(bytes32 keyId) external;
     function validateAccess(bytes32 keyId, bytes32 resource) external view returns (bool);
     function updateRateLimit(bytes32 keyId, uint256 newLimit) external;
+    function setAPIVersion(string calldata version) external;
+    function manageWebhook(bytes32 keyId, WebhookConfig calldata config) external;
+    function triggerCircuitBreaker(bytes32 resource) external;
+}
+
+interface IRateLimiter {
+    struct RateLimit {
+        uint256 requestsPerSecond;
+        uint256 burstCapacity;
+        uint256 penaltyThreshold;
+        mapping(bytes32 => uint256) resourceLimits;
+    }
+    function checkLimit(bytes32 keyId, bytes32 resource) external returns (bool);
+    function updateLimit(bytes32 keyId, RateLimit calldata limit) external;
+    function getRateStatus(bytes32 keyId) external view returns (uint256, uint256);
 }
 ```
 
-#### 2. AdapterManager
+### 2. AdapterManager
 
-**Purpose**: Protocol adapter and automation bot manager.
+**Purpose:** Orchestrate protocol adapters, bot management, and adapter sandboxing.
 
-**Key Responsibilities**:
+**Key Responsibilities:**
 
-- Register, configure, and validate protocol adapters
-- Register and manage bots and their permissions
-- Orchestrate integration lifecycle and health
-- Monitor, isolate, and upgrade adapters as needed
+* Register/configure/upgrade adapters and bots (with isolation)
+* Track, sandbox, and quarantine failing adapters
+* Implement dependency scanning and scoring for adapters
+* Enforce automatic quarantine/circuit breaker on detected anomaly
+* Full upgrade/rollback and version tracking
 
 ```solidity
 interface IAdapterManager {
@@ -62,139 +105,157 @@ interface IAdapterManager {
         bytes32 adapterType;
         bool isActive;
         mapping(bytes32 => bytes) config;
+        uint256 score;
+        bool isQuarantined;
     }
+    function registerAdapter(address implementation, bytes32 adapterType, bytes calldata config) external returns (bytes32);
+    function upgradeAdapter(bytes32 adapterId, bytes calldata newConfig) external;
+    function quarantineAdapter(bytes32 adapterId) external;
+    function scanDependencies(bytes32 adapterId) external returns (bool);
+}
 
-    struct Bot {
-        bytes32 id;
-        address owner;
-        bytes32[] permissions;
-        uint256 lastActive;
-        bool isEnabled;
+interface IBotController {
+    struct BotMetrics {
+        uint256 cpuUsage;
+        uint256 memoryUsage;
+        uint256 apiCalls;
+        uint256 errorCount;
+        mapping(bytes32 => uint256) resourceUsage;
     }
-
-    function registerAdapter(
-        address implementation,
-        bytes32 adapterType,
-        bytes calldata config
-    ) external returns (bytes32);
-
-    function registerBot(
-        address owner,
-        bytes32[] calldata permissions
-    ) external returns (bytes32);
-
-    function validateAdapter(bytes32 adapterId) external view returns (bool);
-    function updateAdapter(bytes32 adapterId, bytes calldata config) external;
+    function trackBotActivity(bytes32 botId, BotMetrics memory metrics) external;
+    function enforceLimits(bytes32 botId) external returns (bool);
 }
 ```
 
-### B. Integration Services
+## B. Integration & Message Services
 
-#### 3. IntegrationManager
+### 3. IntegrationManager
 
-**Purpose**: Orchestrates external protocol integration.
+**Purpose:** Orchestrates cross-protocol and cross-chain integrations.
 
-**Key Responsibilities**:
+**Key Responsibilities:**
 
-- Manage external integrations and yield sources
-- Coordinate multi-protocol and cross-chain execution
-- Maintain compatibility and perform integration upgrades
+* Coordinate external integrations and yield sources
+* Multi-protocol and cross-chain execution
+* Maintain compatibility, orchestrate integration upgrades
+* Implement protocol validation and quarantine (see IProtocolSafety)
 
-#### 4. MessageBus
+### 4. MessageBus
 
-**Purpose**: Core event and notification delivery.
+**Purpose:** Event/message routing, replay protection, and notification.
 
-**Key Responsibilities**:
+**Key Responsibilities:**
 
-- Route all events, notifications, and state changes
-- Ensure reliable, ordered, and auditable delivery
-- Maintain message queues with full event history
+* Route events, notifications, and state changes
+* Ensure reliable, ordered, and auditable delivery
+* Message encryption, prioritization, and dead-letter queues
+* Cross-chain message verification (see ICrossChainVerifier)
 
-## 3. Implementation Guidelines
+```solidity
+interface ICrossChainVerifier {
+    struct MessageProof {
+        bytes32 messageId;
+        bytes32 sourceChain;
+        bytes32 targetChain;
+        bytes signature;
+        uint256 timestamp;
+        bytes payload;
+    }
+    function verifyMessage(MessageProof calldata proof) external returns (bool);
+    function getMessageStatus(bytes32 messageId) external view returns (uint8);
+}
 
-### 1. API Security
+interface IAdvancedFeatures {
+    function prioritizeMessage(bytes32 messageId) external returns (uint8);
+    function handleDeadLetter(bytes32 messageId) external;
+    function encryptPayload(bytes calldata payload) external returns (bytes memory);
+    function validateReplay(bytes32 messageId) external returns (bool);
+}
+```
 
-- Enforce strong rate limiting per key/resource
-- Require authentication (HMAC, JWT, OAuth2, or similar)
-- Apply least-privilege access controls
-- Log, alert, and block on API abuse or anomaly
+---
 
-### 2. Adapter Management
+# 4. Security & Operational Guidelines
 
-- Validate adapter logic and configuration before activation
-- Monitor adapter health and isolate on error
-- Enforce version control and rollback support
-- Track/verify all config changes and upgrade events
+* **All API and adapter actions must be logged, versioned, and cryptographically signed.**
+* Circuit breakers and replay protection are enforced for all flows.
+* Rate limits, permission checks, and resource limits must be unit/integration tested.
+* No unaudited bot or adapter is allowed in production; quarantine on anomaly/failure is mandatory.
+* Message queues must implement prioritization, replay defense, and encryption.
+* Prefer explicit deny over implicit allow for all access rules.
+* Adapters must be dependency-scanned before activation; sandbox all third-party integrations.
 
-### 3. Bot Integration
+---
 
-- Strict permission assignment and audit per bot
-- Enforce activity, usage, and rate limits
-- Monitor all bot resource usage and alert on anomaly
-- Ensure all errors and failures are logged and reportable
+# 5. Deployment & Implementation Priorities
 
-## 4. Security Considerations
+## Phase 1: Core Security & Control (Weeks 1-2)
 
-### 1. API Security Considerations
+* Deploy APIGateway with circuit breakers, rate limiting, and audit controls
+* Launch AdapterManager with sandboxing, upgrade, and quarantine support
+* Implement core monitoring and alerting for all API/adapter events
 
-- Enforced rate limiting and DoS protection
-- Mandatory authentication for all external access
-- Role-based access and real-time monitoring
+## Phase 2: Protocol Safety & Message Handling (Weeks 3-4)
 
-### 2. Adapter Security Considerations
+* Integrate IntegrationManager and deploy MessageBus with prioritization, encryption, and replay protection
+* Launch cross-chain support and adapter quarantine
+* Extend protocol validation and monitoring to all adapters/protocols
 
-- Full validation and isolation of each adapter
-- Resource usage limits (CPU/mem/calls)
-- Versioned upgrade and rollback policies
+## Phase 3: Advanced Features & Self-Healing (Weeks 5-6)
 
-### 3. Bot Security Considerations
+* Deploy advanced anomaly detection, automated health checks, and self-healing
+* Integrate dead letter queues, webhook automation, and advanced metrics
+* Enable automated quarantine and dependency scanning for all adapters
 
-- Permission management and audit
-- Resource usage and activity tracking
-- Activity/usage caps per bot
-- Anomaly/failure monitoring and reporting
+---
 
-## 5. Deployment Strategy
+# 6. Best Practices
 
-### Phase 1: Core Integration (Weeks 1-2)
+* **Enforce API versioning and webhook/event management on every integration.**
+* **Deploy circuit breaker patterns at every critical interface.**
+* **All adapters/bots must support rollback, sandboxing, and audit.**
+* **Integrate replay protection and message verification for all cross-chain flows.**
+* **No "works for now" logic—production code must be extensible, auditable, and defensible.**
 
-- Deploy APIGateway with rate limiting and access control
-- Bring up AdapterManager, register initial adapters/bots
-- Implement core access controls and monitoring
-- Deploy core objects and events:
-  - Objects: APIKey, Permission, AccessControl, RateLimit, SecurityPolicy, Adapter, Bot, AdapterConfig, ValidationRule
-  - Events: APIKeyCreated, APIKeyRevoked, AccessGranted, AccessDenied, RateLimitUpdated, AdapterRegistered, BotRegistered, AdapterValidated, ConfigUpdated
+---
 
-### Phase 2: Protocol Integration (Weeks 3-4)
+# 7. References & Patterns
 
-- Integrate protocols through IntegrationManager
-- Deploy MessageBus for system event delivery
-- Roll out end-to-end monitoring and alerting systems
-- Deploy additional objects and events:
-  - Objects: Protocol, Integration, YieldSource, ProtocolConfig, Message, EventQueue, Subscription, DeliveryReceipt
-  - Events: ProtocolIntegrated, IntegrationUpdated, YieldSourceAdded, MessagePublished, MessageDelivered, SubscriptionCreated, QueueProcessed
+* API Gateway & Adapter Security Patterns (see ISecurityPattern)
+* Integration Patterns (see IIntegrationPattern)
+* Rate Limiting and Circuit Breaker Architecture
+* Message Bus Replay/Encryption Guidance
+* OpenZeppelin & Chainlink Integration Standards
 
-### Phase 3: Advanced Gateway Features (Weeks 5-6)
+---
 
-- Implement advanced monitoring and anomaly detection
-- Deploy cross-chain integration capabilities
-- Establish automated health checks and self-healing
-- Deploy advanced objects and events:
-  - Objects: AnomalyRule, HealthCheck, CrossChainAdapter, CircuitBreaker, AdapterMetrics, BotActivity
-  - Events: AnomalyDetected, HealthCheckFailed, CircuitBroken, CircuitRestored, CrossChainMessageSent, MetricRecorded, AdapterIsolated
+# 8. Notable Pitfalls & Remediation
 
-## 6. Best Practices
+| Pitfall                        | Risk                                   | How to Avoid/Fix                       |
+| ------------------------------ | -------------------------------------- | -------------------------------------- |
+| Weak rate limiting             | DoS, runaway usage                     | Use per-resource/key rate limiting     |
+| Lack of circuit breakers       | System-wide failure cascade            | Circuit breakers on all APIs/adapters  |
+| Missing replay protection      | Double-execution, race attacks         | Implement replay defense everywhere    |
+| Unscanned adapter dependencies | Hidden vulnerabilities                 | Mandatory dependency scans             |
+| Implicit allow in permissions  | Unauthorized access/escalation         | Prefer explicit deny, audit all rules  |
+| Unmonitored bot activity       | Bot-based exploitation, resource abuse | Full activity/audit metrics per bot    |
+| Incomplete message encryption  | Data leak or interception              | Encrypt all message payloads           |
+| No webhook/event versioning    | Integration breakage after upgrade     | Version all endpoints & event payloads |
 
-- All API and adapter actions are logged, versioned, and signed
-- No unaudited adapter or bot runs in production
-- Always prefer explicit deny over implicit allow
-- All rate limiting, authentication, and permission checks are unit tested
-- "Works for now" is not allowed—only extensible, auditable code makes the cut
+---
 
-## 7. References & Resources
+# 9. Summary
 
-- API Gateway Spec
-- AdapterManager & Bot Integration Guidelines
-- Integration Service Architecture
+This Integration Gateway spec now enforces:
 
-This is your API perimeter. If it isn't locked down, don't bother with the rest of your stack. Unchecked bots and adapters are just exploits waiting for a timestamp.
+* Security-first, zero trust perimeter
+* Modular, upgradable, and auditable integrations
+* Robust circuit breaker, replay, and encryption controls
+* Full event and API versioning
+* Adapter quarantine, sandboxing, and health monitoring
+
+**Deploy nothing without these gates in place.**
+
+---
+
+For further domain module detail, API contract, or expanded integration playbooks, request an annex or reference doc.

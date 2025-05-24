@@ -1,15 +1,17 @@
-# VeritasVault Artifact 1 – Core Infrastructure (Final)
+---
+
+# VeritasVault Artifact 1 – Core Infrastructure (Enhanced, Critique-Aligned)
 
 ---
 
-# 1. Metadata Block
+## 1. Metadata Block
 
 ```yaml
 ---
 document_type: architecture
 classification: internal
 status: draft
-version: 1.0.0
+version: 1.0.1
 last_updated: 2025-05-24
 applies_to: core-infrastructure
 dependencies: []
@@ -21,89 +23,75 @@ priority: p0
 
 ---
 
-# 2. Executive Summary
+## 2. Executive Summary (Upgraded)
 
-## Business Impact
+### Business Impact
 
-* Provides the secure, verifiable chain infrastructure for all VeritasVault protocol domains.
-* Enables transparent, auditable, and robust block finalization, data integrity, and event-driven workflows.
-* Foundation for regulatory compliance, operational resilience, and long-term protocol upgrades.
+* Foundation for *provable*, resilient, and auditable protocol operation
+* Enables transparent, cryptographically signed block finalization, data integrity, and event-driven workflows
+* P0 for compliance, cross-domain auditability, and upgrade safety
 
-## Technical Impact
+### Technical Impact
 
-* Defines all chain state as domain-driven aggregates and events.
-* Supports replayable, event-sourced state with high testability and reliability.
-* Decouples consensus, indexing, and event logic for extensibility and maintainability.
+* Defines all chain state/events as DDD aggregates—**all transitions event-sourced and hash-proven**
+* **Hard-wired atomicity:** one block per height, finalization is cryptographically enforced, event log is immutable
+* **Replayable** chain state with rollback, audit, and incident forensics as first-class flows
+* All consensus, indexing, and event logic are versioned, modular, and circuit-breaker protected
 
-## Timeline Impact
+### Timeline Impact
 
-* Phase 1 (MVP): Chain finalization, indexing, event emission—by 7 June 2025.
-* Phases 2–4: Layer in security, cross-chain, governance, and upgrade logic over subsequent quarters.
-
----
-
-# 3. Domain Overview
-
-The Core Infrastructure domain implements the foundational, DDD-aligned state, event, and consensus logic that underpins every transaction and contract in VeritasVault. It ensures all protocol activity is final, indexed, and fully auditable.
-
-**Criticality: P0 (Mission Critical)**
+* Phase 1 (MVP): Core state/event engine, event log, consensus, index—by 7 June 2025
+* Phase 2: Add multi-layer security, circuit breaker, gas/rate controls (Q3 2025)
+* Phase 3: Add cross-chain/VRF/adapters (Q4 2025)
+* Phase 4: Add governance, fork/upgrade management (Q1 2026)
 
 ---
 
-# 4. Responsibilities & Boundaries
+## 3. Domain Overview (Critique Enhanced)
 
-## Core Functions
+The Core Infrastructure domain is the *zero-trust*, event-sourced, DDD-aligned backbone of the protocol. Every state change, block, or event is cryptographically proven and replayable—no deploy without audit, no upgrade without version/compatibility proof.
 
-* Manage finalized chain state and enforce consensus invariants
-* Index and snapshot all block data for replay and audit
-* Emit, store, and replay key domain events
-* Enforce chain data integrity and prevent double-finalization
-
-## Scope Definition
-
-**In Scope:**
-
-* ConsensusManager, ChainIndexer, EventEmitter, domain data models, repository contracts, state/event log
-
-**Out of Scope:**
-
-* Business logic, application-level features, cross-chain/upgrade logic (Phase 3+), governance mechanisms
+**Criticality: P0 (Mission Critical, Compliance Gatekeeper)**
 
 ---
 
-# 5. Domain Model Structure (DDD)
+## 4. Responsibilities & Boundaries (Hardened)
 
-## Aggregate Roots
+### Core Functions
 
-### BlockChain (Aggregate Root)
+* Finalize and hash-prove chain state; *no block finalized without consensus event and proof*
+* Index/snapshot all block data—**all states must be replayable and rollbackable**
+* Emit, store, and replay domain events—all events are hash-anchored and signed
+* Enforce chain data integrity and prevent all double-finalization, rollback every state change
+* Monitor/circuit-break all state transitions for rate, gas, and incident conditions
 
-* Manages the lifecycle and state of the chain (blocks, finalization, consensus)
-* Enforces invariants: one finalized block per height, no double-finalization, all state transitions event-sourced
+### Scope
 
-### Block (Entity)
+* **In:** ConsensusManager, ChainIndexer, EventEmitter, DDD aggregates, repo contracts, event/state log, circuit breaker
+* **Out:** App logic, cross-chain (Phase 3+), governance (Phase 4), business features
 
-* Represents a finalized unit of chain state, with metadata and block hash
+---
 
-### BlockHeader (Entity)
+## 5. Domain Model (Enhanced DDD)
 
-* Encapsulates block metadata (number, timestamp, parent hash)
+### Aggregate Roots & Entities
 
-### StateSnapshot (Entity)
+* **BlockChain (Agg Root):** Manages chain state, blocks, finalization, consensus invariants, event log reference
+* **Block (Entity):** Finalized block w/ metadata, block hash, cryptographic proof
+* **BlockHeader (Entity):** Block metadata: number, timestamp, parent hash, proof, event root
+* **StateSnapshot (Entity):** Snapshot of chain state at finalized block; must be rollback/replay tested
 
-* Captures the chain state at a given finalized block
+### Value Objects
 
-## Value Objects
+* **ConsensusState:** Immutable; includes hash, validator signatures, proof chain
+* **BlockHash:** Unique, derived from full block content/events/proofs
+* **EventProof:** Hash/sig proof for every event emitted
 
-* **ConsensusState:** Immutable object representing consensus at a specific block
-* **BlockHash:** Unique identifier for blocks, derived from content
+### Domain Events (Signed/Auditable)
 
-## Domain Events
+* **BlockFinalized, BlockIndexed, ChainReorg, CircuitBreakerTriggered, RollbackPerformed, EventLogPruned**
 
-* **BlockFinalized:** Emitted on successful finalization
-* **BlockIndexed:** Emitted when a block is indexed for replay/audit
-* **ChainReorg:** Emitted on chain reorganization events
-
-## Repository Contracts
+### Repository Contracts
 
 * **IBlockRepository:**
 
@@ -112,106 +100,96 @@ The Core Infrastructure domain implements the foundational, DDD-aligned state, e
   * `getBlocksByHeight(uint256 height)`
   * `saveSnapshot(StateSnapshot snapshot)`
   * `getSnapshot(uint256 blockNumber)`
-
-## Invariants / Business Rules
-
-* Each block can only be finalized once
-* Consensus state must always match the indexed chain
-* Snapshots only created for finalized blocks
-* All event emissions must be logged and replayable
+  * `pruneEvents(uint256 beforeBlock)`
 
 ---
 
-# Implementation Strategy: Phased Delivery
+## 6. Invariants & Business Rules (Enhanced)
 
-## Phase 1 – Foundation & Architecture (MVP by 7 June 2025)
-
-**Objective:**
-
-* Deliver working, DDD-aligned finalized chain state, event emission, and indexing
-
-**Deliverables:**
-
-* Aggregate roots/entities/value objects/events as above
-* IBlockRepository interface and implementation
-* Unit and integration tests for all state transitions and events
-* Initial architecture diagram (C4/mermaid)
-
-## Phase 2 – Security & Control (August-September 2025)
-
-* Add SecurityController, RateLimiter, GasController
-* Emergency shutdown, rate limiting, gas policy enforcement
-
-## Phase 3 – Cross-Chain & Oracle (October-November 2025)
-
-* Add ChainAdapter, RandomnessOracle, cross-chain and VRF support
-
-## Phase 4 – Governance & Upgrades (Jan-Feb 2026)
-
-* Add ForkManager, GovernanceController, upgrade/version control
+* Each block finalized *exactly once*; consensus event/sig required
+* Consensus state must match every indexed block/snapshot
+* Rollbacks must be possible for all non-final blocks; rollback audit trails required
+* Snapshots created for finalized blocks only; events must be immutable and signed
+* All event emissions logged and *replay tested*; circuit breaker on abnormal rate/size
 
 ---
 
-# Operations Guide (MVP)
+## 7. Implementation Strategy (Phased, Provable)
 
-* Monitoring: Chain state, finalization rate, event log replay
-* Alerting: Block finalization failures, consensus mismatches
-* Incident response: Manual intervention for missed blocks
-* Maintenance: Repository backups, index verification
-
----
-
-# Resource Planning (MVP)
-
-* Block storage, snapshot storage, event log infrastructure
-* Monitoring dashboard for chain state and events
-* Estimated 2–3 engineers for MVP delivery and support
+* Phase 1: Deliver core aggregates, repo/event log, event replay and rollback, event/circuit breaker test harness
+* Phase 2: Add SecurityController, RateLimiter, GasController, CircuitBreaker
+* Phase 3: Add ChainAdapter, RandomnessOracle, VRF, cross-chain support
+* Phase 4: Add ForkManager, GovernanceController, upgrade/fork/version control
 
 ---
 
-# Risk & Compliance (Ongoing, Per Phase)
+## 8. Operations Guide (MVP+)
 
-| Phase | Risk               | Mitigation                 |
-| ----- | ------------------ | -------------------------- |
-| 1     | Consensus failure  | Fallback/replay mechanisms |
-| 2     | Security breach    | Multi-layer protection     |
-| 3     | Cross-chain issues | Message verification       |
-| 4     | Upgrade conflicts  | Compatibility testing      |
+* **Monitoring:** Chain state, block/event finalization, event log growth, circuit breaker status
+* **Alerting:** Finalization failures, consensus mismatches, abnormal event rates, circuit breaker triggers
+* **Incident Response:** Rollback/replay, manual intervention, event pruning, audit trail review
+* **Maintenance:** Repository backup, snapshot integrity, event log/circuit breaker test scheduling
 
 ---
 
-# Quality Assurance (MVP)
+## 9. Resource Planning (Hardened)
 
-* Unit test coverage: >90%
-* All aggregates/events covered in integration tests
-* Manual review of event log replay and chain state
-
----
-
-# Integration Guide
-
-* API contracts for event log, block repository
-* Integration points for SecurityController and future cross-chain logic
-* Documentation of domain events and how they are consumed
+* Storage for blocks/snapshots/events (resilient, queryable, audit-locked)
+* Monitoring dashboard (block state, event/circuit status, rollback metrics)
+* 2–3 engineers MVP, add 1–2 for security/circuit breaker in Phases 2–4
 
 ---
 
-# References
+## 10. Risk & Compliance (Strengthened)
 
-* Internal: Architecture spec, state/event log documentation
-* External: Ethereum yellow paper, Cosmos SDK docs
+| Phase | Risk              | Mitigation                             |
+| ----- | ----------------- | -------------------------------------- |
+| 1     | Consensus failure | Fallback/replay/circuit breaker        |
+| 2     | Security breach   | Multi-layer, circuit, event proof      |
+| 3     | Cross-chain error | Message verification, audit log        |
+| 4     | Upgrade/fork bugs | Versioning, compatibility test, replay |
 
 ---
 
-# Document Control
+## 11. Quality Assurance (Provable, Auditable)
+
+* > 90% unit/integration test coverage for all aggregates/events/circuit logic
+* Manual + automated replay/rollback test for event log and snapshots
+* Circuit breaker/emergency/incident drill schedule
+* Every release must pass replay/rollback/circuit breaker drills and audit
+
+---
+
+## 12. Integration Guide (Explicit)
+
+* API contracts: block repo, event log, event proof/circuit breaker status
+* Integration: SecurityController, future cross-chain/oracle adapters, circuit breaker hooks
+* Document: Domain events, event log API, rollback/replay usage, circuit breaker integration
+
+---
+
+## 13. References
+
+* Internal: Architecture spec, event log/circuit breaker doc, DDD/circuit test cases
+* External: Ethereum yellow paper, Cosmos SDK docs, EIP circuit breaker/disaster recovery
+
+---
+
+## 14. Document Control
 
 * **Owner(s):** Core Lead Architect
-* **Last Reviewed:** 2025-05-24 (Initial Draft)
+* **Last Reviewed:** 2025-05-24 (Critique Enhanced)
 * **Change Log:**
 
-  | Version | Date       | Author         | Changes         | Reviewers          |
-  | ------- | ---------- | -------------- | --------------- | ------------------ |
-  | 1.0.0   | 2025-05-24 | Core Architect | Initial Release | Protocol, Security |
+  | Version | Date       | Author         | Changes          | Reviewers          |
+  | ------- | ---------- | -------------- | ---------------- | ------------------ |
+  | 1.0.1   | 2025-05-24 | Core Architect | Critique Upgrade | Protocol, Security |
 * **Review Schedule:** Monthly; next review 2025-06-24
 
 ---
+
+**Summary:**
+
+* No finalized block or event is valid without consensus proof and event log hash. Rollback, replay, and audit are not features—they are baseline requirements. Any gap in event replay or rollback must block release.
+
+*If you want C4, sequence diagrams, or explicit circuit breaker workflow, ask and it’ll be added fast.*

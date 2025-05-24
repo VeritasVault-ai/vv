@@ -1,198 +1,194 @@
-# VeritasVault Asset & Trading
+---
 
-> Asset Management, Trading, and Settlement Systems
+# VeritasVault Artifact 3 – Asset, Trading & Settlement Domain (Phase 1 – MVP, Revised)
+
+---
 
 ## 1. Overview
 
-This domain defines all asset, liquidity, trading, and settlement logic for VeritasVault. It delivers institution-grade composability for asset management, high-assurance AMM design, precise trade execution, and robust cross-chain settlement. "Move fast and break things" does not apply here—integrity is non-negotiable.
+This domain defines all asset management, trading, and settlement logic for VeritasVault. **Design is explicitly institution-grade**: composability, auditability, and atomicity are non-negotiable.
+Liquidity pools, LP rewards, and AMM are **deferred to Phase 2+**. "Move fast and break things" is not just discouraged—it’s actively architected out.
+
+---
 
 ## 2. Domain Model & Responsibilities
 
-### A. Asset & Liquidity Domain
+### A. Asset & Portfolio Domain (Phase 1 Focus)
 
-#### 1. Portfolio
+#### Portfolio (Aggregate Root)
 
-**Purpose**: Multi-asset basket manager for portfolio construction and performance tracking.
+* Multi-asset basket manager for portfolio construction, value, and position limits
+* Manages all open/closed positions by reference (ID only)
+* Tracks historical and real-time performance, supports deterministic rebalancing
+* **Validates position/risk limits, calculates risk metrics, and exposes audit trails**
 
-**Key Responsibilities**:
+#### Asset (Entity)
 
-- Manage all open/closed asset positions
-- Optimize allocations according to model/policy
-- Track historical and real-time portfolio performance
-- Execute and document rebalancing operations
+* Canonical asset representation with full metadata provenance, verification, and hash proofs
+* Controls lifecycle (creation, state transitions, multi-sig governance for changes)
+* Enforces compliance, permission, and regulatory constraints
+* **All metadata/state transitions must be cryptographically verified**
 
-#### 2. LiquidityPool
+#### Trade (Entity)
 
-**Purpose**: Smart contract-powered, on-chain liquidity system (AMM).
+* Executed trade record (never aggregate root)
+* Links buyer, seller, asset, quantity, price, settlementId (IDs only)
+* **Trade proof generated for every execution; compliance validation required**
 
-**Key Responsibilities**:
+#### OrderBook (Aggregate Root)
 
-- Manage reserve balances and LP token supply
-- Implement/upgrade AMM math and logic
-- Process token swaps atomically and with full accounting
-- Assess, collect, and distribute fees transparently
+* Manages deterministic order matching (strict FIFO/price-time)
+* Tracks full order history and state (priority queues, depth at every price, real-time metrics)
+* Exposes audit trails and matching efficiency metrics
+* **All matching must be auditable and metrics exportable**
 
-#### 3. Asset
+#### Settlement (Aggregate Root)
 
-**Purpose**: Canonical representation of every supported asset.
+* Manages lifecycle of completed trades/settlements, tracks by tradeId
+* Guarantees atomic, auditable settlement—**rollback only by explicit, auditable governance**
+* Supports batch and atomic multi-settlement with cryptographic proofs
 
-**Key Responsibilities**:
+### Value Objects
 
-- Store asset metadata (type, decimals, price source, status)
-- Control asset whitelisting/blacklisting
-- Enforce asset lifecycle (creation, activation, deprecation)
-- Track compliance and permission requirements
+* **Order:** Immutable buy/sell request
+* **SettlementResult:** Atomic, cryptographically proven
+* **AssetMeta:** Immutable, hash-verified token metadata
 
-#### 4. LiquidityProvider
+### Key Domain Events (Phase 1)
 
-**Purpose**: Interface for LPs managing positions and rewards.
+* AssetCreated, AssetListed, AssetStatusChanged, AssetMetadataVerified
+* PortfolioCreated, PortfolioUpdated, PortfolioLimitBreached, PortfolioRebalanced
+* OrderPlaced, OrderMatched, OrderDepthChanged, TradeExecuted, TradeProofGenerated
+* SettlementInitiated, SettlementFinalized, AtomicSettlementProofGenerated
 
-**Key Responsibilities**:
+---
 
-- Track active LP stakes and reward shares
-- Calculate, report, and distribute LP rewards
-- Quantify impermanent loss per position
-- Enforce vesting/unbonding as required
+## 3. Implementation Patterns (Revised)
 
-### B. Trading & Execution Domain
+### Core Interfaces (Solidity/TypeScript)
 
-#### 5. TradeExecution
-
-**Purpose**: Validate, match, and settle trades securely and transparently.
-
-**Key Responsibilities**:
-
-- Validate trade intent, signature, and compliance
-- Manage trade-matching (AMM or orderbook-based)
-- Initiate atomic settlement flows
-- Calculate and distribute trading/settlement fees
-
-#### 6. OrderBook
-
-**Purpose**: Classic limit order management with full auditability.
-
-**Key Responsibilities**:
-
-- Manage order placement, cancellation, and update
-- Match orders deterministically (FIFO/price-time)
-- Handle partial and full fills, track order history
-- Expose order state for external audits and compliance
-
-#### 7. SettlementController
-
-**Purpose**: Orchestrates post-trade settlement and guarantees finality.
-
-**Key Responsibilities**:
-
-- Track and enforce settlement finality (on- and cross-chain)
-- Coordinate transaction lifecycle (initiation, in-flight, settled, failed)
-- Handle cross-chain atomic swaps and finality proofs
-- Ensure settlement guarantees (escrow, rollback, fraud detection)
-
-## 3. Implementation Patterns
-
-### Solidity Interface Examples
-
-```solidity
-interface ITradeExecution {
-    struct Trade {
-        bytes32 id;
-        address maker;
-        address taker;
-        address baseAsset;
-        address quoteAsset;
-        uint256 baseAmount;
-        uint256 quoteAmount;
-        uint256 timestamp;
-        bytes32 status;
-    }
-
-    function executeTrade(Trade calldata trade) external returns (bool);
-    function settleTrade(bytes32 tradeId) external returns (bool);
-    function cancelTrade(bytes32 tradeId) external returns (bool);
+```typescript
+interface IEnhancedAsset {
+  mint(to: Address, amount: uint256): Promise<void>;
+  burn(from: Address, amount: uint256): Promise<void>;
+  getMeta(): Promise<AssetMeta>;
+  verifyMetadata(meta: AssetMeta, proof: MetadataProof): Promise<VerificationResult>;
+  transitionState(newState: AssetState, auth: StateTransitionAuth): Promise<TransitionResult>;
 }
 
-interface ILiquidityPool {
-    function addLiquidity(
-        address tokenA,
-        address tokenB,
-        uint256 amountA,
-        uint256 amountB
-    ) external returns (uint256 lpTokens);
+interface IEnhancedOrderBook {
+  placeOrder(order: Order): Promise<OrderId>;
+  matchOrders(version: number, optimisticLock: string): Promise<[Trade[], string]>;
+  cancelOrder(orderId: OrderId): Promise<void>;
+  getPriorityQueue(side: OrderSide, price: BigNumber): Promise<Order[]>;
+  getDepthAtPrice(asset: AssetId, price: BigNumber): Promise<OrderBookDepth>;
+  getMatchingMetrics(window: TimeWindow): Promise<MatchingMetrics>;
+}
 
-    function removeLiquidity(
-        uint256 lpTokens
-    ) external returns (uint256 amountA, uint256 amountB);
+interface IEnhancedTradeExecution {
+  executeTrade(buy: Order, sell: Order): Promise<Result<Trade>>;
+  settleTrade(trade: Trade): Promise<SettlementResult>;
+  validateTradeCompliance(trade: Trade, compliance: ComplianceRules): Promise<ValidationResult>;
+  generateTradeProof(trade: Trade, exec: ExecutionDetails): Promise<TradeProof>;
+}
 
-    function swap(
-        address tokenIn,
-        address tokenOut,
-        uint256 amountIn
-    ) external returns (uint256 amountOut);
+interface IEnhancedPortfolio {
+  getHoldings(address: Address): Promise<Asset[]>;
+  updateHoldings(address: Address, asset: Asset, delta: int256): Promise<void>;
+  validatePositionLimits(address: Address, asset: Asset, amt: BigNumber): Promise<ValidationResult>;
+  rebalancePortfolio(address: Address, target: PortfolioTarget): Promise<RebalanceResult>;
+  calculatePortfolioRisk(address: Address, metrics: RiskMetrics[]): Promise<RiskReport>;
+}
+
+interface IEnhancedSettlement {
+  initiateSettlement(tradeId: TradeId): Promise<SettlementResult>;
+  finalizeSettlement(settlementId: SettlementId): Promise<void>;
+  atomicSettleWithProof(settlement: Settlement, proof: SettlementProof): Promise<AtomicSettlementResult>;
+  batchSettle(settlements: Settlement[], batchProof: BatchProof): Promise<BatchSettlementResult>;
+  verifySettlementChain(settlementId: SettlementId): Promise<VerificationResult>;
+}
+
+interface ITradingRiskControls {
+  validatePreTrade(order: Order, ctx: TradingContext): Promise<ValidationResult>;
+  verifyExecution(trade: Trade, proof: ExecutionProof): Promise<VerificationResult>;
+  checkCircuitBreakers(asset: Asset, metrics: MarketMetrics): Promise<CircuitBreakerStatus>;
 }
 ```
 
-## 4. Deployment Strategy
+---
 
-### Phase 1: Core Asset Management (Weeks 1-3)
+## 4. Responsibilities, Boundaries & Invariants (Strengthened)
 
-- Deploy Asset with whitelisting and metadata management
-- Implement Portfolio with position tracking
-- Establish asset lifecycle management
-- Deploy core objects and events:
-  - Objects: Asset, AssetMetadata, AssetStatus, Portfolio, Position, AllocationPolicy
-  - Events: AssetCreated, AssetWhitelisted, AssetStatusChanged, PortfolioCreated, PositionOpened, PositionClosed, PortfolioRebalanced
+* **Portfolio:** Holds only IDs, validates all position/risk constraints, never directly manipulates trades or settlements.
+* **OrderBook:** Strictly manages matching/state, never references portfolios or settlements, exposes queue/depth metrics.
+* **Settlement:** Independent, atomic, and cryptographically proven. Only governance can rollback. Batch/atomic operations must be audit-proven.
+* **Trade:** Links by ID only, generates proof on every execution, requires compliance validation before settlement.
+* No asset/trade exists without a signed, immutable, and auditable trail.
+* All matching and settlement must be deterministic, exportable, and **metrics made available for audit**.
+* Concurrency: All matching/order updates use optimistic locking/versioning.
 
-### Phase 2: Liquidity Infrastructure (Weeks 4-6)
+---
 
-- Deploy LiquidityPool with AMM implementation
-- Implement LiquidityProvider with staking and rewards
-- Establish fee collection and distribution mechanisms
-- Deploy additional objects and events:
-  - Objects: LiquidityPool, PoolReserve, LPToken, LiquidityPosition, RewardShare, FeeStrategy, ImpermanentLossTracker
-  - Events: PoolCreated, LiquidityAdded, LiquidityRemoved, SwapExecuted, FeeCollected, RewardDistributed, PositionStaked, PositionUnstaked
+## 5. Example Workflow (Revised)
 
-### Phase 3: Trading & Settlement (Weeks 7-10)
+```mermaid
+graph TD
+    A[User submits order] --> B[OrderBook: Place Order]
+    B --> C[OrderBook: Match Orders]
+    C --> D[TradeExecution: Execute Trade + Generate Proof]
+    D --> E[Settlement: Initiate + Atomic Proof]
+    E --> F[Portfolio: Update Holdings, Validate Limits, Risk Calculation]
+```
 
-- Deploy TradeExecution with full matching capabilities
-- Implement OrderBook with FIFO/price-time priority
-- Establish SettlementController with cross-chain support
-- Deploy advanced objects and events:
-  - Objects: Trade, Order, OrderBook, SettlementRecord, CrossChainSwap, FinalityProof, SettlementGuarantee
-  - Events: OrderPlaced, OrderCancelled, OrderMatched, TradeExecuted, TradeSettled, SettlementInitiated, SettlementCompleted, CrossChainSwapInitiated, FinalityProofVerified
+---
 
-## 5. Asset & Trading Best Practices
+## 6. Integration Points (Phase 1)
 
-1. **Composability**: All components are contract-driven and upgradeable, never hard-coded.
-2. **Deterministic Settlement**: No settlement without explicit, auditable finality.
-3. **Fee Transparency**: All fees—swap, trade, withdrawal—must be deterministic and pre-disclosed.
-4. **Atomicity**: No partial state: all state updates are atomic and revert on error.
-5. **Order Book Integrity**: Orders must be auditable, non-malleable, and matched with clear deterministic logic.
-6. **Cross-Chain Safety**: Cross-chain operations require proof-based atomicity and rollback on any failure.
-7. **Reward/Airdrop Fairness**: LPs and traders must receive rewards proportionally and verifiably.
-8. **Lifecycle Tracking**: All assets, orders, positions are versioned and referenceable in audits.
+* Risk domain triggers (trade validation, compliance, circuit breakers)
+* Core infrastructure (block finalization, event index)
+* Audit log emission (all trades, settlements, asset state changes, proofs)
+* Observability: trading metrics, order book depth, execution/settlement latency, risk metrics, portfolio limit breaches
 
-## 6. Security & Threat Considerations
+---
 
-| Threat Type              | Vector/Scenario                   | Mitigation/Control                              |
-| ------------------------ | --------------------------------- | ----------------------------------------------- |
-| Pool Draining            | Re-entrancy, math bug, flash loan | Audited math, re-entrancy guards, circuit break |
-| Trade Manipulation       | Sandwiching, frontrunning         | Fair matching, commit-reveal, time-weighting    |
-| LP Reward Abuse          | Fake liquidity, flash staking     | Minimum vesting, time-weighted rewards          |
-| Settlement Failure       | Chain reorg, cross-chain bug      | Finality proofs, rollback/escrow on fail        |
-| Order Book Corruption    | Order spoofing/cancellation spam  | Rate limits, signature verification             |
-| Asset Metadata Tampering | Supply/decimals/whitelist fraud   | Immutable metadata hash, multi-sig updates      |
+## 7. Best Practices (Revised)
 
-## 7. Integration & Composition
+* **Composability:** All contracts modular and upgradeable; no hard-coded dependencies.
+* **Deterministic/Auditable:** All matching/settlement rules are deterministic, auditable, and metrics exportable.
+* **Atomic Operations:** All state updates are atomic and revert on any error—batch ops must prove atomicity.
+* **Lifecycle Tracking:** All objects versioned and referenceable, all state transitions hash-proven.
+* **Error Management:** Comprehensive error/result objects, context on every failure.
+* **Event Sourcing:** Events drive all cross-aggregate comms and recovery.
+* **Concurrency:** Optimistic locking/versioning required on all matchings, rebalances, settlements.
+* **Circuit Breakers:** Systemic checks at risk/trade/settlement layers, auto-triggered, exportable status.
 
-- Asset, portfolio, and trading modules are cross-integrated and callable by all other domains (risk, compliance, AI/ML).
-- Liquidity and trade settlement integrate directly with cross-chain/finality controllers.
-- All on-chain activity is signed, timestamped, and available for audit.
+---
 
-## 8. References & Resources
+## 8. Security & Threat Considerations (Strengthened)
 
-- Liquidity Pool Spec
-- Trade Engine Reference
-- Settlement Controller Guidelines
+| Threat Type              | Scenario                     | Mitigation                                            |
+| ------------------------ | ---------------------------- | ----------------------------------------------------- |
+| Trade Manipulation       | Frontrunning, order spoofing | Deterministic matching, audit trail, circuit breakers |
+| OrderBook Corruption     | Spam/cancellation attacks    | Rate limits, signature/circuit breaker checks         |
+| Asset Metadata Tampering | Supply/decimals fraud        | Metadata hash, multi-sig and hash verification        |
+| Settlement Failure       | Chain reorg, batch errors    | Finality proofs, batch atomicity, audit logs          |
+| Portfolio Breach         | Limit/risk overexposure      | Pre/post validation, limit enforcement, risk checks   |
+| Compliance Violation     | Trade without compliance     | Pre-trade validation, proof-required for settlement   |
 
-If you skip checks here, don't act shocked when you wake up to zero liquidity, corrupted portfolios, or front-run trades. Every operation must be traceable, auditable, and reversible where needed.
+---
+
+## 9. References & Document Control
+
+* **Domain Owner:** Trading & Settlement Architect
+* **Last Reviewed:** 2025-05-24
+* **Change Log:** Major revision for DDD, atomic ops, compliance, circuit breakers, and risk management
+* **Next Review:** 2025-07-01
+
+### Reference Specs
+
+* Asset Model, OrderBook, Trade, Settlement, Portfolio, Risk Controls, and relevant interfaces
+
+---
+
+\*Liquidity pool logic, LP rewards, and AMM/advanced trading are **deferred to Phase 2+.**
+*If you need code separation, workflow expansion, or further aggregate boundary breakdown, just say so.*

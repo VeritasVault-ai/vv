@@ -1,4 +1,4 @@
-# VeritasVault Artifact 5 – Governance, Ops & Custody Domain
+# VeritasVault Artifact 5 – Governance, Ops & Custody Domain (Refined)
 
 ---
 
@@ -9,7 +9,7 @@
 document_type: architecture
 classification: internal
 status: draft
-version: 1.0.0
+version: 1.1.0
 last_updated: YYYY-MM-DD
 applies_to: governance-ops-custody-domain
 dependencies: [core-infrastructure, integration-analytics-access, risk-compliance-audit]
@@ -25,29 +25,29 @@ priority: p0
 
 ## Business Impact
 
-* Enables on-chain, accountable, and upgradeable protocol governance.
-* Ensures operational continuity, secure upgrades, treasury, and insurance for protocol sustainability.
-* Supports regulatory compliance, fraud mitigation, and end-to-end custody.
+* Enables on-chain, accountable, and upgradeable protocol governance with cross-chain reach.
+* Ensures operational continuity, secure upgrades, treasury/insurance, and institutional-grade custody.
+* Supports regulatory compliance, fraud mitigation, and end-to-end auditability for all protocol actions.
 
 ## Technical Impact
 
-* DAO proposal, voting, parameterization, and delegation frameworks.
-* Automated upgrade, migration, and rollback capabilities.
-* Integrated custody, treasury, and insurance logic for digital assets.
-* On-chain arbitration and dispute resolution for institutional risk management.
+* DAO proposal, voting, parameterization, delegation, and dispute/arbitration frameworks.
+* Automated upgrade, migration, and rollback—plus cross-chain proposal execution and monitoring.
+* Advanced treasury management, event flow tracing, and enhanced audit/logging for institutional controls.
+* Integrated custody, escrow, insurance, and operational playbooks for critical event handling.
 
 ## Timeline Impact
 
-* Phase 1 MVP: GovernanceController, Proposal & Vote mechanics, and ParameterStore.
-* Phase 2: UpgradeController, scheduled tasks, and dispute management.
-* Phase 3: Treasury, InsuranceFund, and EscrowController deployment.
-* Phase 4: Full automation, scalability, and regulatory response improvements.
+* **Phase 1:** GovernanceController, Proposal & Vote mechanics, ParameterStore, event flow and enhanced audit logging.
+* **Phase 2:** UpgradeController, scheduled tasks, dispute management, and A/B feature rollout.
+* **Phase 3:** Treasury, InsuranceFund, EscrowController, and advanced cross-chain governance.
+* **Phase 4:** Full automation, capacity planning, advanced recovery/rollback, and regulatory triggers.
 
 ---
 
 # 3. Domain Overview
 
-The Governance, Ops & Custody domain is the backbone of protocol integrity, upgradeability, treasury, and custodial operations in VeritasVault. It implements the full lifecycle for governance, voting, upgrades, fund flows, insurance, and on-chain dispute management, ensuring institutional-grade safety and compliance.
+The Governance, Ops & Custody domain is the backbone of protocol integrity, upgradeability, treasury, and custodial operations in VeritasVault. It covers the entire lifecycle for governance, voting, upgrades, fund flows, insurance, and on-chain dispute management, with a focus on auditability, security, and cross-chain execution.
 
 ---
 
@@ -55,19 +55,20 @@ The Governance, Ops & Custody domain is the backbone of protocol integrity, upgr
 
 ## Core Functions
 
-* DAO proposal and voting lifecycle
-* Parameter management and on-chain configuration
-* Secure contract upgrade and rollback
-* Treasury and insurance fund custody
-* On-chain task scheduling and automation
-* Dispute, slashing, and arbitration
-* Multi-sig and escrow operations
+* DAO proposal/voting lifecycle (incl. cross-chain/multi-chain governance)
+* Parameter management and on-chain configuration/versioning
+* Secure contract upgrade, rollback, and state migration
+* Treasury, portfolio, and insurance management with advanced strategies
+* Task scheduling, automation, and A/B/feature flag rollout
+* Dispute, slashing, and arbitration (with proof/event flow tracking)
+* Multi-sig, time-locked, and escrow custody operations
+* System health/metrics monitoring and incident recovery
 
 ## Scope Definition
 
 * **In Scope:**
 
-  * GovernanceController, ParameterStore, UpgradeController, Treasury, InsuranceFund, TaskScheduler, DisputeManager, EscrowController
+  * GovernanceController, ProposalRepository, ParameterStore, UpgradeController, EventFlow, Treasury, InsuranceFund, TaskScheduler, DisputeManager, EscrowController, CrossChainGovernance, AuditEnhanced
 * **Out of Scope:**
 
   * Application-layer UIs, third-party custody services, fiat on/off-ramp logic
@@ -78,130 +79,202 @@ The Governance, Ops & Custody domain is the backbone of protocol integrity, upgr
 
 ## Aggregate Roots
 
-* **Proposal:** Governance proposals, lifecycle, and parameter changes.
-* **Vote:** Aggregate for voting, delegation, and outcomes.
-* **Upgrade:** Upgrades, rollbacks, and version state.
-* **TreasuryAsset:** Treasury/insurance assets, grant tracking, and fund status.
-* **Dispute:** On-chain arbitration and fraud proof lifecycle.
-* **EscrowLock:** Multi-sig and time-locked asset custody.
+* **Proposal:** Proposals (on-chain/cross-chain), lifecycle, parameter/upgrade/change actions.
+* **Vote:** Voting/delegation, outcomes, quorum.
+* **Upgrade:** Upgrades, rollback/version, migration state.
+* **TreasuryAsset:** Treasury/insurance, grant tracking, fund status, advanced strategies.
+* **Dispute:** Arbitration, fraud proof, event chains.
+* **EscrowLock:** Multi-sig, time-locked, and cross-chain custody.
+* **EventChain:** Proof/event chain, traceability for all critical events.
 
 ## Entities
 
-* **Parameter:** On-chain parameters and historical versions.
-* **InsuranceClaim:** Funded claims, proof, and dispute linkage.
-* **ScheduledTask:** Automation and maintenance jobs.
+* **Parameter:** Versioned on-chain parameters/history.
+* **InsuranceClaim:** Claim, proof, dispute linkage.
+* **ScheduledTask:** Automation jobs and feature rollout events.
 
 ## Value Objects
 
-* **ProposalStatus:** Enum for proposal/vote/upgrade lifecycle.
+* **ProposalStatus:** Enum for lifecycle.
 * **ParameterKey:** Key for parameter management.
-* **DisputeStatus:** Enum for dispute/arbitration outcomes.
-* **EscrowCondition:** Immutable custody criteria.
+* **DisputeStatus:** Enum for dispute outcomes.
+* **EscrowCondition:** Custody criteria (immutable).
+* **PortfolioStrategy:** Treasury investment/risk.
 
 ## Domain Events
 
-* **ProposalCreated:** Triggered on new proposals or upgrades.
-* **VoteCast:** On voting or delegation events.
-* **ParameterUpdated:** On configuration changes.
-* **UpgradeExecuted:** On upgrades/rollbacks.
-* **TreasuryFunded:** Funding events for treasury/insurance.
-* **ClaimProcessed:** Insurance claim outcomes.
-* **TaskScheduled:** Automation job activation.
-* **DisputeResolved:** On final arbitration outcome.
-* **EscrowReleased:** On custody/unlock events.
+* **ProposalCreated, VoteCast, ParameterUpdated, UpgradeExecuted, TreasuryFunded, ClaimProcessed, TaskScheduled, DisputeResolved, EscrowReleased, EventChained, CrossChainActionExecuted, AuditRecordLogged**
 
 ## Repository Contracts
 
-* **IProposalRepository:** Proposals, upgrades, and voting.
-* **IParameterRepository:** Parameter state/history management.
-* **IUpgradeRepository:** Version, migration, rollback tracking.
-* **ITreasuryRepository:** Treasury and insurance funds.
-* **IDisputeRepository:** Dispute and claim lifecycle management.
-* **IEscrowRepository:** Custody, locks, and release history.
+* **IProposalRepository, IParameterRepository, IUpgradeRepository, ITreasuryRepository, IDisputeRepository, IEscrowRepository, IEventFlowRepository, ICrossChainGovernance, IAuditEnhanced**
 
 ## Invariants / Business Rules
 
-* No upgrade/parameter change without governance approval.
-* Proposals require voting, quorum, and majority logic.
-* No claim/treasury action without signed, auditable proof.
-* Disputes/arbitration require event-sourced proofs and resolution logic.
-* Escrow requires multi-sig, time locks, and immutable release conditions.
+* No upgrade or parameter change without proposal and voting (with quorum, time-lock, and audit).
+* Cross-chain proposals must be validated and tracked across chains.
+* Treasury actions require strategy validation and risk checks.
+* All event flows, disputes, and custody must be event-sourced, signed, and verifiable.
+* A/B testing/feature rollout must be reversible with audit logs and automated rollback.
 
 ---
 
-# Implementation Strategy: Phased Delivery
+# 6. Extended Interface & Architecture Patterns
+
+## 1. Event Flow & Audit Chains
+
+```solidity
+interface IEventFlow {
+    struct EventChain {
+        bytes32 rootEvent;
+        bytes32[] childEvents;
+        uint256 timestamp;
+        bytes32 proofHash;
+    }
+    function validateEventChain(EventChain memory chain) external returns (bool);
+    function appendEvent(bytes32 eventId) external;
+    function getEventHistory(bytes32 rootId) external view returns (EventChain memory);
+}
+
+interface IAuditEnhanced {
+    struct AuditRecord {
+        bytes32 recordId;
+        address actor;
+        bytes32 action;
+        uint256 timestamp;
+        bytes32[] proofChain;
+    }
+    function logAuditRecord(AuditRecord memory record) external;
+    function validateAuditChain(bytes32 recordId) external view returns (bool);
+    function getAuditHistory(bytes32 actionId) external view returns (AuditRecord[] memory);
+}
+```
+
+## 2. Cross-Chain Governance
+
+```solidity
+interface ICrossChainGovernance {
+    struct ChainProposal {
+        bytes32 proposalId;
+        uint256[] targetChains;
+        bytes[] actions;
+        mapping(uint256 => bool) executed;
+    }
+    function proposeMultiChain(ChainProposal memory proposal) external returns (bytes32);
+    function executeOnChain(bytes32 proposalId, uint256 chainId) external;
+    function validateExecution(bytes32 proposalId) external view returns (bool);
+}
+```
+
+## 3. Advanced Treasury Management
+
+```solidity
+interface ITreasuryAdvanced {
+    struct PortfolioStrategy {
+        bytes32 strategyId;
+        address[] assets;
+        uint256[] weights;
+        bytes32 riskProfile;
+    }
+    function implementStrategy(PortfolioStrategy memory strategy) external;
+    function rebalancePortfolio(bytes32 strategyId) external;
+    function getPortfolioMetrics(bytes32 strategyId) external view returns (bytes memory);
+}
+```
+
+## 4. Documentation & Integration
+
+```solidity
+interface IDocumentation {
+    function updateDocs(bytes32 section, string content) external returns (bool);
+}
+
+interface IIntegrationGuide {
+    struct Integration {
+        bytes32 moduleId;
+        string documentation;
+        bytes32[] dependencies;
+        bytes32[] examples;
+    }
+    function addIntegrationGuide(Integration memory guide) external;
+    function getIntegrationDocs(bytes32 moduleId) external view returns (Integration memory);
+}
+```
+
+---
+
+# 7. Implementation Strategy: Phased Delivery
 
 ## Phase 1 – Foundation & Architecture
 
-* Deploy GovernanceController, Proposal, Vote, and ParameterStore with audit trail.
+* GovernanceController, Proposal, Vote, ParameterStore, EventFlow, and enhanced audit chain.
 
 ## Phase 2 – MVP & Testbed
 
-* UpgradeController, TaskScheduler, and DisputeManager (base logic & security review).
+* UpgradeController, TaskScheduler, DisputeManager, A/B testing, feature flagging, and audit enhancements.
 
 ## Phase 3 – Expansion & Robustness
 
-* Treasury, InsuranceFund, EscrowController. Automation, audit, and advanced scenarios.
+* TreasuryAdvanced, InsuranceFund, EscrowController, CrossChainGovernance, portfolio strategies, advanced metrics, and capacity planning.
 
-## Phase 4 – LIVE Production Launch
+## Phase 4 – Production Scaling & Resilience
 
-* Institutional scaling, cross-chain governance, regulatory triggers, and DR.
-
----
-
-# Operations Guide (Per Phase)
-
-* Monitor proposal, vote, and upgrade status
-* Parameter/upgrade change alerts
-* Insurance claim, escrow, and dispute event logging
-* Incident playbooks for upgrade failures, fund breaches, and arbitration
-* Scheduled maintenance and DR testing
+* Full-scale deployment, auto-scaling, predictive alerts, regulatory triggers, recovery runbooks.
 
 ---
 
-# Resource Planning (Per Phase)
+# 8. Operations Guide (Per Phase)
 
-* Governance node infrastructure
-* Fund management and custody resources
-* Security and compliance audits per release
-* Ongoing monitoring, upgrades, and support
-
----
-
-# Risk & Compliance (Ongoing, Per Phase)
-
-* Governance attack mitigation (quorum, delegation, slashing)
-* Insurance fraud detection, audit, and DR
-* Escrow/fund breach response
-* Regulatory compliance and review cycles
+* Monitor proposal, vote, upgrade status, and cross-chain event propagation.
+* Alerting: audit/parameter/upgrade/claim/escrow breaches, event anomalies, or failed rollbacks.
+* Incident playbooks: for governance attacks, asset/fund breaches, or arbitration events.
+* Scheduled maintenance, A/B testing, and DR runs.
 
 ---
 
-# Quality Assurance (Across Phases)
+# 9. Resource & Metrics Planning
 
-* Governance/fund audit trails and test coverage
-* Security and upgrade regression tests
-* Dispute and automation workflow validation
-
----
-
-# Integration Guide
-
-* On-chain interfaces to protocol, treasury, insurance, and cross-chain governance
-* APIs for automation, upgrade proposals, fund transfers, and reporting
-* Dependency management for upgrade and escrow contracts
+* Governance nodes, treasury analytics, fund management, and monitoring infrastructure.
+* Capacity planning: system health, throughput, error rates, uptime, recovery time objectives.
+* Security, compliance, and performance audits at every release and incident.
 
 ---
 
-# References
+# 10. Risk & Compliance (Ongoing, Per Phase)
+
+* Governance attack mitigation (quorum, delegation, cross-chain slashing)
+* Insurance fraud detection, asset DR, and escalation handling
+* Escrow/custody breach response and DR
+* Compliance coverage: audit logs, dispute chains, regulatory review triggers
+
+---
+
+# 11. Quality Assurance & Metrics (Across Phases)
+
+* Proposal/vote/upgrade effectiveness, regression, and coverage tests
+* Audit trail validation, dispute workflow simulation, feature flag rollbacks
+* Metrics: proposal success, voting participation, upgrade reliability, incident response, and compliance
+
+---
+
+# 12. Integration Guide
+
+* On-chain APIs: governance, treasury, insurance, cross-chain proposal/upgrade
+* Documentation and integration examples for new modules
+* API, contract, and dependency management for upgrade and escrow workflows
+
+---
+
+# 13. References
 
 * Protocol governance whitepaper
 * Upgrade and escrow smart contract docs
+* Event chain/audit patterns
 * Industry custody/treasury standards
 
 ---
 
-# Document Control
+# 14. Document Control
 
 * **Owner(s):** Protocol Architect, DevOps Lead
 * **Last Reviewed:** YYYY-MM-DD, reviewer(s), summary
@@ -212,3 +285,10 @@ The Governance, Ops & Custody domain is the backbone of protocol integrity, upgr
 * **Review Schedule:** Quarterly/triggered, next review date, audit triggers
 
 ---
+
+**This refined guide now includes:**
+
+* Advanced interfaces for event flow/audit, cross-chain governance, treasury strategies, integration docs.
+* Metrics, performance, and audit event planning per critique.
+* Phase and operation detail for A/B rollout, rollback, and incident simulation.
+* Integration and documentation patterns for onboarding and review.

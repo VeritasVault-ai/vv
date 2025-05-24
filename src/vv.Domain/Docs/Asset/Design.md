@@ -1,177 +1,224 @@
-# VeritasVault Artifact 3 – Asset, Trading & Settlement Domain
+---
+
+# VeritasVault Artifact 3 – Asset, Trading & Settlement Domain (MVP-Refined, Critique-Enhanced)
 
 ---
 
-# 1. Metadata Block
+## 1. Metadata Block
 
 ```yaml
 ---
 document_type: architecture
 classification: internal
 status: draft
-version: 1.0.0
-last_updated: YYYY-MM-DD
+version: 1.0.1
+last_updated: 2025-05-24
 applies_to: asset-trading-settlement-domain
 dependencies: [core-infrastructure, risk-compliance-audit, ai-ml-domain]
 reviewers: [product-lead, trading-lead, settlement-lead, security-lead]
-next_review: YYYY-MM-DD
+next_review: 2025-07-01
 priority: p0
 ---
 ```
 
 ---
 
-# 2. Executive Summary
+## 2. Executive Summary
 
-## Business Impact
+### Business Impact
 
-* Enables asset issuance, trading, settlement, and liquidity management—core revenue and utility drivers for the protocol.
-* Provides the mechanisms for decentralized markets, portfolio creation, and protocol-level financial innovation.
-* MVP is mandatory for any user or institutional adoption.
+* Enables asset issuance, deterministic trading, atomic settlement, and portfolio management—all cryptographically auditable.
+* Institutional adoption hinges on proof of integrity, risk controls, and compliance at every boundary.
 
-## Technical Impact
+### Technical Impact
 
-* Introduces standardized asset model, trade matching, settlement finality, and liquidity pool mechanics.
-* MVP will establish deterministic, auditable, and secure trade settlement flows.
-* Integrates with Risk, Audit, and Core Infra for end-to-end event and compliance handling.
+* Canonical asset model, deterministic order book, and atomic settlement—with explicit position limits and proof-driven flows.
+* **Critical enhancements:** Circuit breakers, pre/post-trade validation, order book depth tracking, portfolio risk metrics, asset metadata verification.
+* Architecture is explicitly DDD, event-sourced, and versioned for concurrency and audit.
 
-## Timeline Impact
+### Timeline Impact
 
-* **Phase 1 (MVP):** Asset model, portfolio, orderbook, and basic trade execution.
-* **Phase 2:** Liquidity pools, provider logic, and multi-asset portfolio support.
-* **Phase 3:** Advanced settlement, cross-chain swaps, and on-chain liquidity optimization.
-* **Phase 4:** Production-grade scale-out, performance tuning, and secondary market features.
-
----
-
-# 3. Domain Overview
-
-The Asset, Trading & Settlement domain underpins all financial activity on VeritasVault—handling asset representation, decentralized trading, and the secure settlement of every order and transaction. This domain ensures all trades are transparent, auditable, and atomic.
+* **Phase 1 (MVP):** Asset model, portfolio, orderbook, trade/settlement logic with concurrency, error handling, metrics, and proofs.
+* **Phase 2:** Liquidity pools, provider logic, multi-asset portfolios.
+* **Phase 3:** Advanced settlement, cross-chain swaps, liquidity optimization.
+* **Phase 4:** Scale-out, secondary markets, and performance tuning.
 
 ---
 
-# 4. Responsibilities & Boundaries
+## 3. Domain Overview
 
-## Core Functions
-
-* Asset creation, metadata management, and lifecycle tracking
-* Trade matching (orderbook), validation, and execution
-* Portfolio and liquidity management
-* Settlement finality and event emission
-* Integration with risk scoring and audit logging
-
-## Scope Definition
-
-* **In Scope:**
-
-  * Asset, Portfolio, OrderBook, TradeExecution, SettlementController, LiquidityPool, LiquidityProvider (MVP prioritizes Asset, Portfolio, OrderBook, TradeExecution, SettlementController)
-* **Out of Scope:**
-
-  * Custody and treasury (handled by Governance & Ops), protocol upgrade logic, external exchange bridges (future phases)
+Asset, Trading & Settlement manages digital asset creation, permissioned and auditable trading, and atomic, cryptographically-proven settlement.
+Every transaction, position, and state change is verifiable—compliance, audit, and rollback are hard guarantees.
 
 ---
 
-# 5. Domain Model Structure (DDD, MVP Focus)
+## 4. Responsibilities & Boundaries (Strengthened)
 
-## Aggregate Roots
+### Core Functions (Critique-Enhanced)
 
-* **Portfolio:** Aggregates all assets held by a user or contract; lifecycle and value tracking.
-* **OrderBook:** Aggregates all open, matched, and historical orders for a given asset or pair.
-* **Settlement:** Aggregates state and lifecycle for each completed trade and cross-chain swap.
+* Asset lifecycle, metadata, and state transition with cryptographic verification.
+* Deterministic, auditable trade matching with metrics and circuit breaker checks.
+* Portfolio tracking, risk/position limits, rebalancing, and risk metric calculation.
+* Atomic, auditable settlement with batch and proof support.
+* Secure, event-driven integration with risk, compliance, and infra domains.
 
-## Entities
+### Scope Definition
 
-* **Asset:** Canonical representation of any token or instrument.
-* **Trade:** Executed trade record—links buyer, seller, asset, quantity, and price.
-* **LiquidityProvider:** Entity managing contributed liquidity and rewards.
-* **LiquidityPool:** Pool logic, reserves, and trading formulas (Phase 2+).
-
-## Value Objects
-
-* **Order:** Immutable request to buy/sell; used in orderbook and trade validation.
-* **SettlementResult:** Result of a completed settlement, including confirmation details.
-* **AssetMeta:** Token metadata, decimals, issuer, etc.
-
-## Domain Events
-
-* **PortfolioUpdated:** Portfolio balance or value changes.
-* **AssetListed:** New asset/token created and listed.
-* **OrderMatched:** Successful trade match in the orderbook.
-* **TradeExecuted:** Trade finalized and settled.
-* **LiquidityAdded:** New liquidity contributed (Phase 2+).
-* **SettlementFinalized:** On-chain/cross-chain settlement complete.
-
-## Repository Contracts
-
-* **IPortfolioRepository:** Query, update, and audit portfolio state.
-* **IOrderBookRepository:** Query, match, and archive orders.
-* **ISettlementRepository:** Track settlement state and finality.
-* **IAssetRepository:** CRUD for assets and their metadata.
-* **ILiquidityPoolRepository:** Manage pools and LP participation (Phase 2+).
-
-## Invariants / Business Rules
-
-* No asset/trade exists without a valid on-chain or signed audit trail.
-* All trades must be matched via deterministic orderbook rules (no hidden order flow).
-* Settlement is atomic and cannot be reversed except by on-chain governance.
-* Liquidity can only be withdrawn after minimum holding periods (Phase 2+).
+* **In Scope (MVP):** Asset, Portfolio, OrderBook, TradeExecution, Settlement, TradingRiskControls.
+* **Out of Scope:** Liquidity pools/providers (Phase 2+), custody/treasury, upgrade logic, external bridges.
 
 ---
 
-# 6. MVP Interfaces (TypeScript Example)
+## 5. Domain Model Structure (DDD, MVP-Enhanced)
+
+### Aggregate Roots
+
+* **Portfolio:** Manages asset holdings by ID, validates position/risk limits, supports rebalancing/risk metrics.
+* **OrderBook:** Open/matched/historic orders per pair, concurrency versioned, exposes order queue/depth/metrics.
+* **Settlement:** Manages completed trades, batch/atomic operations, proof and event sourcing.
+
+### Entities
+
+* **Asset:** Canonical token/instrument, state transitions are cryptographically verified.
+* **Trade:** Executed record, links by ID only, generates proof, validated for compliance and risk.
+
+### Value Objects
+
+* **Order:** Immutable trade request.
+* **SettlementResult:** Immutable, cryptographically proven.
+* **AssetMeta:** Hash-verified metadata.
+* **Money, Price, Quantity:** Type safety enforced.
+
+### Domain Events (With Proof/Audit)
+
+* AssetListed, AssetMetadataVerified, PortfolioUpdated, PortfolioLimitBreached, OrderMatched, OrderDepthChanged, TradeExecuted, TradeProofGenerated, SettlementFinalized, AtomicSettlementProofGenerated
+
+### Repository Contracts
+
+* **IPortfolioRepository:** Query/update/audit portfolio, validate risk/position limits.
+* **IOrderBookRepository:** Query/match/archive orders, expose metrics, versioning.
+* **ISettlementRepository:** Track/audit settlements by ID, proof trails, batch ops.
+* **IAssetRepository:** CRUD for assets, metadata/state verification.
+
+### Invariants / Business Rules
+
+* Every asset/trade requires a cryptographically signed, immutable event trail.
+* No order/trade/settlement state update without proof and explicit event.
+* All matching and settlement are deterministic, versioned, and auditable.
+* Position/risk/limits and compliance enforced at every workflow step.
+
+---
+
+## 6. MVP Interfaces (Critique-Driven)
 
 ```typescript
-interface IAsset {
-    mint(to: Address, amount: uint256): Promise<void>;
-    burn(from: Address, amount: uint256): Promise<void>;
-    getMeta(): Promise<AssetMeta>;
+enum TradingError {
+  INSUFFICIENT_BALANCE,
+  PRICE_SLIPPAGE,
+  ORDER_ALREADY_MATCHED,
+  SETTLEMENT_FAILED,
+  CONCURRENCY_CONFLICT,
+  COMPLIANCE_BLOCKED,
+  LIMIT_BREACH
 }
 
-interface IOrderBook {
-    placeOrder(order: Order): Promise<OrderId>;
-    matchOrders(): Promise<Trade[]>;
-    cancelOrder(orderId: OrderId): Promise<void>;
+interface Result<T> {
+  success: boolean;
+  data?: T;
+  error?: TradingError;
+  context?: any;
 }
 
-interface ITradeExecution {
-    executeTrade(buyOrder: Order, sellOrder: Order): Promise<Trade>;
-    settleTrade(trade: Trade): Promise<SettlementResult>;
+interface IEnhancedAsset {
+  mint(to: Address, amount: uint256): Promise<Result<void>>;
+  burn(from: Address, amount: uint256): Promise<Result<void>>;
+  getMeta(): Promise<AssetMeta>;
+  verifyMetadata(meta: AssetMeta, proof: MetadataProof): Promise<VerificationResult>;
+  transitionState(newState: AssetState, auth: StateTransitionAuth): Promise<TransitionResult>;
 }
 
-interface IPortfolio {
-    getHoldings(address: Address): Promise<Asset[]>;
-    updateHoldings(address: Address, asset: Asset, delta: int256): Promise<void>;
+interface IEnhancedOrderBook {
+  placeOrder(order: Order): Promise<Result<OrderId>>;
+  matchOrders(version: number, optimisticLock: string): Promise<Result<[Trade[], string]>>;
+  cancelOrder(orderId: OrderId): Promise<Result<void>>;
+  getPriorityQueue(side: OrderSide, price: BigNumber): Promise<Order[]>;
+  getDepthAtPrice(asset: AssetId, price: BigNumber): Promise<OrderBookDepth>;
+  getMatchingMetrics(window: TimeWindow): Promise<MatchingMetrics>;
+}
+
+interface IEnhancedTradeExecution {
+  executeTrade(buyOrder: Order, sellOrder: Order): Promise<Result<Trade>>;
+  settleTrade(trade: Trade): Promise<Result<SettlementResult>>;
+  validateTradeCompliance(trade: Trade, compliance: ComplianceRules): Promise<ValidationResult>;
+  generateTradeProof(trade: Trade, exec: ExecutionDetails): Promise<TradeProof>;
+}
+
+interface IEnhancedPortfolio {
+  getHoldings(address: Address): Promise<Asset[]>;
+  updateHoldings(address: Address, asset: Asset, delta: int256): Promise<Result<void>>;
+  validatePositionLimits(address: Address, asset: Asset, amt: BigNumber): Promise<ValidationResult>;
+  rebalancePortfolio(address: Address, target: PortfolioTarget): Promise<RebalanceResult>;
+  calculatePortfolioRisk(address: Address, metrics: RiskMetrics[]): Promise<RiskReport>;
+}
+
+interface IEnhancedSettlement {
+  initiateSettlement(tradeId: TradeId): Promise<Result<SettlementResult>>;
+  finalizeSettlement(settlementId: SettlementId): Promise<Result<void>>;
+  atomicSettleWithProof(settlement: Settlement, proof: SettlementProof): Promise<AtomicSettlementResult>;
+  batchSettle(settlements: Settlement[], batchProof: BatchProof): Promise<BatchSettlementResult>;
+  verifySettlementChain(settlementId: SettlementId): Promise<VerificationResult>;
+}
+
+interface ITradingRiskControls {
+  validatePreTrade(order: Order, ctx: TradingContext): Promise<ValidationResult>;
+  verifyExecution(trade: Trade, proof: ExecutionProof): Promise<VerificationResult>;
+  checkCircuitBreakers(asset: Asset, metrics: MarketMetrics): Promise<CircuitBreakerStatus>;
+}
+
+interface ITradingMetrics {
+  recordOrderPlacement(order: Order): void;
+  recordTradeExecution(trade: Trade): void;
+  recordSettlementLatency(ms: number): void;
+  getOrderBookDepth(): number;
+  getMatchingEngineLatency(): number;
+  getRiskEvents(): RiskEvent[];
 }
 ```
 
 ---
 
-# 7. Example Workflow (MVP)
+## 7. Example Workflow (Saga, Event Sourcing, Audit)
 
 ```mermaid
 graph TD
     A[User submits order] --> B[OrderBook: Place Order]
-    B --> C[OrderBook: Match Orders]
-    C --> D[TradeExecution: Execute Trade]
-    D --> E[SettlementController: Settle Trade]
-    E --> F[Portfolio: Update Holdings]
+    B --> C[OrderBook: Match Orders (priority/depth/metrics/circuit)]
+    C --> D[TradeExecution: Execute Trade + Generate Proof/Compliance]
+    D --> E[Settlement: Initiate/Atomic/Batched/Proof]
+    E --> F[Portfolio: Update Holdings, Validate Limits/Risk]
+    F --> G[RiskControls: Circuit Breaker/Limit Enforcement]
 ```
 
 ---
 
-# 8. Integration Points
+## 8. Integration Points (Reinforced)
 
-* Risk domain triggers (for trade validation, compliance checks)
-* Core infra hooks (block finalization, index events)
-* Audit log emission (all trades and settlements)
+* Risk, compliance, circuit breaker (pre/post-trade, settlement)
+* Core infra (block finalization, index, event stream)
+* Audit log emission for every trade/settlement/limit/risk event
+* Metrics/observability hooks for all workflow stages
 
 ---
 
-# 9. Document Control
+## 9. Document Control
 
 * **Owner:** Trading & Settlement Architect
-* **Last Reviewed:** YYYY-MM-DD
-* **Change Log:** Initial MVP focus, DDD mapping, interfaces
-* **Next Review:** YYYY-MM-DD
+* **Last Reviewed:** 2025-05-24
+* **Change Log:** Major revision for atomicity, audit, circuit breakers, risk/compliance, and metrics
+* **Next Review:** 2025-07-01
 
 ---
+
+**Liquidity pools, LP rewards, and AMM are deferred to Phase 2+ as planned.**
+
+*If you need more granular code blocks, aggregate breakdowns, or a deeper risk/circuit breaker map, just say so.*
