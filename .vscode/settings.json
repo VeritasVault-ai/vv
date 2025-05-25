@@ -1,0 +1,33 @@
+{
+    "cSpell.words": [
+        "assetclass",
+        "Backtest",
+        "backtesting",
+        "buildtransitive",
+        "contentfiles",
+        "eurusd",
+        "globaltool",
+        "Intraday",
+        "irongut",
+        "Mediatr",
+        "opencover",
+        "Permissioned",
+        "reportgenerator",
+        "reporttypes",
+        "Rethrowing",
+        "runsettings",
+        "schemaversion",
+        "spotprice",
+        "Swashbuckle",
+        "targetdir",
+        "volatilities",
+        "xunit"
+    ],
+    "azureFunctions.deploySubpath": "src/vv.Functions/bin/Release/net9.0/publish",
+    "azureFunctions.projectLanguage": "C#",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.preDeployTask": "publish (functions)",
+    "dotnet-test-explorer.testProjectPath": "tests/**/*.csproj",
+    "azureFunctions.projectSubpath": "src/vv.Functions"
+}
