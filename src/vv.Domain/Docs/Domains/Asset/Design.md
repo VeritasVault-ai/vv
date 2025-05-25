@@ -129,7 +129,7 @@ interface Result<T> {
   context?: any;
 }
 
-interface IEnhancedAsset {
+interface IAsset {
   mint(to: Address, amount: uint256): Promise<Result<void>>;
   burn(from: Address, amount: uint256): Promise<Result<void>>;
   getMeta(): Promise<AssetMeta>;
@@ -137,7 +137,7 @@ interface IEnhancedAsset {
   transitionState(newState: AssetState, auth: StateTransitionAuth): Promise<TransitionResult>;
 }
 
-interface IEnhancedOrderBook {
+interface IOrderBook {
   placeOrder(order: Order): Promise<Result<OrderId>>;
   matchOrders(version: number, optimisticLock: string): Promise<Result<[Trade[], string]>>;
   cancelOrder(orderId: OrderId): Promise<Result<void>>;
@@ -146,14 +146,14 @@ interface IEnhancedOrderBook {
   getMatchingMetrics(window: TimeWindow): Promise<MatchingMetrics>;
 }
 
-interface IEnhancedTradeExecution {
+interface ITradeExecution {
   executeTrade(buyOrder: Order, sellOrder: Order): Promise<Result<Trade>>;
   settleTrade(trade: Trade): Promise<Result<SettlementResult>>;
   validateTradeCompliance(trade: Trade, compliance: ComplianceRules): Promise<ValidationResult>;
   generateTradeProof(trade: Trade, exec: ExecutionDetails): Promise<TradeProof>;
 }
 
-interface IEnhancedPortfolio {
+interface IPortfolio {
   getHoldings(address: Address): Promise<Asset[]>;
   updateHoldings(address: Address, asset: Asset, delta: int256): Promise<Result<void>>;
   validatePositionLimits(address: Address, asset: Asset, amt: BigNumber): Promise<ValidationResult>;
@@ -161,7 +161,7 @@ interface IEnhancedPortfolio {
   calculatePortfolioRisk(address: Address, metrics: RiskMetrics[]): Promise<RiskReport>;
 }
 
-interface IEnhancedSettlement {
+interface ISettlement {
   initiateSettlement(tradeId: TradeId): Promise<Result<SettlementResult>>;
   finalizeSettlement(settlementId: SettlementId): Promise<Result<void>>;
   atomicSettleWithProof(settlement: Settlement, proof: SettlementProof): Promise<AtomicSettlementResult>;
