@@ -28,6 +28,7 @@ priority: p0
 * Enables on-chain, accountable, and upgradeable protocol governance with cross-chain reach.
 * Ensures operational continuity, secure upgrades, treasury/insurance, and institutional-grade custody.
 * Supports regulatory compliance, fraud mitigation, and end-to-end auditability for all protocol actions.
+* Provides governance controls for financial models and portfolio optimization parameters.
 
 ## Technical Impact
 
@@ -35,6 +36,7 @@ priority: p0
 * Automated upgrade, migration, and rollback—plus cross-chain proposal execution and monitoring.
 * Advanced treasury management, event flow tracing, and enhanced audit/logging for institutional controls.
 * Integrated custody, escrow, insurance, and operational playbooks for critical event handling.
+* Model parameter governance, approval workflows, and audit trails for financial models.
 
 ## Timeline Impact
 
@@ -42,6 +44,7 @@ priority: p0
 * **Phase 2:** UpgradeController, scheduled tasks, dispute management, and A/B feature rollout.
 * **Phase 3:** Treasury, InsuranceFund, EscrowController, and advanced cross-chain governance.
 * **Phase 4:** Full automation, capacity planning, advanced recovery/rollback, and regulatory triggers.
+* **Phase 5:** Financial model governance, parameter approval workflows, and portfolio constraint management.
 
 ---
 
@@ -63,12 +66,14 @@ The Governance, Ops & Custody domain is the backbone of protocol integrity, upgr
 * Dispute, slashing, and arbitration (with proof/event flow tracking)
 * Multi-sig, time-locked, and escrow custody operations
 * System health/metrics monitoring and incident recovery
+* Financial model parameter governance and approval workflows
+* Model output verification and audit trails
 
 ## Scope Definition
 
 * **In Scope:**
 
-  * GovernanceController, ProposalRepository, ParameterStore, UpgradeController, EventFlow, Treasury, InsuranceFund, TaskScheduler, DisputeManager, EscrowController, CrossChainGovernance, AuditEnhanced
+  * GovernanceController, ProposalRepository, ParameterStore, UpgradeController, EventFlow, Treasury, InsuranceFund, TaskScheduler, DisputeManager, EscrowController, CrossChainGovernance, AuditEnhanced, ModelGovernance, ParameterApproval
 * **Out of Scope:**
 
   * Application-layer UIs, third-party custody services, fiat on/off-ramp logic
@@ -86,12 +91,16 @@ The Governance, Ops & Custody domain is the backbone of protocol integrity, upgr
 * **Dispute:** Arbitration, fraud proof, event chains.
 * **EscrowLock:** Multi-sig, time-locked, and cross-chain custody.
 * **EventChain:** Proof/event chain, traceability for all critical events.
+* **ModelParameter:** Financial model parameters, version history, approvals.
+* **PortfolioConstraint:** Portfolio allocation constraints and validation rules.
 
 ## Entities
 
 * **Parameter:** Versioned on-chain parameters/history.
 * **InsuranceClaim:** Claim, proof, dispute linkage.
 * **ScheduledTask:** Automation jobs and feature rollout events.
+* **ParameterApproval:** Approval workflow for model parameters.
+* **ModelOutput:** Verified outputs from financial models.
 
 ## Value Objects
 
@@ -100,14 +109,16 @@ The Governance, Ops & Custody domain is the backbone of protocol integrity, upgr
 * **DisputeStatus:** Enum for dispute outcomes.
 * **EscrowCondition:** Custody criteria (immutable).
 * **PortfolioStrategy:** Treasury investment/risk.
+* **ModelConfidence:** Confidence level for model parameters.
+* **ConstraintType:** Type of portfolio constraint.
 
 ## Domain Events
 
-* **ProposalCreated, VoteCast, ParameterUpdated, UpgradeExecuted, TreasuryFunded, ClaimProcessed, TaskScheduled, DisputeResolved, EscrowReleased, EventChained, CrossChainActionExecuted, AuditRecordLogged**
+* **ProposalCreated, VoteCast, ParameterUpdated, UpgradeExecuted, TreasuryFunded, ClaimProcessed, TaskScheduled, DisputeResolved, EscrowReleased, EventChained, CrossChainActionExecuted, AuditRecordLogged, ModelParameterApproved, ModelOutputVerified, ConstraintValidated**
 
 ## Repository Contracts
 
-* **IProposalRepository, IParameterRepository, IUpgradeRepository, ITreasuryRepository, IDisputeRepository, IEscrowRepository, IEventFlowRepository, ICrossChainGovernance, IAuditEnhanced**
+* **IProposalRepository, IParameterRepository, IUpgradeRepository, ITreasuryRepository, IDisputeRepository, IEscrowRepository, IEventFlowRepository, ICrossChainGovernance, IAuditEnhanced, IModelParameterRepository, IPortfolioConstraintRepository**
 
 ## Invariants / Business Rules
 
@@ -116,6 +127,8 @@ The Governance, Ops & Custody domain is the backbone of protocol integrity, upgr
 * Treasury actions require strategy validation and risk checks.
 * All event flows, disputes, and custody must be event-sourced, signed, and verifiable.
 * A/B testing/feature rollout must be reversible with audit logs and automated rollback.
+* Financial model parameters must go through approval workflow before production use.
+* Portfolio allocations must satisfy all defined constraints.
 
 ---
 
@@ -182,7 +195,40 @@ interface ITreasuryAdvanced {
 }
 ```
 
-## 4. Documentation & Integration
+## 4. Model Parameter Governance
+
+```solidity
+interface IModelGovernance {
+    struct ModelParameter {
+        bytes32 parameterId;
+        string name;
+        bytes value;
+        uint256 version;
+        bytes32 approvalStatus;
+        address[] approvers;
+        bytes32 modelId;
+    }
+    function proposeParameterChange(ModelParameter memory param) external returns (bytes32);
+    function approveParameter(bytes32 proposalId) external;
+    function activateParameter(bytes32 proposalId) external;
+    function getParameterHistory(bytes32 parameterId) external view returns (ModelParameter[] memory);
+}
+
+interface IPortfolioConstraints {
+    struct Constraint {
+        bytes32 constraintId;
+        string name;
+        bytes32 constraintType;
+        bytes parameters;
+        bool active;
+    }
+    function addConstraint(Constraint memory constraint) external;
+    function validateAllocation(bytes32[] memory assetIds, uint256[] memory weights) external view returns (bool, string memory);
+    function getActiveConstraints() external view returns (Constraint[] memory);
+}
+```
+
+## 5. Documentation & Integration
 
 ```solidity
 interface IDocumentation {
@@ -221,6 +267,10 @@ interface IIntegrationGuide {
 
 * Full-scale deployment, auto-scaling, predictive alerts, regulatory triggers, recovery runbooks.
 
+## Phase 5 – Financial Model Governance
+
+* ModelGovernance, ParameterApproval, PortfolioConstraints, model output verification, and approval workflows.
+
 ---
 
 # 8. Operations Guide (Per Phase)
@@ -229,6 +279,7 @@ interface IIntegrationGuide {
 * Alerting: audit/parameter/upgrade/claim/escrow breaches, event anomalies, or failed rollbacks.
 * Incident playbooks: for governance attacks, asset/fund breaches, or arbitration events.
 * Scheduled maintenance, A/B testing, and DR runs.
+* Financial model parameter monitoring and approval workflow tracking.
 
 ---
 
@@ -237,6 +288,7 @@ interface IIntegrationGuide {
 * Governance nodes, treasury analytics, fund management, and monitoring infrastructure.
 * Capacity planning: system health, throughput, error rates, uptime, recovery time objectives.
 * Security, compliance, and performance audits at every release and incident.
+* Model parameter governance tracking and approval workflow metrics.
 
 ---
 
@@ -246,6 +298,7 @@ interface IIntegrationGuide {
 * Insurance fraud detection, asset DR, and escalation handling
 * Escrow/custody breach response and DR
 * Compliance coverage: audit logs, dispute chains, regulatory review triggers
+* Financial model risk validation and parameter approval controls
 
 ---
 
@@ -254,6 +307,7 @@ interface IIntegrationGuide {
 * Proposal/vote/upgrade effectiveness, regression, and coverage tests
 * Audit trail validation, dispute workflow simulation, feature flag rollbacks
 * Metrics: proposal success, voting participation, upgrade reliability, incident response, and compliance
+* Model parameter approval time, validation coverage, and constraint satisfaction
 
 ---
 
@@ -262,6 +316,7 @@ interface IIntegrationGuide {
 * On-chain APIs: governance, treasury, insurance, cross-chain proposal/upgrade
 * Documentation and integration examples for new modules
 * API, contract, and dependency management for upgrade and escrow workflows
+* Financial model parameter integration and constraint validation interfaces
 
 ---
 
@@ -271,6 +326,8 @@ interface IIntegrationGuide {
 * Upgrade and escrow smart contract docs
 * Event chain/audit patterns
 * Industry custody/treasury standards
+* Financial model governance standards
+* Portfolio constraint management guidelines
 
 ---
 
@@ -290,5 +347,4 @@ interface IIntegrationGuide {
 
 * Advanced interfaces for event flow/audit, cross-chain governance, treasury strategies, integration docs.
 * Metrics, performance, and audit event planning per critique.
-* Phase and operation detail for A/B rollout, rollback, and incident simulation.
-* Integration and documentation patterns for onboarding and review.
+* Financial model governance, parameter approval workflows, and portfolio constraint management.
