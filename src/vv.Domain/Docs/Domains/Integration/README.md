@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-Defines the modular, security-first architecture for integrating VeritasVault with external blockchains, protocols, and analytics infrastructure. Encompasses cross-chain bridges, price oracles, messaging, access control, analytics pipelines, and real-time monitoring. All interfaces and events are engineered for robust interoperability, auditability, and operational resilience—"move fast" is allowed only if you never break things.
+Defines the modular, security-first architecture for integrating VeritasVault with external blockchains, protocols, and analytics infrastructure. Encompasses cross-chain bridges, price oracles, messaging, access control, analytics pipelines, financial modeling, and real-time monitoring. All interfaces and events are engineered for robust interoperability, auditability, and operational resilience—"move fast" is allowed only if you never break things.
 
 ---
 
@@ -31,6 +31,7 @@ Defines the modular, security-first architecture for integrating VeritasVault wi
   * Aggregate/normalize multi-source prices
   * Validate, timestamp, and sign all updates
   * Detect anomalies, block bad feeds, and ensure on-chain data freshness
+  * Provide historical volatility and correlation data for financial models
 
 #### 3. MessageBus
 
@@ -89,6 +90,17 @@ Defines the modular, security-first architecture for integrating VeritasVault wi
   * Archive and version all system/event/metric data
   * Support compliance-driven retention and regulatory queries
   * Serve analytics, audit, and forensic investigations
+  * Store time-series data for financial modeling and analysis
+
+#### 9. FinancialModelProcessor
+
+* **Purpose:** Advanced financial modeling and portfolio optimization engine
+* **Key Responsibilities:**
+
+  * Implement Black-Litterman model for asset allocation
+  * Process market data and investor views for portfolio optimization
+  * Calculate expected returns, covariances, and optimal portfolio weights
+  * Generate portfolio performance metrics and risk analytics
 
 ---
 
@@ -159,6 +171,78 @@ interface ISystemMonitor {
     function checkHealth(bytes32 systemId) external view returns (bool);
     function getAlerts() external view returns (HealthMetric[] memory);
 }
+
+interface IFinancialModelProcessor {
+    struct AssetData {
+        bytes32 assetId;
+        uint256 marketCap;
+        int256 expectedReturn;
+        uint256 volatility;
+    }
+    
+    struct InvestorView {
+        bytes32 viewId;
+        bytes32[] assets;
+        int256[] viewReturns;
+        uint256 confidence;
+    }
+    
+    struct OptimalPortfolio {
+        bytes32 portfolioId;
+        bytes32[] assets;
+        uint256[] weights;
+        int256 expectedReturn;
+        uint256 risk;
+        uint256 sharpeRatio;
+    }
+    
+    struct ConstraintSet {
+        bytes32 constraintId;
+        uint256 constraintType; // 1=SumToOne, 2=PositionLimit, 3=SectorLimit, etc.
+        bytes32[] assets;       // Applicable assets for the constraint
+        int256[] parameters;    // Parameters for the constraint (min/max values, etc.)
+    }
+    
+    // Black-Litterman Model - Combining market equilibrium with investor views
+    function processBlackLitterman(
+        AssetData[] calldata assets,
+        InvestorView[] calldata views,
+        uint256 riskAversion
+    ) external returns (bytes32);
+    
+    // Markowitz Mean-Variance Optimization - Classical efficient frontier
+    function processMarkowitzOptimization(
+        AssetData[] calldata assets,
+        uint256 riskAversion,
+        ConstraintSet[] calldata constraints
+    ) external returns (bytes32);
+    
+    // Michaud Resampled Efficiency - Addressing estimation error
+    function processResampledOptimization(
+        AssetData[] calldata assets,
+        uint256 riskAversion,
+        uint256 resamplingCount,
+        ConstraintSet[] calldata constraints
+    ) external returns (bytes32);
+    
+    // Equal Risk Contribution - Risk parity approach
+    function processEqualRiskContribution(
+        AssetData[] calldata assets,
+        ConstraintSet[] calldata constraints
+    ) external returns (bytes32);
+    
+    // Retrieve optimization results
+    function getOptimalPortfolio(bytes32 portfolioId) external view returns (OptimalPortfolio memory);
+    
+    // Get covariance between two assets
+    function getCovariance(bytes32 assetId1, bytes32 assetId2) external view returns (int256);
+    
+    // Compare multiple portfolio solutions
+    function comparePortfolios(bytes32[] calldata portfolioIds) external view returns (bytes memory);
+    
+    // Generate detailed report with metrics and analysis
+    function generateReport(bytes32 portfolioId) external returns (bytes32);
+}
 ```
 
 ---
@@ -179,6 +263,14 @@ interface ISystemMonitor {
 * All analytics/reporting endpoints are RBAC-protected
 * Analytics pipelines must support audit trails, staging, and result validation
 * Export options: CSV, PDF, XBRL, real-time streaming
+
+### Financial Modeling
+
+* Market data for financial models must be validated and anomaly-checked
+* All model parameters and assumptions must be documented and auditable
+* Financial models must be backtested against historical data before production use
+* Portfolio recommendations must include risk metrics and confidence intervals
+* Model outputs must be versioned and retained for compliance purposes
 
 ### Access & Identity Management
 
@@ -228,6 +320,16 @@ interface ISystemMonitor {
   * Objects: MetricDefinition, AnalyticsReport, DataArchive, QueryTemplate, Protocol, Pipeline
   * Events: MetricRecorded, AlertTriggered, ReportGenerated, ProtocolIntegrated, DataArchived
 
+### Phase 3.5: Financial Modeling (Weeks 11-13)
+
+* Deploy FinancialModelProcessor with Black-Litterman implementation
+* Enhance PriceOracle for volatility and correlation data
+* Extend DataLake for time-series financial data
+* Deploy:
+
+  * Objects: AssetData, InvestorView, OptimalPortfolio, CovarianceMatrix
+  * Events: ModelProcessed, PortfolioOptimized, ViewIntegrated, ReportGenerated
+
 ---
 
 ## 6. Security & Threat Considerations
@@ -240,6 +342,8 @@ interface ISystemMonitor {
 | Adapter Failure     | Upgrade error, sandbox escape   | Versioned adapters, rollback, quarantine            |
 | Access Abuse        | Privilege escalation, leak      | RBAC, audit trails, dynamic whitelists              |
 | Analytics Leakage   | Unauthorized report access      | Fine-grained RBAC, alerting, export policies        |
+| Model Manipulation  | Parameter tampering, bias       | Signed parameters, validation checks, audit logs    |
+| Data Skew           | Time-series data corruption     | Data validation, outlier detection, checksums       |
 
 ---
 
@@ -248,6 +352,7 @@ interface ISystemMonitor {
 * All modules expose well-defined, documented interfaces (OpenAPI/ABI)
 * Cross-chain, bridge, and oracle modules are plug-and-play, versioned, and sandboxed
 * Analytics pipelines and data lake are extensible for compliance, AI/ML, and audit use
+* Financial models integrate with existing analytics pipelines and data sources
 * Integration/adapter APIs support versioning, fallback, and safe degradation
 
 ---
@@ -259,6 +364,8 @@ interface ISystemMonitor {
 * OpenAPI and Interface Documentation
 * Access Control and Identity Management Standards
 * Performance, Monitoring, and DR Playbooks
+* Black-Litterman Model Implementation Guide
+* Financial Model Validation and Backtesting Standards
 
 ---
 
@@ -270,20 +377,23 @@ interface ISystemMonitor {
 * Explicit OpenAPI and RBAC enforcement for all public endpoints
 * Metrics and monitoring coverage (latency, error rate, throughput, capacity)
 * Integration of compliance, KYC/AML, and export policies into analytics/data lake flows
+* Added financial modeling capabilities with Black-Litterman model support
 
 ---
 
 ## 10. Document Control
 
 * **Owner(s):** Integration Lead, Analytics Lead
-* **Last Reviewed:** YYYY-MM-DD, reviewed by Integration Team
+* **Last Reviewed:** 2025-05-29, reviewed by Integration Team
 * **Change Log:**
 
-  | Version | Date       | Author           | Changes                             | Reviewers                      |
-  | ------- | ---------- | ---------------- | ----------------------------------- | ------------------------------ |
-  | 1.1.0   | YYYY-MM-DD | Integration Lead | Refined to address 2025-05 critique | Analytics, Security, Infra-ops |
+  | Version | Date       | Author           | Changes                                        | Reviewers                      |
+  | ------- | ---------- | ---------------- | ---------------------------------------------- | ------------------------------ |
+  | 1.3.0   | 2025-05-29 | Analytics Lead   | Expanded Portfolio Optimization Framework      | Integration, Risk, Finance     |
+  | 1.2.0   | 2025-05-28 | Analytics Lead   | Added Financial Modeling support               | Integration, Risk, Finance     |
+  | 1.1.0   | YYYY-MM-DD | Integration Lead | Refined to address 2025-05 critique            | Analytics, Security, Infra-ops |
 * **Review Schedule:** Quarterly or with major integration/analytics upgrade
 
 ---
 
-**Integration is the top attack and reliability vector: Design for failure, defend every boundary, and never assume the other side did their job. If you can’t trace, throttle, and recover it, don’t ship it.**
+**Integration is the top attack and reliability vector: Design for failure, defend every boundary, and never assume the other side did their job. If you can't trace, throttle, and recover it, don't ship it.**

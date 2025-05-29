@@ -86,9 +86,9 @@ The Integration, Analytics & Access Domain is the nerve center for all protocol-
 * **AnalyticsPipeline:** Aggregate for advanced analytics stages and data processing.
 * **DisasterRecoveryPlan:** Aggregate for incident/DR workflows and checkpoints.
 
-## Entities
+## Entity
 
-* **Adapter:** Entity for external protocol/bot integration.
+* **Protocol:** Entity for external protocol/bot integration.
 * **CrossChainMessage:** Entity for message events between chains.
 * **AnalyticsMetric:** Entity for all tracked system metrics.
 * **DataLakeEntry:** Entity for archiving/querying historical events/data.
