@@ -1,3 +1,16 @@
+---
+document_type: domain-overview
+classification: internal
+status: draft
+version: 1.0.0
+last_updated: 2025-05-30
+applies_to: [core-infrastructure]
+dependencies: []
+reviewers: [lead-architect, secops-lead, infra-lead]
+next_review: 2025-07-15
+priority: p0
+---
+
 # VeritasVault Core Infrastructure
 
 > Foundation Layer – Blockchain & Protocol Security

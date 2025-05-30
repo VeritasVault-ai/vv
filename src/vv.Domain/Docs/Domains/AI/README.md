@@ -1,3 +1,16 @@
+---
+document_type: domain-overview
+classification: internal
+status: draft
+version: 1.0.0
+last_updated: 2025-05-30
+applies_to: [ai-ml-core]
+dependencies: [core-infrastructure, risk-compliance-audit, integration-analytics-access]
+reviewers: [lead-architect, ai-lead, ml-lead]
+next_review: 2025-07-15
+priority: p1
+---
+
 # VeritasVault AI/ML Domain
 
 > Artificial Intelligence & Machine Learning Capabilities
@@ -42,64 +55,14 @@ The AI/ML domain provides advanced computational intelligence across the Veritas
 * RiskPredictor: Forward-looking risk assessment
 * StressScenarioGenerator: AI-generated stress scenarios
 
-## 4. Asset Domain Integration Interfaces
-
-The AI/ML domain interacts with the Asset domain through well-defined interfaces:
-
-### Consumed Interfaces (Asset → AI/ML)
-
-* **IMarketDataProvider**: Consumes market data for model training and inference
-  * Historical price and volume data
-  * Order book snapshots and updates
-  * Trading activity metrics
-  * Asset correlation data
-
-* **IModelParameterProvider**: Receives parameters for financial models
-  * Asset characteristics and constraints
-  * Market equilibrium assumptions
-  * Portfolio constraints and objectives
-  * Risk tolerance parameters
-
-### Provided Interfaces (AI/ML → Asset)
-
-* **ITradingSignalProvider**: Generates trading signals for Asset domain
-  * Entry and exit signals
-  * Risk warnings and anomalies
-  * Market regime change indicators
-  * Volatility forecasts
-
-* **IPortfolioOptimizationService**: Provides portfolio optimization services
-  * Optimal portfolio weights
-  * Efficient frontier calculations
-  * Risk factor exposures
-  * Rebalancing recommendations
-
-## 5. Event Schema Compliance
-
-All events emitted by the AI/ML domain follow the standardized event schema:
-
-* Base event properties (id, timestamp, version, source)
-* Domain-specific event data
-* Explicit versioning and compatibility information
-* Schema validation and documentation
-
-## 6. Monitoring Integration
-
-The AI/ML domain integrates with the cross-domain monitoring framework:
-
-* Model performance metrics
-* Training and inference pipeline health
-* Resource utilization monitoring
-* Model drift and data quality alerts
-
-## 7. Integration Points
+## 4. Integration Points
 
 * **Core Infrastructure:** For secure model deployment and serving
-* **External Interface:** For API access and data integration
+* **Asset & Trading:** For market data and trading signals
 * **Risk & Compliance:** For risk modeling and detection
-* **Security:** For anomaly detection and threat intelligence
+* **Integration & Analytics:** For data pipelines and visualization
 
-## 8. Implementation Phases
+## 5. Implementation Phases
 
 ### Phase 1: Foundation
 
@@ -124,12 +87,11 @@ The AI/ML domain integrates with the cross-domain monitoring framework:
 * Natural language market intelligence
 * Adaptive learning systems
 
-## 9. References
+## 6. References
 
 * [AI Architecture](./ai-architecture.md)
 * [Model Governance Framework](./model-governance.md)
 * [Financial AI Applications](./financial-ai-applications.md)
-* [Asset Domain Integration](./asset-domain-integration.md)
+* [Black-Litterman AI Integration](./black-litterman-ai-integration.md)
 * [Time Series Forecasting Guide](./time-series-forecasting.md)
 * [Covariance Estimation Techniques](./covariance-estimation.md)
-* [Security Integration](../Security/ai-security.md)
