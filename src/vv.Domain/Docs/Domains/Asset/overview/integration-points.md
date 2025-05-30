@@ -20,8 +20,9 @@ The Asset Domain integrates with other VeritasVault domains:
 | **Risk Domain** | Risk modeling, limit monitoring | Asset exposures → Risk; Risk parameters → Asset |
 | **Investment Domain** | Strategy implementation, trade generation | Asset models → Investment; Investment decisions → Asset |
 | **Client Domain** | Client reporting, preferences | Asset performance → Client; Client constraints → Asset |
-| **Compliance Domain** | Rule checking, regulatory reporting | Asset holdings → Compliance; Compliance rules → Asset |
-| **Data Domain** | Market data, reference data | Raw data → Asset; Derived data → Data |
+| **Security Domain** | Authentication, authorization, audit | Asset operations → Security; Security policies → Asset |
+| **External Interface Domain** | API access, market data, cross-chain | Asset data → External; External data → Asset |
+| **AI/ML Domain** | Trading signals, portfolio optimization | Asset data → AI/ML; AI/ML insights → Asset |
 
 ### Core Service Integration
 

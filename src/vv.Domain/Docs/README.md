@@ -259,13 +259,18 @@ All dependencies point inward toward the domain, following the same patterns as 
 
 ## Domain Pillars
 
-* [AI/ML Architecture Reference](./ai/README.md)
-* [Asset & Trading Logic](./assets/README.md)
-* [Core Infrastructure](./core/README.md)
-* [Gateway](./gateway/README.md)
-* [Governance & Upgrade Reference](./governance/README.md)
-* [Integration, Analytics & Access](./integration/README.md)
-* [Risk, Compliance & Audit](./risk/README.md)
+* [AI/ML Architecture Reference](./Domains/AI/README.md)
+* [Asset & Trading Logic](./Domains/Asset/README.md)
+* [Core Infrastructure](./Domains/Core/README.md)
+* [External Interface](./Domains/ExternalInterface/README.md)
+* [Governance & Upgrade Reference](./Domains/Governance/README.md)
+* [Risk](./Domains/Risk/README.md)
+* [Security](./Domains/Security/README.md)
+
+## Cross-Cutting Concerns
+
+* [Monitoring Framework](./Crosscutting/Monitoring/README.md)
+* [Event Schema](./Crosscutting/Events/README.md)
 
 ---
 
