@@ -62,7 +62,7 @@ namespace vv.Domain.Models
                 QuoteCurrency = quoteCurrency,
                 Rate = entity.Rate,
                 AsOfDate = entity.AsOfDate,
-                AssetId = entity.AssetId,
+                AssetId = entity.AssetId ?? string.Empty,
                 BidPrice = entity.Rate * 0.999m, // Slightly lower than mid rate
                 AskPrice = entity.Rate * 1.001m  // Slightly higher than mid rate
             };
