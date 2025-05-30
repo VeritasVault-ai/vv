@@ -1,0 +1,10 @@
+{
+  "CosmosDb": {
+    "ConnectionString": "your-connection-string",
+    "DatabaseName": "MarketData",
+    "MarketDataContainerName": "MarketData",
+    "ReferenceDataContainerName": "ReferenceData",
+    "CreateDatabaseIfNotExists": true,
+    "InitialThroughput": 400
+  }
+}
