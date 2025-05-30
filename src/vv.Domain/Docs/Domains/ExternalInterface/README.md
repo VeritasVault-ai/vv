@@ -1,22 +1,22 @@
-# VeritasVault External Interface Domain
+# VeritasVault Gateway Domain
 
-> Unified Gateway for API, Integration, and Cross-Chain Communication
+> API Gateway, User Experience & Integration Interfaces
 
 ---
 
 ## 1. Purpose
 
-The External Interface domain serves as the unified boundary between VeritasVault and external systems, providing consistent, secure, and reliable interfaces for users, protocols, and cross-chain communication. It consolidates all external-facing services into a cohesive domain with clear responsibilities.
+The Gateway domain serves as the primary interface between users, external systems, and the VeritasVault core capabilities. It provides consistent, secure, and intuitive access points while managing authentication, rate limiting, and session state.
 
 ## 2. Key Capabilities
 
-* API gateway for programmatic and user interface access
-* Authentication and identity verification
-* Cross-chain communication and asset transfer
-* External protocol integration and adaptation
-* Message routing and event delivery
-* Price and market data integration
-* Rate limiting and abuse prevention
+* API gateway for programmatic access
+* Web and mobile user interfaces
+* Authentication and authorization
+* Rate limiting and DoS protection
+* Cross-domain integration
+* Portfolio visualization components
+* Financial model input interfaces
 
 ## 3. Core Modules
 
@@ -27,57 +27,65 @@ The External Interface domain serves as the unified boundary between VeritasVaul
 * APIDocumentation: Self-documenting interfaces
 * APIMonitoring: Usage metrics and alerting
 
-### Integration
+### User Interface
 
-* IntegrationManager: Protocol adapters and external system integration
-* AdapterManager: External protocol lifecycle management
-* Bridge: Cross-chain communication and asset transfer
-* PriceOracle: Canonical price data source
+* Web Application: Browser-based interface
+* Mobile Application: Native mobile interfaces
+* Notification System: User alerts and notifications
+* Theming Engine: Customizable appearance
+* PortfolioVisualizer: Portfolio analysis and visualization
+* EfficientFrontier: Visualization of efficient frontier
+* ConfidenceAdjuster: Investor view confidence adjustment
+* RiskCommunicator: Risk visualization and explanation
 
-### Communication
+### Security
 
-* MessageBus: Unified event routing and notification
-* EventProcessor: Event handling and transformation
-* NotificationService: User and system notifications
-* DeliveryGuarantee: Reliable message delivery with dead letter handling
+* AuthenticationService: User identification
+* AuthorizationService: Permission enforcement
+* RateLimiter: Request throttling
+* ThreatDetection: Attack prevention
 
 ## 4. Integration Points
 
-* **Security Domain:** For authentication, authorization, and audit
-* **Core Infrastructure:** For blockchain interaction and consensus
-* **Asset & Trading:** For trading interfaces and settlement
-* **Risk & Compliance:** For risk checks and compliance enforcement
-* **AI/ML:** For model inference and insights
-* **Governance:** For parameter updates and protocol changes
+* **Core Infrastructure:** For security and access control
+* **Asset & Trading:** For trading interfaces and portfolio management
+* **Risk & Compliance:** For risk visualization and compliance checks
+* **AI/ML:** For intelligent interfaces and recommendations
+* **Integration & Analytics:** For data visualization and reporting
 
 ## 5. Implementation Phases
 
-### Phase 1: Consolidation
+### Phase 1: Foundation
 
-* Merge Gateway and Integration domain functionality
-* Establish unified API management
-* Consolidate authentication flows
-* Standardize rate limiting and monitoring
+* Core API gateway functionality
+* Basic web interface
+* Authentication framework
 
-### Phase 2: Enhanced Integration
+### Phase 2: Enhanced Experience
 
-* Unified cross-chain communication
-* Standardized protocol adapters
-* Comprehensive message routing
-* Advanced monitoring and alerting
+* Advanced UI components
+* Mobile interface
+* Notification system
 
-### Phase 3: Advanced Capabilities
+### Phase 3: Advanced Visualization
 
-* AI-enhanced API interfaces
-* Predictive scaling and rate limiting
-* Advanced cross-chain operations
-* Enterprise integration capabilities
+* Portfolio visualization components
+* Efficient frontier visualization
+* Investor view input interfaces
+* Confidence level adjustment tools
+* Risk communication dashboards
+
+### Phase 4: Scaling
+
+* Advanced personalization
+* AI-enhanced interfaces
+* Enterprise integration
 
 ## 6. References
 
 * [API Gateway Design](./api-gateway-design.md)
-* [Integration Framework](./integration-framework.md)
-* [Cross-Chain Bridge Specification](./bridge-specification.md)
-* [Message Bus Architecture](./message-bus-architecture.md)
-* [Protocol Adapter Guidelines](./protocol-adapter-guidelines.md)
-* [External Interface Security Model](../Security/external-interface-security.md)
+* [UI/UX Guidelines](./ui-ux-guidelines.md)
+* [Authentication Framework](./authentication-framework.md)
+* [Portfolio Visualization Guide](./portfolio-visualization.md)
+* [Risk Communication Best Practices](./risk-communication.md)
+* [Financial Data Visualization Patterns](./financial-visualization.md)
