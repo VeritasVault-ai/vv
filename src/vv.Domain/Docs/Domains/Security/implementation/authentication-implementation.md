@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document provides guidance for implementing authentication mechanisms within the VeritasVault Gateway domain. These guidelines ensure secure, consistent, and user-friendly authentication across all platform interfaces.
+This document provides guidance for implementing authentication mechanisms within the VeritasVault Security domain. These guidelines ensure secure, consistent, and user-friendly authentication across all platform interfaces.
 
 ## Authentication Mechanisms
 

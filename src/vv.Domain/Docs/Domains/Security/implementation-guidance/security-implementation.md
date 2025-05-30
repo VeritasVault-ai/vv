@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document provides guidance for implementing security measures within the VeritasVault Gateway domain. These guidelines ensure that all Gateway components are protected against threats and vulnerabilities while maintaining compliance with relevant security standards.
+This document provides guidance for implementing security measures within the VeritasVault Security domain. These guidelines ensure that all Security components are protected against threats and vulnerabilities while maintaining compliance with relevant security standards.
 
 ## Security Architecture
 
