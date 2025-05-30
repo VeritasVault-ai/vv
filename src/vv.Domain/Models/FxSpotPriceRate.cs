@@ -1,4 +1,5 @@
 using System;
+using vv.Domain.Models.Exceptions;
 
 namespace vv.Domain.Models
 {
@@ -62,8 +63,8 @@ namespace vv.Domain.Models
                 Rate = entity.Rate,
                 AsOfDate = entity.AsOfDate,
                 AssetId = entity.AssetId,
-                BidPrice = entity.BidPrice,
-                AskPrice = entity.AskPrice
+                BidPrice = entity.Rate * 0.999m, // Slightly lower than mid rate
+                AskPrice = entity.Rate * 1.001m  // Slightly higher than mid rate
             };
         }
 
