@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
 using vv.Domain.Services;
+using System.Linq;
 
 namespace vv.Application.Services
 {
@@ -114,6 +115,47 @@ namespace vv.Application.Services
             }
 
             throw new NotSupportedException($"Market data type {typeof(T).Name} is not supported");
+        }
+
+
+        public async Task<FxSpotPriceData> GetLatestMarketDataAsync(
+            string dataType,
+            string assetClass,
+            string assetId,
+            string region,
+            DateOnly asOfDate,
+            string documentType)
+        {
+            _logger.LogInformation("Getting latest market data for {AssetId} as of {AsOfDate}", assetId, asOfDate);
+            
+            var result = await _repository.GetLatestMarketDataAsync(
+                dataType, assetClass, assetId, region, asOfDate, documentType);
+            
+            if (result == null)
+            {
+                _logger.LogWarning("No market data found for {AssetId} as of {AsOfDate}", assetId, asOfDate);
+            }
+            
+            return result;
+        }
+
+        public async Task<IEnumerable<FxSpotPriceData>> QueryAsync(Func<FxSpotPriceData, bool> predicate)
+        {
+            _logger.LogInformation("Querying market data with predicate");
+            
+            var result = await _repository.QueryAsync(predicate);
+            
+            return result;
+        }
+
+        public async Task<string> CreateMarketDataAsync(FxSpotPriceData data)
+        {
+            _logger.LogInformation("Creating market data for {AssetId}", data.AssetId);
+            
+            var result = await _repository.CreateAsync(data);
+            _logger.LogInformation("Successfully created market data with ID {Id}", result.Id);
+            
+            return result.Id;
         }
     }
 }
