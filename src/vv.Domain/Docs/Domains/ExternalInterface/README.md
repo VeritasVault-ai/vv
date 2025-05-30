@@ -1,6 +1,6 @@
-# VeritasVault Gateway Domain
+# VeritasVault External Interface Domain
 
-> API Gateway, User Experience & Integration Interfaces
+> Unified Gateway for API, Integration, and Cross-Chain Communication
 
 ---
 

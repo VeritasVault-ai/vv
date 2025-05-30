@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document provides guidance for implementing data visualization components within the VeritasVault Gateway domain. These guidelines ensure consistent, meaningful, and accessible data representations across all platform interfaces.
+This document provides guidance for implementing data visualization components within the VeritasVault External Interface domain. These guidelines ensure consistent, meaningful, and accessible data representations across all platform interfaces.
 
 ## Visualization Architecture
 

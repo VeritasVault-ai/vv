@@ -1,12 +1,12 @@
 # Scope & Boundaries
 
-> Defining the Reach and Limits of the Gateway Domain
+> Defining the Reach and Limits of the External Interface Domain
 
 ---
 
 ## Overview
 
-This document clearly defines what falls within and outside the scope of the Gateway domain, establishing clear boundaries for implementation and responsibility. It also outlines the critical dependencies with other domains.
+This document clearly defines what falls within and outside the scope of the External Interface domain, establishing clear boundaries for implementation and responsibility. It also outlines the critical dependencies with other domains.
 
 ## In Scope
 

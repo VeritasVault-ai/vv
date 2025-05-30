@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document outlines the standards and best practices for implementing APIs within the Gateway domain of the VeritasVault platform. These standards ensure consistency, security, and usability across all APIs.
+This document outlines the standards and best practices for implementing APIs within the External Interface domain of the VeritasVault platform. These standards ensure consistency, security, and usability across all APIs.
 
 ## API Standards Categories
 

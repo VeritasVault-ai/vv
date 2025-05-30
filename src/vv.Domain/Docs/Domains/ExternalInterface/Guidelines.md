@@ -23,7 +23,7 @@ priority: p0
 
 ## 2. Overview
 
-This document outlines mandatory guidelines, best practices, and anti-patterns for the VeritasVault Integration Gateway. It addresses API security, adapter management, integration orchestration, monitoring, and operational hygiene to ensure a secure, auditable, and resilient gateway domain.
+This document outlines mandatory guidelines, best practices, and anti-patterns for the VeritasVault External Interface. It addresses API security, adapter management, integration orchestration, monitoring, and operational hygiene to ensure a secure, auditable, and resilient external interface domain.
 
 ---
 

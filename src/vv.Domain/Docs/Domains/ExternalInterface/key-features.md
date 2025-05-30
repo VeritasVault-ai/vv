@@ -1,12 +1,12 @@
 # Key Features
 
-> Core Capabilities of the Gateway Domain
+> Core Capabilities of the External Interface Domain
 
 ---
 
 ## Overview
 
-The Gateway domain implements several critical features that provide access to the VeritasVault platform. Each feature delivers essential capabilities that ensure secure, consistent, and intuitive interfaces for users and external systems.
+The External Interface domain implements several critical features that provide access to the VeritasVault platform. Each feature delivers essential capabilities that ensure secure, consistent, and intuitive interfaces for users and external systems.
 
 ## Feature Categories
 

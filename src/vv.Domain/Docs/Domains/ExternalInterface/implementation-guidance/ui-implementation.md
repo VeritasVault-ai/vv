@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document provides guidance for implementing user interfaces within the VeritasVault Gateway domain. These guidelines ensure consistent, accessible, and performant user experiences across all platform interfaces.
+This document provides guidance for implementing user interfaces within the VeritasVault External Interface domain. These guidelines ensure consistent, accessible, and performant user experiences across all platform interfaces.
 
 ## UI Architecture
 

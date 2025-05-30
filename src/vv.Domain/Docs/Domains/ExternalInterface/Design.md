@@ -1,4 +1,4 @@
-# VeritasVault Artifact 7 – Integration Gateway Domain (Refined)
+# VeritasVault Artifact 7 – External Interface Domain (Refined)
 
 ---
 
@@ -46,7 +46,7 @@ priority: p0
 
 ## 3. Domain Overview
 
-The Integration Gateway domain acts as the controlled access layer between VeritasVault and the outside world—managing all external API requests, protocol adapters, bot lifecycle, outbound event delivery, and integration health. This domain enforces security, resilience, observability, auditability, and scalability for every cross-boundary interaction.
+The External Interface domain acts as the controlled access layer between VeritasVault and the outside world—managing all external API requests, protocol adapters, bot lifecycle, outbound event delivery, and integration health. This domain enforces security, resilience, observability, auditability, and scalability for every cross-boundary interaction.
 
 ---
 

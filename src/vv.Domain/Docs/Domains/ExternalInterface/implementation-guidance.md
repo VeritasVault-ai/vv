@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document provides high-level implementation guidance for the Gateway domain. Due to the wide range of components in this domain, detailed guidelines have been divided into topic-specific documents.
+This document provides high-level implementation guidance for the External Interface domain. Due to the wide range of components in this domain, detailed guidelines have been divided into topic-specific documents.
 
 ## Implementation Guidance Areas
 
@@ -20,7 +20,7 @@ Each area below has dedicated implementation guidance to ensure consistent imple
 
 ## General Implementation Principles
 
-Regardless of the specific area, all implementations within the Gateway domain should adhere to these principles:
+Regardless of the specific area, all implementations within the External Interface domain should adhere to these principles:
 
 ### 1. Consistent Experience
 

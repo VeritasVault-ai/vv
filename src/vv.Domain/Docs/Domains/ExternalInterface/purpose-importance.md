@@ -1,12 +1,12 @@
 # Purpose & Importance
 
-> Foundational Role of the Gateway Domain
+> Foundational Role of the External Interface Domain
 
 ---
 
 ## Purpose
 
-The Gateway domain serves as the critical interface between users, external systems, and the VeritasVault core capabilities. It provides cohesive, secure, and intuitive access points while managing authentication, rate limiting, session state, and user experience.
+The External Interface domain serves as the critical interface between users, external systems, and the VeritasVault core capabilities. It provides cohesive, secure, and intuitive access points while managing authentication, rate limiting, session state, and user experience.
 
 ### Core Functions
 
@@ -84,7 +84,7 @@ The Gateway domain serves as the critical interface between users, external syst
 
 ## Strategic Impact
 
-The Gateway domain directly supports VeritasVault's strategic objectives by:
+The External Interface domain directly supports VeritasVault's strategic objectives by:
 
 * **Enhancing User Experience**: Creating intuitive access to complex functionality
 * **Supporting Integration**: Enabling ecosystem development through well-designed APIs
