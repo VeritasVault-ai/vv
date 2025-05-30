@@ -6,7 +6,7 @@
 
 ## 1. Purpose
 
-The Gateway domain serves as the primary interface between users, external systems, and the VeritasVault core capabilities. It provides consistent, secure, and intuitive access points while managing authentication, rate limiting, and session state.
+The External Interface domain serves as the primary interface between users, external systems, and the VeritasVault core capabilities. It provides consistent, secure, and intuitive access points while managing authentication, rate limiting, and session state.
 
 ## 2. Key Capabilities
 
@@ -51,7 +51,7 @@ The Gateway domain serves as the primary interface between users, external syste
 * **Asset & Trading:** For trading interfaces and portfolio management
 * **Risk & Compliance:** For risk visualization and compliance checks
 * **AI/ML:** For intelligent interfaces and recommendations
-* **Integration & Analytics:** For data visualization and reporting
+* **External Interface:** For data visualization and reporting
 
 ## 5. Implementation Phases
 
