@@ -1,137 +1,329 @@
-# Solidity Interface Details
+---
+document_type: interface-spec
+classification: internal
+status: draft
+version: 0.1.0
+last_updated: 2025-05-30
+applies_to: [core-infrastructure]
+dependencies: [Domains/Core/domain-model.md, Domains/Crosscutting/Design.md]
+reviewers: [lead-solidity-dev, secops-lead, infra-lead]
+next_review: 2025-07-15
+priority: p0
+---
 
-> Key Contract Specifications for Core Infrastructure
+# Core Infrastructure – On-Chain Solidity Interfaces
+
+> Canonical specification of all smart-contract interfaces underpinning VeritasVault’s Core Infrastructure domain.
 
 ---
 
-## Overview
+## 1. Overview
 
-This document specifies the Solidity interfaces for all key contracts in the VeritasVault Core Infrastructure. These interfaces define the primary interaction points for both internal system components and external integrations.
+The Core Infrastructure layer exposes eight primary contracts that enforce consensus, indexing, randomness, gas policy, security controls, rate-limiting, multi-chain abstraction, and fork management.  
+Each interface adheres to **SOLID**, **OpenZeppelin** best-practices, and emits events required for immutable audit.
 
-## Key Contracts
+| Interface | Aggregate Root (DDD) | Purpose |
+|-----------|---------------------|---------|
+| `IConsensusManager` | ConsensusManager | Track finality, validate blocks, handle reorgs |
+| `IChainIndexer` | ChainIndexer | Persist chain history, stream events |
+| `IRandomnessOracle` | RandomnessOracle | Provide VRF-based randomness proofs |
+| `IGasController` | GasController | Maintain dynamic gas/fee policy |
+| `ISecurityController` | SecurityController | Detect threats, trigger circuit breaker |
+| `IRateLimiter` | RateLimiter | Throttle abusive actors & resources |
+| `IChainAdapter` | ChainAdapter | Uniform multi-chain operations |
+| `IForkManager` | ForkManager | Detect forks, coordinate safe upgrades |
 
-### ConsensusManager
+All interfaces are **upgrade-safe** (UUPS compatible) and **storage-layout-agnostic**.
+
+---
+
+## 2. Shared Data Structures & Events
+
+```solidity
+pragma solidity ^0.8.24;
+
+/// @dev Block header used across interfaces
+struct BlockHeader {
+    bytes32 parentHash;
+    uint64  number;
+    uint64  timestamp;
+    bytes32 stateRoot;
+    bytes32 txRoot;
+    bytes   validatorSig;      // BLS or ECDSA aggregate
+}
+
+/// @dev Finality proof wrapper
+struct FinalityProof {
+    bytes32 blockHash;
+    bytes   signature;         // BFT or light-client proof
+}
+
+/// @dev Verifiable Random Function proof
+struct VRFProof {
+    bytes32 output;
+    bytes   proof;
+    uint64  blockNumber;
+}
+
+/// @dev Gas policy parameters (packed for gas efficiency)
+struct GasPolicy {
+    uint128 minGasPrice;       // wei
+    uint128 maxGasPrice;       // wei
+    uint32  baseFee;           // gwei
+    uint32  surgeMultiplier;   // ×1e4 e.g. 15000 = 1.5x
+}
+
+/// @dev Rate-limit config per resource
+struct RateLimit {
+    uint128 maxRequests;
+    uint64  timeWindow;        // seconds
+}
+
+/// @dev Standardised security incident report
+struct SecurityIncident {
+    bytes32 id;
+    address reporter;
+    uint8   severity;          // 0-5 (P5 critical)
+    bytes32 cause;             // keccak256(code)
+    uint64  timestamp;
+}
+```
+
+### Cross-Cutting Events
+
+```solidity
+event BlockFinalized(uint64 indexed number, bytes32 blockHash);
+event ChainReorg(uint64 indexed depth, bytes32 newHead, bytes32 oldHead);
+event RandomnessDelivered(bytes32 indexed requestId, bytes32 output);
+event GasPolicyUpdated(GasPolicy newPolicy);
+event RateLimitBreached(bytes32 indexed resource, address indexed actor);
+event SecurityIncidentDetected(bytes32 indexed id, uint8 severity);
+event ForkDetected(bytes32 indexed forkId, uint64 height);
+```
+
+---
+
+## 3. Interface Definitions
+
+### 3.1 `IConsensusManager`
 
 ```solidity
 interface IConsensusManager {
-    function finalizeBlock(uint256 blockNumber) external;
-    function detectReorg(uint256 fromBlock) external returns (bool);
-    function submitFinalityProof(uint256 blockNumber, bytes calldata proof) external;
+    /// @notice Submit header + finality proof; returns true if accepted
+    function submitBlock(BlockHeader calldata header, FinalityProof calldata proof) external returns (bool);
+
+    /// @notice Returns whether block has reached finality
+    function isFinalized(uint64 blockNumber) external view returns (bool);
+
+    /// @notice Current canonical head
+    function latestBlock() external view returns (BlockHeader memory);
+
+    /// Events inherited from global section
 }
 ```
 
-The ConsensusManager handles block finality and chain reorganizations. It validates transaction inclusion and provides the foundation for consistent state management.
-
-### ChainIndexer
+### 3.2 `IChainIndexer`
 
 ```solidity
 interface IChainIndexer {
-    function indexEvent(uint256 blockNumber, bytes calldata eventData) external;
-    function createSnapshot(uint256 blockNumber) external;
-    function restoreSnapshot(uint256 snapshotId) external;
-    function replayEvents(uint256 fromBlock, uint256 toBlock) external view returns (bytes[] memory);
+    /// @notice Persist full transaction list for a block
+    function indexTransactions(uint64 blockNumber, bytes calldata rlpEncodedTxs) external;
+
+    /// @notice Stream events starting at `fromBlock` (pull pattern)
+    function streamEvents(uint64 fromBlock) external view returns (bytes memory);
+
+    /// @notice Get raw transaction RLP for block
+    function getTransactions(uint64 blockNumber) external view returns (bytes memory);
 }
 ```
 
-The ChainIndexer provides event indexing, audit capabilities, and state replay functionality. It maintains versioned state snapshots and handles reorgs.
-
-### RandomnessOracle
+### 3.3 `IRandomnessOracle`
 
 ```solidity
 interface IRandomnessOracle {
-    function getRandom(bytes32 context) external view returns (bytes32);
-    function submitVRFProof(bytes32 requestId, bytes calldata proof) external;
+    /// @notice Request VRF based on seed; returns requestId
+    function requestRandom(bytes32 seed) external returns (bytes32);
+
+    /// @notice Callback to deliver randomness; only callable by oracle nodes
+    function deliverRandom(bytes32 requestId, VRFProof calldata proof) external;
+
+    /// @notice Retrieve randomness result (reverts if not fulfilled)
+    function getRandom(bytes32 requestId) external view returns (bytes32);
 }
 ```
 
-The RandomnessOracle provides verifiable, unbiased randomness through secure entropy aggregation and verifiable random functions (VRF).
-
-### GasController
+### 3.4 `IGasController`
 
 ```solidity
 interface IGasController {
-    function setGasPolicy(bytes32 policyId, bytes calldata policyData) external;
-    function getGasPrice() external view returns (uint256);
-    function emergencyAdjust(uint256 newGasPrice) external;
+    /// @notice Update gas policy (onlyDAO)
+    function setGasPolicy(GasPolicy calldata policy) external;
+
+    /// @notice Fetch current policy
+    function getGasPolicy() external view returns (GasPolicy memory);
+
+    /// @notice Compute fee for calldata size
+    function estimateFee(uint256 calldataSize) external view returns (uint256);
 }
 ```
 
-The GasController manages network economics and gas policies, including dynamic fee markets and emergency adjustments to prevent economic attacks.
-
-### SecurityController
+### 3.5 `ISecurityController`
 
 ```solidity
 interface ISecurityController {
-    function checkAccess(address account, bytes32 resource) external view returns (bool);
-    function emergencyPause(bytes32 reason) external;
-    function validateOperation(bytes32 opId) external view returns (bool);
+    /// @notice Report incident; emits SecurityIncidentDetected
+    function reportIncident(SecurityIncident calldata incident) external;
+
+    /// @notice Emergency pause protocol (circuit breaker)
+    function pause() external;
+
+    /// @notice Resume protocol after incident resolved
+    function unpause() external;
+
+    /// @notice Check paused state
+    function isPaused() external view returns (bool);
 }
 ```
 
-The SecurityController enforces security policies, manages role-based access control, and can trigger emergency responses.
-
-### RateLimiter
+### 3.6 `IRateLimiter`
 
 ```solidity
 interface IRateLimiter {
-    function incrementUsage(address user, bytes32 resource) external;
-    function checkLimit(address user, bytes32 resource) external view returns (bool);
-    function getUsage(address user, bytes32 resource) external view returns (uint256);
+    /// @notice Consume quota; returns remaining
+    function consume(bytes32 resourceId, address actor, uint256 amount) external returns (uint256);
+
+    /// @notice Configure limit (onlyGovernance)
+    function setLimit(bytes32 resourceId, RateLimit calldata limit) external;
+
+    /// @notice Get remaining quota
+    function remaining(bytes32 resourceId, address actor) external view returns (uint256);
 }
 ```
 
-The RateLimiter prevents abuse and denial-of-service attacks by enforcing usage limits at account, network, and global levels.
-
-### ChainAdapter
+### 3.7 `IChainAdapter`
 
 ```solidity
 interface IChainAdapter {
-    function isBlockFinal(uint256 blockNumber) external view returns (bool);
-    function handleReorg(uint256 fromBlock) external;
-    function getChainSpecificConfig() external view returns (bytes memory);
-    function validateTransaction(bytes calldata txData) external view returns (bool);
+    /// @notice Submit message to target chain
+    function sendMessage(uint256 targetChainId, bytes calldata payload) external returns (bytes32);
+
+    /// @notice Verify incoming message proof
+    function verifyMessage(bytes calldata proof) external view returns (bool);
+
+    /// @notice Execute verified message
+    function executeMessage(bytes calldata proof) external returns (bool);
 }
 ```
 
-The ChainAdapter provides multi-chain compatibility by abstracting protocol differences and coordinating cross-chain state.
-
-### ForkManager
+### 3.8 `IForkManager`
 
 ```solidity
 interface IForkManager {
-    function detectFork(uint256 blockNumber) external view returns (bool);
-    function handleFork(uint256 fromBlock, uint256 toBlock) external;
+    /// @notice Register fork candidate
+    function registerFork(bytes32 forkId, uint64 height, bytes32 newHead) external;
+
+    /// @notice Resolve fork, choose canonical head
+    function resolveFork(bytes32 forkId, bytes32 chosenHead) external;
+
+    /// @notice Get active forks
+    function activeForks() external view returns (bytes32[] memory);
 }
 ```
 
-The ForkManager detects and manages chain splits and fork transitions, ensuring consistent operations during consensus-breaking events.
+---
 
-### TimeSeriesStore
+## 4. Access Control Patterns
+
+1. **Role-Based** (`AccessControl`):  
+   * `ROLE_DAO` – governance proposals (gas policy, rate limits)  
+   * `ROLE_ORACLE` – `deliverRandom` privileged call  
+   * `ROLE_MONITOR` – `reportIncident`, `registerFork`  
+
+2. **Ownable / UUPS** for upgradeability (EIP-1967 slots).  
+3. **EIP-712 Signatures** for gas-less actor interactions (submitBlock meta-tx).
+
+---
+
+## 5. Gas Optimisation Considerations
+
+* **Packed Structs** (`GasPolicy`, `RateLimit`) – ≤ 32-byte alignment.  
+* **Unchecked Increment** inside tight for-loops (`indexTransactions`).  
+* **Custom Errors** instead of `require` strings for 35-40 % refund.  
+* **Bitmap Permissioning** for frequent role checks.  
+* **Immutable Arguments** (e.g., chainId) for proxies using EIP-1167 clones.
+
+---
+
+## 6. Security Patterns & Guards
+
+| Threat | Mitigation |
+|--------|------------|
+| Re-entrancy | `nonReentrant` modifiers where external calls occur |
+| DoS w/ block spam | `RateLimiter` + `GasController` surge multiplier |
+| Randomness manipulation | VRF proofs anchored to finalized block hashes |
+| Governance hijack | Time-lock + multi-sig for `ROLE_DAO` |
+| Fork chaos | `IForkManager` halts trading until resolution |
+| Oracle spoofing | Stake-slashing and consensus among `ROLE_ORACLE` nodes |
+
+Circuit-breaker architecture ensures **fail-closed**: once `ISecurityController.pause()` is triggered, `whenNotPaused` modifiers across all critical contracts freeze state-changing logic.
+
+---
+
+## 7. Integration Examples
+
+### 7.1 Cross-Domain Randomness
 
 ```solidity
-interface ITimeSeriesStore {
-    function storeTimeSeries(bytes32 identifier, uint256 timestamp, bytes calldata data) external;
-    function queryTimeSeries(bytes32 identifier, uint256 startTime, uint256 endTime) external view returns (bytes[] memory);
-    function getLatestDataPoint(bytes32 identifier) external view returns (uint256, bytes memory);
-    function getAggregatedData(bytes32 identifier, uint256 startTime, uint256 endTime, bytes32 aggregationType) external view returns (bytes memory);
+contract AMMPool {
+    IRandomnessOracle public oracle;
+    mapping(bytes32 => bool) private pending;
+
+    function requestCurveSeed() external {
+        bytes32 id = oracle.requestRandom(keccak256(abi.encodePacked(block.number, address(this))));
+        pending[id] = true;
+    }
+
+    function onRandomness(bytes32 requestId, bytes32 output) external {
+        require(msg.sender == address(oracle));
+        require(pending[requestId], "unknown id");
+        pending[requestId] = false;
+        _applyRandomCurve(uint256(output));
+    }
 }
 ```
 
-The TimeSeriesStore efficiently handles financial and market time-series data, with specialized storage, indexing, and retrieval capabilities.
-
-### ComputeOrchestrator
+### 7.2 Chain Adapter Usage
 
 ```solidity
-interface IComputeOrchestrator {
-    function scheduleComputation(bytes32 modelId, bytes calldata parameters) external returns (bytes32 jobId);
-    function getComputationResult(bytes32 jobId) external view returns (bytes memory result, bool completed);
-    function cancelComputation(bytes32 jobId) external;
-    function getResourceUsage(address user) external view returns (uint256 cpuUsage, uint256 memoryUsage);
+contract BridgeProxy {
+    IChainAdapter public adapter;
+    bytes32 public constant ROLE_RELAYER = keccak256("ROLE_RELAYER");
+
+    function bridge(bytes calldata payload, uint256 dstChain) external {
+        adapter.sendMessage(dstChain, payload);
+    }
+
+    function onMessage(bytes calldata proof) external {
+        require(adapter.verifyMessage(proof), "invalid proof");
+        adapter.executeMessage(proof); // may mint wrapped asset, etc.
+    }
 }
 ```
 
-The ComputeOrchestrator manages computational resources for intensive operations like financial models, providing scheduling, results retrieval, and resource monitoring.
+---
 
-## Interface Extensions
+## 8. Reference Implementation
 
-Each interface may be extended with additional methods in their implementation contracts. The interfaces defined here represent the minimum required functionality for system integration.
+A reference implementation adhering to these interfaces lives under  
+`src/vv.Infrastructure/Contracts/Core/*`. All changes **MUST** preserve interface
+signatures to maintain storage-layout and ABI compatibility.
+
+---
+
+## 9. Change Log
+
+| Version | Date | Author | Notes |
+|---------|------|--------|-------|
+| 0.1.0 | 2025-05-30 | Factory Assistant | Initial interface specification |
+
+---
