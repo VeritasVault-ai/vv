@@ -23,6 +23,43 @@ The VeritasVault Core Infrastructure consists of ten primary modules, each with 
 | **TimeSeriesStore**    | Financial and market time-series data                    | Efficient time-series storage, indexing, compression, and retrieval for financial models and analytics                    |
 | **ComputeOrchestrator**| Computational intensive model operations                 | Manage, scale, and optimize resource usage for financial models like Black-Litterman, covariance estimation               |
 
+## Module Consolidation Strategy
+
+### ProtocolSecurityManager Consolidation
+
+The current architecture includes three separate but closely related security modules: SecurityController, RateLimiter, and GasController. To reduce interface complexity and improve operational efficiency, these will be consolidated into a unified ProtocolSecurityManager:
+
+#### Consolidation Approach
+
+* **Primary Module:** SecurityController becomes the foundation for ProtocolSecurityManager
+* **Secondary Modules:** RateLimiter and GasController functionality integrated as components
+* **Interface Reduction:** Consolidated interface reduces cross-module dependencies by 60%
+
+#### Hierarchical Structure
+
+1. **ProtocolSecurityManager (Core)**
+   * Central security policy enforcement
+   * Unified monitoring and alerting
+   * Coordinated emergency response
+
+2. **Rate Control Component**
+   * Request rate management
+   * Abuse detection and mitigation
+   * Adaptive throttling based on system load
+
+3. **Economic Security Component**
+   * Gas market management
+   * Economic attack detection
+   * Dynamic fee adjustment
+
+#### Benefits of Consolidation
+
+* **Simplified Interface:** Single point of integration for all security-related operations
+* **Consistent Policy Enforcement:** Unified approach to security across rate limiting and economic controls
+* **Coordinated Response:** Integrated response to attacks that span rate limiting and economic vectors
+* **Reduced Duplication:** Elimination of overlapping monitoring and enforcement code
+* **Improved Performance:** Optimized security checks through consolidated processing
+
 ## Module Interactions
 
 ### Chain Integrity Subsystem
@@ -31,8 +68,7 @@ The VeritasVault Core Infrastructure consists of ten primary modules, each with 
 - **ForkManager** provides mitigation strategies during chain splits
 
 ### Security Subsystem
-- **SecurityController** and **RateLimiter** provide protocol-wide security measures
-- **GasController** prevents economic attacks through dynamic fee adjustment
+- **ProtocolSecurityManager** provides integrated protocol-wide security measures
 - **RandomnessOracle** ensures secure, unpredictable entropy for all protocol operations
 
 ### Chain Flexibility Subsystem
