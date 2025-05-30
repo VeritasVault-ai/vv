@@ -176,15 +176,15 @@ jobs:
             
             const comment = `# Documentation Quality Check
 
-${status}
-
-## Summary
-${summary}
-
-See the [full report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.
-
----
-*This is an automated comment from the Documentation Quality Check workflow.*`;
+            ${status}
+            
+            ## Summary
+            ${summary}
+            
+            See the [full report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.
+            
+            ---
+            *This is an automated comment from the Documentation Quality Check workflow.*`;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,
