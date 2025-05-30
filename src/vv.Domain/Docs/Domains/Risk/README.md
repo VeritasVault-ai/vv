@@ -76,9 +76,25 @@ The Risk, Compliance & Audit domain provides comprehensive risk management, regu
 
 ## 6. References
 
+### Architecture & Frameworks
 * [Risk Architecture](./risk-architecture.md)
 * [Compliance Framework](./compliance-framework.md)
 * [Audit System Design](./audit-system-design.md)
 * [Financial Model Validation Framework](./model-validation-framework.md)
 * [Portfolio Risk Monitoring Guide](./portfolio-risk-monitoring.md)
 * [Stress Testing Guidelines](./stress-testing-guidelines.md)
+
+### Risk Measures
+* [Risk Measures Overview](./risk-measures/risk-measures-overview.md) - Guide to investment risk measurement
+* [Downside Risk Measures](./risk-measures/downside-risk-measures.md) - Focus on negative return distributions
+* [Risk Factor Parity](./risk-measures/risk-factor-parity.md) - Balanced risk factor exposure
+
+### Tail Risk
+* [Tail Risk Overview](./tail-risk/tail-risk-overview.md) - Introduction to tail risk concepts
+* [Value-at-Risk (VaR)](./tail-risk/value-at-risk.md) - Threshold-based risk measure
+* [Conditional Value-at-Risk (CVaR)](./tail-risk/conditional-value-at-risk.md) - Expected loss beyond VaR
+* [Extreme Value Theory](./tail-risk/extreme-value-theory.md) - Advanced modeling of extreme events
+
+### Scenario Analysis
+* [Scenario Analysis Overview](./scenario-analysis/index.md) - Framework for scenario-based risk assessment
+* [Stress Testing Approaches](./scenario-analysis/stress-testing.md) - Methods for assessing portfolio vulnerabilities
