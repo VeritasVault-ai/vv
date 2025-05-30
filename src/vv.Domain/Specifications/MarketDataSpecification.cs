@@ -1,220 +1,112 @@
-using vv.Domain.Extensions;
-using vv.Domain.Models;
 using System;
 using System.Linq.Expressions;
+using vv.Domain.Models;
 
 namespace vv.Domain.Specifications
 {
     /// <summary>
-    /// Specification for market data queries
+    /// Specifications for market data queries
     /// </summary>
-    public class MarketDataSpecification : ISpecification<FxSpotPriceData>
+    public static class MarketDataSpecification
     {
-        private Expression<Func<FxSpotPriceData, bool>> _criteria = x => true;
-
         /// <summary>
-        /// Convert to expression
+        /// Gets a specification for the latest version of an entity with the given asset ID
         /// </summary>
-        public Expression<Func<FxSpotPriceData, bool>> ToExpression()
+        public static Expression<Func<T, bool>> LatestVersionByAssetId<T>(string assetId) where T : IMarketDataEntity
         {
-            return _criteria;
+            return entity => 
+                entity.AssetId == assetId && 
+                ((IVersionedEntity)entity).IsLatestVersion;
         }
 
         /// <summary>
-        /// Check if entity satisfies this specification
+        /// Gets a specification for entities with the given asset ID
         /// </summary>
-        public bool IsSatisfiedBy(FxSpotPriceData entity)
+        public static Expression<Func<T, bool>> ByAssetId<T>(string assetId) where T : IMarketDataEntity
         {
-            var predicate = _criteria.Compile();
-            return predicate(entity);
+            return entity => entity.AssetId == assetId;
         }
 
         /// <summary>
-        /// Filter by data type
+        /// Gets a specification for entities with the given asset class
         /// </summary>
-        public MarketDataSpecification WithDataType(string dataType)
+        public static Expression<Func<T, bool>> ByAssetClass<T>(string assetClass) where T : IMarketDataEntity
         {
-            _criteria = _criteria.And(x => x.DataType == dataType);
-            return this;
+            return entity => entity.AssetClass == assetClass;
         }
 
         /// <summary>
-        /// Filter by asset class
+        /// Gets a specification for entities with the given data type
         /// </summary>
-        public MarketDataSpecification WithAssetClass(string assetClass)
+        public static Expression<Func<T, bool>> ByDataType<T>(string dataType) where T : IMarketDataEntity
         {
-            _criteria = _criteria.And(x => x.AssetClass == assetClass);
-            return this;
+            return entity => entity.DataType == dataType;
         }
 
         /// <summary>
-        /// Filter by asset ID
+        /// Gets a specification for entities with the given region
         /// </summary>
-        public MarketDataSpecification WithAssetId(string assetId)
+        public static Expression<Func<T, bool>> ByRegion<T>(string region) where T : IMarketDataEntity
         {
-            _criteria = _criteria.And(x => x.AssetId == assetId.ToLowerInvariant());
-            return this;
+            return entity => entity.Region == region;
         }
 
         /// <summary>
-        /// Filter by region
+        /// Gets a specification for entities with the given document type
         /// </summary>
-        public MarketDataSpecification WithRegion(string region)
+        public static Expression<Func<T, bool>> ByDocumentType<T>(string documentType) where T : IMarketDataEntity
         {
-            _criteria = _criteria.And(x => x.Region == region);
-            return this;
+            return entity => entity.DocumentType == documentType;
         }
 
         /// <summary>
-        /// Filter by as-of date
+        /// Gets a specification for entities with the given as-of date
         /// </summary>
-        public MarketDataSpecification WithAsOfDate(DateOnly asOfDate)
+        public static Expression<Func<T, bool>> ByAsOfDate<T>(DateOnly asOfDate) where T : IMarketDataEntity
         {
-            _criteria = _criteria.And(x => x.AsOfDate == asOfDate);
-            return this;
+            return entity => entity.AsOfDate == asOfDate;
         }
 
         /// <summary>
-        /// Filter by document type
+        /// Gets a specification for entities with an as-of date in the given range
         /// </summary>
-        public MarketDataSpecification WithDocumentType(string documentType)
+        public static Expression<Func<T, bool>> ByAsOfDateRange<T>(DateOnly startDate, DateOnly endDate) where T : IMarketDataEntity
         {
-            _criteria = _criteria.And(x => x.DocumentType == documentType);
-            return this;
+            return entity => entity.AsOfDate >= startDate && entity.AsOfDate <= endDate;
         }
 
         /// <summary>
-        /// Filter by from date
+        /// Gets a specification for entities with the given tag
         /// </summary>
-        public MarketDataSpecification WithFromDate(DateOnly fromDate)
+        public static Expression<Func<T, bool>> ByTag<T>(string tag) where T : IMarketDataEntity
         {
-            _criteria = _criteria.And(x => x.AsOfDate >= fromDate);
-            return this;
+            // Note: This is a simplification. In a real implementation, you would need to
+            // use a database-specific approach to query against a collection.
+            return entity => entity.Tags.Contains(tag);
         }
 
         /// <summary>
-        /// Filter by to date
+        /// Gets a specification for entities with the given base version ID
         /// </summary>
-        public MarketDataSpecification WithToDate(DateOnly toDate)
+        public static Expression<Func<T, bool>> ByBaseVersionId<T>(string? baseVersionId) where T : IMarketDataEntity, IVersionedEntity
         {
-            _criteria = _criteria.And(x => x.AsOfDate <= toDate);
-            return this;
+            return entity => entity.BaseVersionId == baseVersionId;
         }
 
         /// <summary>
-        /// Filter by exchange name
+        /// Gets a specification for entities with the given version
         /// </summary>
-        public MarketDataSpecification WithExchange(string exchangeName)
+        public static Expression<Func<T, bool>> ByVersion<T>(int version) where T : IMarketDataEntity, IVersionedEntity
         {
-            _criteria = _criteria.And(x => x.Exchange == exchangeName);
-            return this;
+            return entity => entity.Version == version;
         }
 
         /// <summary>
-        /// Filter by market type (spot, futures, perpetual, options)
+        /// Gets a specification for the latest versions of all entities
         /// </summary>
-        public MarketDataSpecification WithMarketType(string marketType)
+        public static Expression<Func<T, bool>> LatestVersionsOnly<T>() where T : IMarketDataEntity, IVersionedEntity
         {
-            _criteria = _criteria.And(x => x.MarketType == marketType);
-            return this;
-        }
-
-        /// <summary>
-        /// Filter by base asset (e.g., "BTC" in BTC/USDT)
-        /// </summary>
-        public MarketDataSpecification WithBaseAsset(string baseAsset)
-        {
-            _criteria = _criteria.And(x => x.BaseAsset == baseAsset.ToUpperInvariant());
-            return this;
-        }
-
-        /// <summary>
-        /// Filter by quote asset (e.g., "USDT" in BTC/USDT)
-        /// </summary>
-        public MarketDataSpecification WithQuoteAsset(string quoteAsset)
-        {
-            _criteria = _criteria.And(x => x.QuoteAsset == quoteAsset.ToUpperInvariant());
-            return this;
-        }
-
-        /// <summary>
-        /// Create a specification for a crypto trading pair on a specific exchange
-        /// </summary>
-        public static MarketDataSpecification ForCryptoTradingPair(string baseAsset, string quoteAsset, string exchange = null)
-        {
-            var spec = new MarketDataSpecification()
-                .WithDataType("price.spot")
-                .WithAssetClass("crypto")
-                .WithBaseAsset(baseAsset)
-                .WithQuoteAsset(quoteAsset);
-
-            if (!string.IsNullOrEmpty(exchange))
-            {
-                spec.WithExchange(exchange);
-            }
-
-            return spec;
-        }
-
-        /// <summary>
-        /// Create a specification for all trading pairs of a base asset (e.g., all BTC pairs)
-        /// </summary>
-        public static MarketDataSpecification ForBaseAsset(string baseAsset, string exchange = null)
-        {
-            var spec = new MarketDataSpecification()
-                .WithDataType("price.spot")
-                .WithAssetClass("crypto")
-                .WithBaseAsset(baseAsset);
-
-            if (!string.IsNullOrEmpty(exchange))
-            {
-                spec.WithExchange(exchange);
-            }
-
-            return spec;
-        }
-
-        /// <summary>
-        /// Create a specification for a specific exchange's market data
-        /// </summary>
-        public static MarketDataSpecification ForExchange(string exchange, string marketType = "spot")
-        {
-            return new MarketDataSpecification()
-                .WithAssetClass("crypto")
-                .WithExchange(exchange)
-                .WithMarketType(marketType);
-        }
-
-        /// <summary>
-        /// Create a specification for stablecoin pairs (USDT, USDC, DAI, etc.)
-        /// </summary>
-        public static MarketDataSpecification ForStablecoinPairs(string baseAsset, string[] stablecoins = null)
-        {
-            stablecoins ??= new[] { "USDT", "USDC", "BUSD", "DAI", "UST" };
-
-            var spec = new MarketDataSpecification()
-                .WithDataType("price.spot")
-                .WithAssetClass("crypto")
-                .WithBaseAsset(baseAsset);
-
-            // Create a combined predicate for any of the stablecoins
-            Expression<Func<FxSpotPriceData, bool>> stablecoinPredicate = null;
-            foreach (var stablecoin in stablecoins)
-            {
-                var coin = stablecoin.ToUpperInvariant();
-                var predicate = (Expression<Func<FxSpotPriceData, bool>>)(x => x.QuoteAsset == coin);
-
-                stablecoinPredicate = stablecoinPredicate == null
-                    ? predicate
-                    : stablecoinPredicate.Or(predicate);
-            }
-
-            if (stablecoinPredicate != null)
-            {
-                spec._criteria = spec._criteria.And(stablecoinPredicate);
-            }
-
-            return spec;
+            return entity => entity.IsLatestVersion;
         }
     }
 }
