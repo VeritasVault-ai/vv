@@ -19,7 +19,10 @@ priority: p1
 
 ## Overview
 
-This domain manages the full lifecycle of digital assets in VeritasVault, from canonical representation through trading, settlement, and custody.
+The Asset, Trading & Settlement domain manages the full lifecycle of digital assets in VeritasVault, from canonical representation through trading, settlement, and custody.  
+For the end-to-end platform architecture see the **[High-Level Architecture Overview](../../ARCHITECTURE.md)**.
+
+---
 
 ## Table of Contents
 
@@ -28,27 +31,49 @@ This domain manages the full lifecycle of digital assets in VeritasVault, from c
 * [Core Modules & Functions](./core-modules.md)
 * [Integration Points](./integration-points.md)
 * [Implementation Phases](./implementation-phases.md)
+* [Security & Compliance](#security--compliance)
 * [References & Dependencies](./references-dependencies.md)
+
+---
 
 ## Domain Scope
 
-The Asset, Trading & Settlement Domain provides comprehensive infrastructure for:
+This domain provides infrastructure for:
 
 * Standardized digital asset representation and lifecycle management
 * Advanced trading mechanisms with regulatory compliance
 * Portfolio management with optimization capabilities
-* Market capitalization weighted indices and portfolios
-* Atomic settlement with cryptographic finality guarantees
-* Full asset lifecycle event handling
+* Market-capitalization-weighted indices and portfolios
+* Deterministic, **atomic settlement** with cryptographic finality guarantees
 
-This domain interacts extensively with the AI and Core Infrastructure domains to provide a robust financial ecosystem with cutting-edge optimization capabilities.
+It collaborates closely with the **AI/ML**, **Risk & Compliance**, and **Core Infrastructure** domains to provide a robust financial ecosystem.
+
+---
 
 ## Key Documentation
 
-For implementation details, refer to:
+| Topic | Path |
+|-------|------|
+| Asset Specification | [`asset-specification.md`](./asset-specification.md) |
+| Order Book Design | [`order-book-design.md`](./order-book-design.md) |
+| **Settlement Protocol** | [`settlement-protocol.md`](./settlement-protocol.md) |
+| Portfolio Optimization Guide | [`portfolio-optimization.md`](./portfolio-optimization.md) |
+| Black-Litterman Integration | [`../Integration/FinancialModels/BlackLitterman-Integration.md`](../Integration/FinancialModels/BlackLitterman-Integration.md) |
 
-* [Asset Specification](./asset-specification.md)
-* [Order Book Design](./order-book-design.md)
-* [Settlement Protocol](./settlement-protocol.md)
-* [Portfolio Optimization Guide](./portfolio-optimization.md)
-* [Black-Litterman Implementation Guide](../Integration/FinancialModels/BlackLitterman.md)
+---
+
+## Security & Compliance
+
+All security, audit, and compliance requirements for this domain are defined in the centralized **[VeritasVault Unified Security & Audit Standard](../../SECURITY.md)**.  
+Key implications for the Asset domain:
+
+* Trades and settlements must emit tamper-proof events signed per the standard.
+* The **Settlement Protocol** enforces circuit-breaker checks and rollback logic specified in the security standard.
+* Rate-limiting and DoS protections apply to liquidity operations and order submission endpoints.
+* All privileged contract upgrades (e.g., AMM logic) require the multi-sig thresholds and time-locks defined in the standard.
+
+Refer to the security document for detailed threat models, incident response playbooks, and audit logging requirements.
+
+---
+
+*Last updated: 2025-05-30*  

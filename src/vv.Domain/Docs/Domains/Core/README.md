@@ -19,29 +19,53 @@ priority: p0
 
 ## Overview
 
-This document defines the complete Core Infrastructure of VeritasVault, providing protocol-wide guarantees and security foundations.
+The Core Infrastructure domain supplies VeritasVault’s **consensus, finality, randomness, gas-economics, abuse-control, and multi-chain abstraction** capabilities.
+
+For the platform-wide architectural context see the **[High-Level Architecture Overview](../../ARCHITECTURE.md)**.
+
+---
 
 ## Table of Contents
 
-* [Domain Model & Responsibilities](./domain-model.md)
-* [Solidity Interface Details](./solidity-interfaces.md)
-* [Phased Deployment](./deployment-phases.md)
-* [Security & Threat Considerations](./security-threats.md)
-* [Integration & Composition](./integration-composition.md)
-* [References & Resource Pointers](./references.md)
-* [Release Criteria & Compliance Gates](./release-criteria.md)
-* [Appendix](./appendix.md)
+1. [Domain Model](./domain-model.md)  
+2. [Solidity Interfaces](./solidity-interfaces.md)  
+3. [Security & Compliance](#security--compliance)  
 
-## Purpose
+---
 
-The Core Infrastructure layer provides the foundational security, consensus, and operational guarantees required by all higher-level modules. It handles blockchain integration, protocol security, financial data storage, and computational resource management.
+## Domain Scope (at a glance)
 
-Each component has been designed for:
+| Capability | Primary Component |
+|------------|------------------|
+| Consensus & Finality | `ConsensusManager` |
+| Chain Event Indexing | `ChainIndexer` |
+| Verifiable Randomness | `RandomnessOracle` |
+| Gas / Fee Policy | `GasController` |
+| Threat Detection & Circuit Breakers | `SecurityController` |
+| DoS Mitigation | `RateLimiter` |
+| Multi-Chain Adapters | `ChainAdapter` |
+| Fork Detection & Upgrade Orchestration | `ForkManager` |
 
-* **Composability**: All modules can be tested and audited independently
-* **Security**: Comprehensive threat modeling and mitigation strategies
-* **Scalability**: Ability to handle growing volumes of transactions and data
-* **Interoperability**: Cross-chain compatibility through abstraction layers
-* **Reliability**: Robust error handling and recovery mechanisms
+Detailed class and contract specifications live in the **Domain Model** and **Solidity Interfaces** documents linked above.
 
-Refer to the individual documents for detailed specifications of each component.
+---
+
+## Security & Compliance
+
+All Core Infrastructure controls adhere to the **[VeritasVault Unified Security & Audit Standard](../../SECURITY.md)**.  
+Key obligations:
+
+* Circuit-breaker hooks (`pause()`, `unpause()`) must conform to the global pattern.  
+* Every state-changing function emits a signed audit event consumed by the central Audit system.  
+* Upgrade operations require the multi-sig & time-lock thresholds defined in the security standard.  
+* Rate-limiting and gas-surge policies are configured through governance and logged per the audit requirements.
+
+---
+
+## Integration Summary
+
+Other VeritasVault domains consume Core Infrastructure events and services via the interfaces documented in **Solidity Interfaces**. No business logic outside this domain may bypass these contracts.
+
+---
+
+*Last updated: 2025-05-30*  
