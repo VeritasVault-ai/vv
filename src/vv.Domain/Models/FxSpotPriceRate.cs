@@ -26,6 +26,18 @@ namespace vv.Domain.Models
         /// Date of the rate
         /// </summary>
         public DateOnly AsOfDate { get; set; }
+        
+        /// <summary>
+        /// </summary>
+        public string AssetId { get; set; } = string.Empty;
+        
+        /// <summary>
+        /// </summary>
+        public decimal BidPrice { get; set; }
+        
+        /// <summary>
+        /// </summary>
+        public decimal AskPrice { get; set; }
 
         /// <summary>
         /// Creates a domain object from a data entity
@@ -48,7 +60,10 @@ namespace vv.Domain.Models
                 BaseCurrency = baseCurrency,
                 QuoteCurrency = quoteCurrency,
                 Rate = entity.Rate,
-                AsOfDate = entity.AsOfDate
+                AsOfDate = entity.AsOfDate,
+                AssetId = entity.AssetId,
+                BidPrice = entity.BidPrice,
+                AskPrice = entity.AskPrice
             };
         }
 

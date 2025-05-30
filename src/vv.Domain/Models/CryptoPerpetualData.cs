@@ -4,10 +4,10 @@ namespace vv.Domain.Models
 {
     public class CryptoPerpetualData : BaseMarketData
     {
-        public string Exchange { get; set; }
-        public string BaseAsset { get; set; }
-        public string QuoteAsset { get; set; }
-        public string Symbol { get; set; }
+        public required string Exchange { get; set; }
+        public required string BaseAsset { get; set; }
+        public required string QuoteAsset { get; set; }
+        public required string Symbol { get; set; }
         public decimal MarkPrice { get; set; }
         public decimal IndexPrice { get; set; }
         public decimal FundingRate { get; set; }
