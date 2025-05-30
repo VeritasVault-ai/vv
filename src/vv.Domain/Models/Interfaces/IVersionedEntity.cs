@@ -6,8 +6,18 @@ namespace vv.Domain.Models
     public interface IVersionedEntity
     {
         /// <summary>
-        /// Gets or sets the version number of the entity
+        /// Gets or sets the version number
         /// </summary>
         int Version { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base version ID
+        /// </summary>
+        string? BaseVersionId { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether this entity is the latest version
+        /// </summary>
+        bool IsLatestVersion { get; set; }
     }
 }

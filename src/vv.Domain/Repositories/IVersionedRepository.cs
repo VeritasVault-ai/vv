@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using vv.Domain.Models;
+using vv.Domain.Repositories.Components;
 
 namespace vv.Domain.Repositories
 {
