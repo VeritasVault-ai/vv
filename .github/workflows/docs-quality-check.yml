@@ -1,0 +1,206 @@
+name: Documentation Quality Check
+
+on:
+  pull_request:
+    paths:
+      - 'src/vv.Domain/Docs/**/*.md'
+      - '.github/workflows/docs-quality-check.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/vv.Domain/Docs/**/*.md'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  docs-quality:
+    name: Check Documentation Quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write  # Needed to comment on PRs
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Full git history for link validation
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          npm install -g markdownlint-cli markdown-link-check remark-cli remark-validate-links
+          pip install yamllint pyyaml pyspelling
+          sudo apt-get install -y hunspell hunspell-en-us
+
+      - name: Create Output Directory
+        run: mkdir -p docs-quality-reports
+
+      # Step 1: Markdown Linting
+      - name: Markdown Linting
+        run: |
+          echo "## Markdown Linting Results" > docs-quality-reports/markdown-lint.md
+          markdownlint "src/vv.Domain/Docs/**/*.md" \
+            --config .github/workflows/markdownlint.json \
+            --output docs-quality-reports/markdown-lint.txt || true
+          cat docs-quality-reports/markdown-lint.txt >> docs-quality-reports/markdown-lint.md
+          echo "::warning::$(cat docs-quality-reports/markdown-lint.txt | wc -l) markdown lint issues found"
+
+      # Step 2: Link Checking
+      - name: Check Internal Links
+        run: |
+          echo "## Link Check Results" > docs-quality-reports/link-check.md
+          echo "### Internal Links" >> docs-quality-reports/link-check.md
+          find src/vv.Domain/Docs -name "*.md" -print0 | \
+            xargs -0 -n1 markdown-link-check -c .github/workflows/link-check-config.json \
+            -q >> docs-quality-reports/link-check.md 2>&1 || true
+          
+          BROKEN_LINKS=$(grep -c "ERROR:" docs-quality-reports/link-check.md || echo "0")
+          echo "::warning::$BROKEN_LINKS broken links found"
+
+      # Step 3: YAML Frontmatter Validation
+      - name: Validate YAML Frontmatter
+        run: |
+          echo "## YAML Frontmatter Validation" > docs-quality-reports/yaml-validation.md
+          python .github/workflows/validate-frontmatter.py \
+            --docs-path src/vv.Domain/Docs \
+            --schema-path .github/workflows/frontmatter-schema.json \
+            --report-path docs-quality-reports/yaml-validation.md
+          
+          YAML_ERRORS=$(grep -c "ERROR:" docs-quality-reports/yaml-validation.md || echo "0")
+          echo "::warning::$YAML_ERRORS YAML frontmatter issues found"
+
+      # Step 4: File Naming Convention Enforcement
+      - name: Check File Naming Conventions
+        run: |
+          echo "## File Naming Convention Check" > docs-quality-reports/naming-convention.md
+          python scripts/harmonize-file-names.py \
+            --dry-run \
+            --docs-path src/vv.Domain/Docs \
+            --report-path docs-quality-reports/naming-convention.md
+          
+          FILES_TO_RENAME=$(grep -c "Found file to rename:" docs-quality-reports/naming-convention.md || echo "0")
+          echo "::warning::$FILES_TO_RENAME files need renaming to follow kebab-case convention"
+
+      # Step 5: Template Compliance Checking
+      - name: Check Template Compliance
+        run: |
+          echo "## Template Compliance Check" > docs-quality-reports/template-compliance.md
+          python .github/workflows/check-template-compliance.py \
+            --docs-path src/vv.Domain/Docs \
+            --template-path src/vv.Domain/Docs/templates/master-template.md \
+            --report-path docs-quality-reports/template-compliance.md
+          
+          TEMPLATE_ISSUES=$(grep -c "ERROR:" docs-quality-reports/template-compliance.md || echo "0")
+          echo "::warning::$TEMPLATE_ISSUES template compliance issues found"
+
+      # Step 6: Spell Checking
+      - name: Spell Check Documentation
+        run: |
+          echo "## Spell Check Results" > docs-quality-reports/spell-check.md
+          pyspelling -c .github/workflows/spellcheck.yml > docs-quality-reports/spell-check-raw.txt || true
+          cat docs-quality-reports/spell-check-raw.txt >> docs-quality-reports/spell-check.md
+          
+          SPELLING_ERRORS=$(grep -c "Misspelled words:" docs-quality-reports/spell-check.md || echo "0")
+          echo "::warning::$SPELLING_ERRORS files contain spelling errors"
+
+      # Step 7: Generate Consolidated Report
+      - name: Generate Consolidated Report
+        run: |
+          echo "# Documentation Quality Check Report" > docs-quality-reports/consolidated-report.md
+          echo "Generated: $(date)" >> docs-quality-reports/consolidated-report.md
+          echo "" >> docs-quality-reports/consolidated-report.md
+          
+          echo "## Summary" >> docs-quality-reports/consolidated-report.md
+          echo "| Check | Issues Found |" >> docs-quality-reports/consolidated-report.md
+          echo "|------|--------------|" >> docs-quality-reports/consolidated-report.md
+          echo "| Markdown Linting | $(cat docs-quality-reports/markdown-lint.txt | wc -l) |" >> docs-quality-reports/consolidated-report.md
+          echo "| Broken Links | $(grep -c "ERROR:" docs-quality-reports/link-check.md || echo "0") |" >> docs-quality-reports/consolidated-report.md
+          echo "| YAML Frontmatter | $(grep -c "ERROR:" docs-quality-reports/yaml-validation.md || echo "0") |" >> docs-quality-reports/consolidated-report.md
+          echo "| File Naming | $(grep -c "Found file to rename:" docs-quality-reports/naming-convention.md || echo "0") |" >> docs-quality-reports/consolidated-report.md
+          echo "| Template Compliance | $(grep -c "ERROR:" docs-quality-reports/template-compliance.md || echo "0") |" >> docs-quality-reports/consolidated-report.md
+          echo "| Spelling Errors | $(grep -c "Misspelled words:" docs-quality-reports/spell-check.md || echo "0") |" >> docs-quality-reports/consolidated-report.md
+          echo "" >> docs-quality-reports/consolidated-report.md
+          
+          cat docs-quality-reports/markdown-lint.md >> docs-quality-reports/consolidated-report.md
+          cat docs-quality-reports/link-check.md >> docs-quality-reports/consolidated-report.md
+          cat docs-quality-reports/yaml-validation.md >> docs-quality-reports/consolidated-report.md
+          cat docs-quality-reports/naming-convention.md >> docs-quality-reports/consolidated-report.md
+          cat docs-quality-reports/template-compliance.md >> docs-quality-reports/consolidated-report.md
+          cat docs-quality-reports/spell-check.md >> docs-quality-reports/consolidated-report.md
+
+      # Upload artifacts
+      - name: Upload Quality Check Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs-quality-reports
+          path: docs-quality-reports/
+          retention-days: 14
+
+      # Comment on PR if this is a pull request
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('docs-quality-reports/consolidated-report.md', 'utf8');
+            const summary = report.split('## Summary')[1].split('##')[0].trim();
+            
+            const markdownLintIssues = parseInt(summary.match(/Markdown Linting \| (\d+)/)[1]);
+            const brokenLinks = parseInt(summary.match(/Broken Links \| (\d+)/)[1]);
+            const yamlIssues = parseInt(summary.match(/YAML Frontmatter \| (\d+)/)[1]);
+            const namingIssues = parseInt(summary.match(/File Naming \| (\d+)/)[1]);
+            const templateIssues = parseInt(summary.match(/Template Compliance \| (\d+)/)[1]);
+            const spellingIssues = parseInt(summary.match(/Spelling Errors \| (\d+)/)[1]);
+            
+            const totalIssues = markdownLintIssues + brokenLinks + yamlIssues + 
+                               namingIssues + templateIssues + spellingIssues;
+            
+            let status = '✅ Perfect! No documentation issues found.';
+            if (totalIssues > 0) {
+              status = `⚠️ Found ${totalIssues} documentation issues that should be addressed.`;
+            }
+            
+            const comment = `# Documentation Quality Check
+
+${status}
+
+## Summary
+${summary}
+
+See the [full report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.
+
+---
+*This is an automated comment from the Documentation Quality Check workflow.*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      # Fail the workflow if there are critical issues
+      - name: Check for Critical Issues
+        run: |
+          BROKEN_LINKS=$(grep -c "ERROR:" docs-quality-reports/link-check.md || echo "0")
+          YAML_ERRORS=$(grep -c "ERROR:" docs-quality-reports/yaml-validation.md || echo "0")
+          
+          # Only fail on broken internal links and YAML errors
+          if [ "$BROKEN_LINKS" -gt 0 ] || [ "$YAML_ERRORS" -gt 0 ]; then
+            echo "::error::Critical documentation issues found. Please fix broken links and YAML frontmatter errors."
+            exit 1
+          fi

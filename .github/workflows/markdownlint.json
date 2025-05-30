@@ -1,0 +1,124 @@
+{
+  "default": true,
+  "line-length": {
+    "line_length": 100,
+    "code_blocks": 80,
+    "tables": false,
+    "headings": false
+  },
+  "no-duplicate-heading": {
+    "siblings_only": true
+  },
+  "no-trailing-punctuation": {
+    "punctuation": ".,;:!"
+  },
+  "no-inline-html": {
+    "allowed_elements": ["meta"]
+  },
+  "hr-style": {
+    "style": "---"
+  },
+  "no-emphasis-as-heading": false,
+  "first-line-heading": {
+    "front_matter_title": "^\\s*title:"
+  },
+  "first-header-h1": true,
+  "header-style": {
+    "style": "atx"
+  },
+  "ul-style": {
+    "style": "dash"
+  },
+  "list-indent": true,
+  "ul-indent": {
+    "indent": 2
+  },
+  "no-trailing-spaces": true,
+  "no-hard-tabs": true,
+  "no-reversed-links": true,
+  "no-multiple-blanks": {
+    "maximum": 1
+  },
+  "no-missing-space-atx": true,
+  "no-multiple-space-atx": true,
+  "blanks-around-headers": true,
+  "blanks-around-fences": true,
+  "no-duplicate-header": true,
+  "single-title": true,
+  "no-trailing-spaces": true,
+  "no-blanks-blockquote": true,
+  "ol-prefix": {
+    "style": "one"
+  },
+  "no-space-in-code": true,
+  "no-space-in-emphasis": true,
+  "no-space-in-links": true,
+  "fenced-code-language": true,
+  "code-block-style": {
+    "style": "fenced"
+  },
+  "proper-names": {
+    "names": [
+      "VeritasVault",
+      "JavaScript",
+      "TypeScript",
+      "YAML",
+      "JSON",
+      "HTML",
+      "CSS",
+      "Solidity"
+    ]
+  },
+  "no-empty-links": true,
+  "required-headings": {
+    "headings": [
+      "^# .*",
+      "^## .*"
+    ]
+  },
+  "no-alt-text": true,
+  "reference-links-images": false,
+  "link-fragments": true,
+  "heading-style": {
+    "style": "atx"
+  },
+  "heading-increment": true,
+  "no-empty-code-lang": true,
+  "table-pipe-style": {
+    "style": "leading_and_trailing"
+  },
+  "table-column-count": true,
+  "table-cell-padding": {
+    "style": "padded"
+  },
+  "emphasis-style": {
+    "style": "asterisk"
+  },
+  "strong-style": {
+    "style": "asterisk"
+  },
+  "commands-show-output": true,
+  "no-bare-urls": true,
+  "no-duplicate-heading": {
+    "siblings_only": true
+  },
+  "code-fence-style": {
+    "style": "backtick"
+  },
+  "no-empty-links": true,
+  "no-empty-url": true,
+  "first-line-h1": false,
+  "single-h1": true,
+  "no-trailing-spaces": true,
+  "no-multiple-blanks": {
+    "maximum": 1
+  },
+  "no-blanks-blockquote": true,
+  "ol-prefix": {
+    "style": "one"
+  },
+  "front-matter": {
+    "required": true,
+    "closed": true
+  }
+}

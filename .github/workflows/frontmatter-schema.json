@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VeritasVault Documentation Frontmatter Schema",
+  "description": "Schema for validating YAML frontmatter in VeritasVault documentation files",
+  "type": "object",
+  "required": [
+    "document_type",
+    "classification",
+    "status",
+    "version",
+    "last_updated",
+    "applies_to",
+    "reviewers",
+    "priority"
+  ],
+  "properties": {
+    "document_type": {
+      "type": "string",
+      "description": "Type of document",
+      "enum": [
+        "architecture",
+        "domain-overview",
+        "specification",
+        "runbook",
+        "guide",
+        "policy",
+        "api-standards",
+        "security-standard",
+        "settlement-protocol",
+        "portfolio-optimization-guide",
+        "audit-system-design",
+        "navigation-index",
+        "overview",
+        "redirect"
+      ]
+    },
+    "classification": {
+      "type": "string",
+      "description": "Security classification of the document",
+      "enum": [
+        "internal",
+        "public",
+        "confidential"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the document",
+      "enum": [
+        "draft",
+        "review",
+        "approved",
+        "archived"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the document",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "last_updated": {
+      "type": "string",
+      "description": "Date of last update",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "applies_to": {
+      "type": "array",
+      "description": "Domains this document applies to",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Other documents this document depends on",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reviewers": {
+      "type": "array",
+      "description": "Roles or GitHub handles of required reviewers",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "next_review": {
+      "type": "string",
+      "description": "Date of next scheduled review",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "priority": {
+      "type": "string",
+      "description": "Priority level of the document",
+      "enum": [
+        "p0",
+        "p1",
+        "p2",
+        "p3"
+      ]
+    },
+    "compliance_standards": {
+      "type": "object",
+      "description": "Compliance standards this document relates to",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "errorMessage": {
+    "required": {
+      "document_type": "document_type is required (architecture, domain-overview, specification, etc.)",
+      "classification": "classification is required (internal, public, confidential)",
+      "status": "status is required (draft, review, approved, archived)",
+      "version": "version is required (format: x.y.z)",
+      "last_updated": "last_updated is required (format: YYYY-MM-DD)",
+      "applies_to": "applies_to is required (array of domains)",
+      "reviewers": "reviewers is required (array of roles or GitHub handles)",
+      "priority": "priority is required (p0, p1, p2, p3)"
+    },
+    "properties": {
+      "document_type": "document_type must be one of the allowed values",
+      "classification": "classification must be one of: internal, public, confidential",
+      "status": "status must be one of: draft, review, approved, archived",
+      "version": "version must follow semantic versioning (x.y.z)",
+      "last_updated": "last_updated must be in YYYY-MM-DD format",
+      "applies_to": "applies_to must be a non-empty array of strings",
+      "dependencies": "dependencies must be an array of strings",
+      "reviewers": "reviewers must be a non-empty array of strings",
+      "next_review": "next_review must be in YYYY-MM-DD format",
+      "priority": "priority must be one of: p0, p1, p2, p3"
+    }
+  }
+}
