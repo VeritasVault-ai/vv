@@ -79,7 +79,7 @@ Every transaction, position, and state change is verifiable—compliance, audit,
 
 ### Entities
 
-* **Asset:** Canonical token/instrument, state transitions are cryptographically verified.
+* **Asset:** Canonical token/instrument, consist of a chain/symbol, state transitions are cryptographically verified.
 * **Trade:** Executed record, links by ID only, generates proof, validated for compliance and risk.
 
 ### Value Objects

@@ -184,6 +184,7 @@ The Core Infrastructure domain is the *zero-trust*, event-sourced, DDD-aligned b
   | Version | Date       | Author         | Changes          | Reviewers          |
   | ------- | ---------- | -------------- | ---------------- | ------------------ |
   | 1.0.1   | 2025-05-24 | Core Architect | Critique Upgrade | Protocol, Security |
+  
 * **Review Schedule:** Monthly; next review 2025-06-24
 
 ---

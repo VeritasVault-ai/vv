@@ -13,6 +13,8 @@
 * **Modular, Upgradeable, Versioned:** All interfaces, contracts, and event schemas must be versioned. Modules must be independently upgradeable and auditable.
 * **Multi-Chain Abstracted:** All L1/L2/sidechain dependencies must be adapter-based—no hardcoded chain logic.
 * **Incident Response as Protocol:** Incident detection, drill, and recovery flows are required for every module, not an afterthought.
+* **Financial Data Consistency:** All time-series financial data must maintain ACID properties with cryptographic verification and immutable audit trails.
+* **Computation Resource Management:** Financial model computations must have explicit resource limits, timeout mechanisms, and graceful degradation paths.
 
 ---
 
@@ -56,6 +58,14 @@
 10. **Documentation Discipline**
 
     * All modules, contracts, and interface changes must be reflected in both doc and version history.
+11. **Financial Data Storage**
+
+    * Time-series data must be stored with proper indexing, compression, and partitioning strategies.
+    * Historical data access patterns must be optimized for both range queries and point-in-time snapshots.
+12. **Computation Resource Allocation**
+
+    * Financial models with high computational requirements must use resource budgeting and progressive optimization.
+    * Parallel processing and caching strategies should be employed for matrix operations and covariance calculations.
 
 ---
 
@@ -63,23 +73,29 @@
 
 * **Cross-Module Consistency:** Ensure event sourcing, versioning, and replay logic are consistent across modules—mismatches are a root cause of historic blockchain bugs.
 * **Gas/Economic Attack Surface:** Dynamic fee logic must be stress-tested for edge cases; static policies are a DoS vector.
-* **Incident Drill Frequency:** Rollback and circuit breaker drills aren’t ceremonial—test after every upgrade and on a schedule.
+* **Incident Drill Frequency:** Rollback and circuit breaker drills aren't ceremonial—test after every upgrade and on a schedule.
 * **Chain Splits and Reorgs:** Never assume canonical history. Always check, snapshot, and be ready to revert on reorg or fork.
 * **Interface Stability:** Avoid breaking changes; use deprecation/version bump policy and adapters for new logic.
 * **Validator Liveness:** Redundancy is non-optional. Any validator downtime must not block core protocol liveness or safety.
 * **External Integration:** All oracle, bridge, and off-chain integrations must have their own event sourcing and audit, not just on-chain record.
+* **Financial Data Consistency:** Ensure data consistency across time-series storage, especially during high volatility periods or market disruptions.
+* **Model Computation Failover:** Implement graceful degradation paths for when financial model computations cannot complete in expected time frames.
+* **Financial Data Recovery:** Time-series financial data must have reliable recovery mechanisms with point-in-time restore capabilities.
 
 ---
 
 ## 4. Common Pitfalls & How to Avoid Them
 
-* **Silent State Mutations:** If a mutation isn’t event-logged, it will cause audit/rollback failure. Make this an auto-failing test in CI.
+* **Silent State Mutations:** If a mutation isn't event-logged, it will cause audit/rollback failure. Make this an auto-failing test in CI.
 * **Non-Replayable Upgrades:** Skipping replay/rollback drills after upgrades often results in unfixable liveness or audit failures in prod.
 * **Ad Hoc Circuit Breakers:** Hardcoded or ad hoc pause logic leads to stuck chains or bypassed security. Always implement modular, testable circuit breakers.
 * **Single-Source Randomness:** Using only one VRF or entropy source makes you a sitting duck for manipulation. Always aggregate sources and proofs.
 * **Complacency on Cross-Chain:** Hardcoding assumptions for one L1/L2 kills future migration and upgrade flexibility—always abstract.
 * **Poor Documentation Discipline:** Untracked interface or contract changes make forensic audit and rollback impossible. Enforce doc/version hygiene in process.
 * **Insufficient Monitoring:** No alerts = slow detection of catastrophic failures. Mandate on-call and automated monitoring for every critical metric.
+* **Time-Series Data Gaps:** Missing data points in financial time-series can lead to model failures or incorrect risk assessments. Implement robust validation and gap detection.
+* **Unbounded Computation:** Financial models without explicit resource limits can exhaust system resources. Always implement timeouts and circuit breakers.
+* **Financial Model Data Skew:** Time skew in financial data can lead to erroneous model outputs. Ensure consistent timestamps and time zone handling.
 
 ---
 
@@ -92,3 +108,5 @@
 * [Ethereum Finality & Reorgs](https://ethereum.org/en/developers/docs/consensus-mechanisms/pbft/)
 * [Chainlink VRF Docs](https://docs.chain.link/vrf/)
 * [Cosmos SDK Security](https://docs.cosmos.network/main/security.html)
+* [Time-Series Data Storage Patterns](./TIME_SERIES_STORAGE_GUIDE.md)
+* [Financial Model Computation Resource Guide](./FINANCIAL_COMPUTATION_GUIDE.md)
