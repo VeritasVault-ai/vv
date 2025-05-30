@@ -36,15 +36,47 @@ Core modules integrate with each other through:
 * **Service Interfaces**: Capabilities are exposed through defined interfaces
 * **Configuration Injection**: Modules receive configuration from central sources
 
+## Enhanced Integration Monitoring
+
+### Cross-Module Dependency Tracking
+
+The system implements comprehensive dependency tracking to ensure reliable cross-module integration:
+
+* **Dependency Graph Visualization**: Real-time visualization of module dependencies
+* **Circular Dependency Detection**: Automated identification of problematic circular dependencies
+* **Dependency Health Metrics**: Monitoring of dependency performance and reliability
+* **Dependency Version Tracking**: Tracking of interface versions and compatibility
+
+### Integration Health Dashboards
+
+Dedicated dashboards provide visibility into the health of cross-module integrations:
+
+* **Integration Status Overview**: High-level view of all integration points
+* **Latency Monitoring**: Real-time tracking of cross-module communication latency
+* **Error Rate Tracking**: Monitoring of failures at integration boundaries
+* **Throughput Visualization**: Visualization of message volume across integration points
+* **Circuit Breaker Status**: Current state of all integration circuit breakers
+
+### Service-Level Agreements
+
+Formal SLAs are established between modules to ensure reliable integration:
+
+* **Response Time Requirements**: Maximum acceptable latency for cross-module requests
+* **Availability Guarantees**: Uptime requirements for each module
+* **Error Rate Thresholds**: Maximum acceptable error rates at integration points
+* **Throughput Commitments**: Guaranteed message processing capacity
+* **Recovery Time Objectives**: Maximum time to recover from failures
+
 ## Higher-Level Integration
 
 ### Protocol Security Integration
 
 Security-focused modules provide infrastructure for all higher layers:
 
-* **SecurityController** provides RBAC for all privileged operations
-* **RateLimiter** protects all public-facing interfaces
-* **GasController** ensures economic viability of all operations
+* **ProtocolSecurityManager** provides unified security services including:
+  * RBAC for all privileged operations
+  * Protection for all public-facing interfaces
+  * Economic viability enforcement for all operations
 
 ### AI Module Integration
 
