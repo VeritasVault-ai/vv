@@ -111,7 +111,7 @@ The Portfolio Optimization Framework provides a unified approach to asset alloca
   * Leverages DataLake for complex analytics
 
 * **Service Integration:**
-  * Exposes APIs for Gateway domain
+  * Exposes APIs for External Interface domain
   * Receives constraints from Governance domain
   * Provides outputs to Asset Management domain
 

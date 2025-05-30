@@ -295,7 +295,7 @@ This document clearly defines what falls within and outside the scope of the Cro
 * Risk analytics
 * Control testing
 
-### Analytics/Integration Domain
+### External Interface Domain
 
 * Data pipeline infrastructure
 * Analytics processing engines
@@ -313,7 +313,7 @@ This document clearly defines what falls within and outside the scope of the Cro
 * Protocol upgrade paths
 * Emergency response systems
 
-### Gateway Domain
+### External Interface Domain
 
 * API gateway services
 * Authentication entry points

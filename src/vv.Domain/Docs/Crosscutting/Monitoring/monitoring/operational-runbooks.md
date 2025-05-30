@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-Operational Runbooks provide step-by-step procedures for routine operations, maintenance tasks, and common troubleshooting scenarios within the VeritasVault platform. These runbooks ensure consistency, quality, and efficiency in operational activities across the Integration domain.
+Operational Runbooks provide step-by-step procedures for routine operations, maintenance tasks, and common troubleshooting scenarios within the VeritasVault platform. These runbooks ensure consistency, quality, and efficiency in operational activities across the External Interface domain.
 
 ## 2. Maintenance Procedures
 

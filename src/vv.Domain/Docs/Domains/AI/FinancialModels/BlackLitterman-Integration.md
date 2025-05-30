@@ -37,7 +37,7 @@
 * Machine learning assists in view generation and confidence calibration
 * Anomaly detection identifies potential issues in model inputs or outputs
 
-### Gateway Domain
+### External Interface Domain
 
 * Interactive visualization of efficient frontier
 * Tools for specifying and adjusting investor views
