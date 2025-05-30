@@ -1,92 +1,190 @@
-# Domain Model & Responsibilities
+---
+document_type: architecture
+classification: internal
+status: draft
+version: 1.0.0
+last_updated: 2025-05-30
+applies_to: [core-infrastructure]
+dependencies: []
+reviewers: [lead-architect, secops-lead, infra-lead]
+next_review: 2025-07-15
+priority: p0
+---
 
-> Core Infrastructure Component Details
+# Core Infrastructure – Domain Model
+
+> Canonical source for all business rules, contracts, and events governing VeritasVault’s foundational security and consensus layer.
 
 ---
 
-## Module Overview
+## 1. Executive Summary
 
-The VeritasVault Core Infrastructure consists of ten primary modules, each with specific responsibilities and purposes in the overall architecture.
+The Core Infrastructure domain provides **chain-level security, consensus finality, event indexing, gas-economics, abuse control, and randomness** for every other VeritasVault artifact.  
+It embodies zero-trust principles, immutable audit, and deterministic behaviour, ensuring that higher-level business logic remains reliable even under adversarial conditions.
 
-## Module-by-Module Breakdown
+---
 
-| Module                 | Purpose                                                  | Key Responsibilities                                                                                                      |
-| ---------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **ConsensusManager**   | Chain finality, transaction inclusion, network consensus | Track/assert block finality, manage chain reorganizations, validate transactions, revert/replay on reorg, finality proofs |
-| **ChainIndexer**       | Event indexing, audit, state replay                      | Parse/index events/logs/state, manage versioned snapshots, handle reorgs, expose replay, global event ordering            |
-| **RandomnessOracle**   | Provide verifiable, unbiased randomness                  | Secure entropy aggregation, run/expose VRF, broadcast randomness, guarantee fairness and unpredictability                 |
-| **GasController**      | Network economics/gas policy                             | Manage gas usage policies, detect economic attacks, dynamic/auction fee markets, pricing models/emergency adjustment      |
-| **SecurityController** | Protocol-wide security and emergency ops                 | Enforce security/safety policies, manage RBAC, trigger emergency responses, validate/track security-sensitive ops         |
-| **RateLimiter**        | Anti-abuse, DoS, and rate control                        | Enforce account/network/global limits, throttle abuse, usage reporting, integrate with gas for mitigation                 |
-| **ChainAdapter**       | Multi-chain compatibility/abstraction                    | Normalize configs, abstract protocol differences, coordinate cross-chain state/logic, maintain compatibility              |
-| **ForkManager**        | Fork and chain split detection/management                | Detect/monitor splits, coordinate transitions, manage consensus-breaking forks, consistency/rollback/merge ops            |
-| **TimeSeriesStore**    | Financial and market time-series data                    | Efficient time-series storage, indexing, compression, and retrieval for financial models and analytics                    |
-| **ComputeOrchestrator**| Computational intensive model operations                 | Manage, scale, and optimize resource usage for financial models like Black-Litterman, covariance estimation               |
+## 2. Domain Overview
 
-## Module Consolidation Strategy
+### Responsibilities
+* Maintain canonical view of on-chain state and finality (`ConsensusManager`, `ChainIndexer`)
+* Provide verifiable randomness (`RandomnessOracle`)
+* Enforce gas / fee policy and DoS protection (`GasController`, `RateLimiter`)
+* Detect, classify, and halt on security incidents (`SecurityController`)
+* Abstract multi-chain interactions (`ChainAdapter`)
+* Manage forks and upgrades (`ForkManager`)
 
-### ProtocolSecurityManager Consolidation
+### Boundaries
+* **In-Scope:** Consensus, indexing, randomness proofs, gas policy, incident handling, rate-limiting, fork detection.
+* **Out-of-Scope:** Business-level asset logic, UI, analytics; these consume Core events through adapters.
 
-The current architecture includes three separate but closely related security modules: SecurityController, RateLimiter, and GasController. To reduce interface complexity and improve operational efficiency, these will be consolidated into a unified ProtocolSecurityManager:
+---
 
-#### Consolidation Approach
+## 3. Domain Model Structure (DDD)
 
-* **Primary Module:** SecurityController becomes the foundation for ProtocolSecurityManager
-* **Secondary Modules:** RateLimiter and GasController functionality integrated as components
-* **Interface Reduction:** Consolidated interface reduces cross-module dependencies by 60%
+### 3.1 Aggregate Roots
 
-#### Hierarchical Structure
+| Aggregate Root | Purpose |
+|----------------|---------|
+| **ConsensusManager** | Tracks finality, validates blocks, orchestrates fork resolution |
+| **ChainIndexer** | Persists full chain history & emits `ChainEvent`s |
+| **RandomnessOracle** | Supplies VRF-based randomness and proofs |
+| **GasController** | Calculates & updates `GasPolicy` rules |
+| **SecurityController** | Detects threats, triggers circuit-breakers |
+| **RateLimiter** | Maintains `RateLimitConfig`, counts actions per resource |
+| **ChainAdapter** | Uniform interface to multi-chain operations |
+| **ForkManager** | Monitors forks, coordinates safe network upgrades |
 
-1. **ProtocolSecurityManager (Core)**
-   * Central security policy enforcement
-   * Unified monitoring and alerting
-   * Coordinated emergency response
+### 3.2 Entities
 
-2. **Rate Control Component**
-   * Request rate management
-   * Abuse detection and mitigation
-   * Adaptive throttling based on system load
+| Entity | Description |
+|--------|-------------|
+| **Block** | Immutable record of transactions and metadata |
+| **ChainEvent** | Abstract superclass for all chain-level occurrences |
+| **SecurityIncident** | Detailed incident report inc. severity, proof, responder |
+| **ForkEvent** | Fork start / resolution descriptor |
 
-3. **Economic Security Component**
-   * Gas market management
-   * Economic attack detection
-   * Dynamic fee adjustment
+### 3.3 Value Objects
 
-#### Benefits of Consolidation
+| Value Object | Attributes |
+|--------------|------------|
+| **BlockHeader** | parentHash, number, timestamp, stateRoot, validatorSig |
+| **GasPolicy** | minGasPrice, maxGasPrice, baseFee, surgeMultiplier |
+| **ChainConfig** | chainId, consensusAlgo, finalityDepth |
+| **VRFProof** | output, proof, blockNumber |
+| **RateLimitConfig** | resourceId, maxRequests, timeWindowSecs |
 
-* **Simplified Interface:** Single point of integration for all security-related operations
-* **Consistent Policy Enforcement:** Unified approach to security across rate limiting and economic controls
-* **Coordinated Response:** Integrated response to attacks that span rate limiting and economic vectors
-* **Reduced Duplication:** Elimination of overlapping monitoring and enforcement code
-* **Improved Performance:** Optimized security checks through consolidated processing
+### 3.4 Domain Events
 
-## Module Interactions
+| Event | Trigger |
+|-------|---------|
+| **BlockFinalized** | Finality threshold reached for `Block` |
+| **ChainReorg** | Competing longer chain detected within `finalityDepth` |
+| **RandomnessRequested** | Module requests VRF through `RandomnessOracle` |
+| **RandomnessDelivered** | VRFProof validated and delivered |
+| **GasPolicyUpdated** | Governance-approved policy change applied |
+| **RateLimitBreached** | `RateLimiter` flags exceeding actor/resource |
+| **SecurityIncidentDetected** | Threat identified; `SecurityController` engaged |
+| **ForkDetected** | Divergent fork identified by `ForkManager` |
 
-### Chain Integrity Subsystem
-- **ConsensusManager**, **ChainIndexer**, and **ForkManager** work together to ensure chain integrity
-- **ConsensusManager** tracks finality while **ChainIndexer** maintains indexed state
-- **ForkManager** provides mitigation strategies during chain splits
+### 3.5 Repository Contracts (Interfaces)
 
-### Security Subsystem
-- **ProtocolSecurityManager** provides integrated protocol-wide security measures
-- **RandomnessOracle** ensures secure, unpredictable entropy for all protocol operations
+```csharp
+public interface IConsensusRepository
+{
+    Task<Block?> GetBlockAsync(long number);
+    Task AppendBlockAsync(Block block);
+    Task<bool> IsFinalizedAsync(long number);
+}
 
-### Chain Flexibility Subsystem
-- **ChainAdapter** enables multi-chain compatibility
-- Interfaces with **ConsensusManager** and **ForkManager** to handle chain-specific behaviors
-- Abstracts chain differences from higher-level modules
+public interface IChainIndexerRepository
+{
+    IAsyncEnumerable<ChainEvent> StreamEvents(long fromBlock);
+}
 
-### Financial Data Subsystem
-- **TimeSeriesStore** optimizes storage of financial time-series data
-- **ComputeOrchestrator** manages computational resources for financial models
-- Together they support the AI and DeFi capabilities of the upper layers
+public interface IRandomnessRepository
+{
+    Task<VRFProof?> RequestRandomAsync(byte[] seed);
+}
 
-## Consistency Guarantees
+public interface ISecurityIncidentRepository
+{
+    Task LogIncidentAsync(SecurityIncident incident);
+    Task<IEnumerable<SecurityIncident>> QueryAsync(DateTime from, DateTime to);
+}
 
-All modules adhere to the following consistency guarantees:
+public interface IRateLimitRepository
+{
+    Task<bool> IncrementAsync(string resourceId, string actorId);
+    Task<RateLimitConfig> GetConfigAsync(string resourceId);
+}
 
-1. **Event Sourcing**: All state changes are recorded as immutable events
-2. **Eventual Consistency**: System will converge to a consistent state
-3. **Replayability**: System state can be reconstructed through event replay
-4. **Atomic Updates**: Related state changes occur as atomic operations
-5. **Isolation**: Modules operate independently with well-defined interfaces
+public interface IForkRepository
+{
+    Task RecordForkAsync(ForkEvent fork);
+    Task<IEnumerable<ForkEvent>> GetActiveForksAsync();
+}
+```
+
+### 3.6 Business Rules & Invariants
+
+| # | Rule |
+|---|------|
+| BR-1 | `Block.number` **must** be sequential and parentHash verified before persistence. |
+| BR-2 | Re-org depth **must not** exceed `ChainConfig.finalityDepth`; otherwise trigger `SecurityIncidentDetected`. |
+| BR-3 | `VRFProof` **must** be verifiable against block hash; otherwise reject randomness. |
+| BR-4 | `GasPolicy` updates require multi-sig governance and emit `GasPolicyUpdated`. |
+| BR-5 | `RateLimiter` denies requests once actor exceeds `maxRequests` within `timeWindowSecs`. |
+| BR-6 | Critical `SecurityIncident` severity ≥ **P1** triggers protocol circuit-breaker (halts trading). |
+
+---
+
+## 4. Integration Points
+
+| Domain | Interaction |
+|--------|-------------|
+| **Risk & Compliance** | Consumes `SecurityIncidentDetected`, `GasPolicyUpdated`, `RateLimitBreached` |
+| **Asset & Trading** | Waits for `BlockFinalized` to settle trades; uses `RandomnessOracle` for AMM curves |
+| **Integration Gateway** | Relies on `ChainAdapter` for cross-chain proofs |
+| **Governance & Ops** | Approves `GasPolicy` changes, triggers upgrades via `ForkManager` |
+| **AI / ML** | Feeds on `ChainEvent` stream for anomaly detection models |
+
+---
+
+## 5. Security Considerations
+
+* **Zero-Trust Enforcement** – All external calls pass through `ChainAdapter` with signature verification.  
+* **Defense-in-Depth** – Rate limiting, gas throttling, circuit breakers layered to mitigate DoS.  
+* **Immutable Audit** – All aggregates emit tamper-proof events; stored by Risk & Audit domain.  
+* **Fork Handling** – `ForkManager` locks critical operations until consensus on longest chain.  
+* **Randomness Abuse Resistance** – VRF proofs anchored to finalized blocks, preventing prediction.
+
+---
+
+## 6. Implementation Phases
+
+| Phase | Scope | Key Deliverables |
+|-------|-------|------------------|
+| **1 – Baseline (by 07 Jun 2025)** | ConsensusManager, ChainIndexer, basic RateLimiter | Block storage, event stream, DoS throttle |
+| **2 – Security & Randomness (by 24 Jun 2025)** | SecurityController, RandomnessOracle | VRF integration, incident logging, circuit breakers |
+| **3 – Multi-Chain & Forks (by 10 Jul 2025)** | ChainAdapter, ForkManager | Cross-chain abstraction, upgrade orchestration |
+| **Post-MVP** | Advanced gas economics, adaptive rate limits, chaos-testing hooks | Dynamic GasController, self-healing |
+
+---
+
+## 7. References
+
+* `ARCHITECTURE.md` – platform-level overview (single source of truth)  
+* [Cross-Cutting Design](../../Crosscutting/Design.md) – uniform security patterns  
+* Ethereum Yellow Paper – consensus fundamentals  
+* RFC 9380 VRF – randomness proof standard  
+
+---
+
+## 8. Change Log
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0.0 | 2025-05-30 | Factory Assistant | Initial Core Infrastructure domain model |
+
+---
