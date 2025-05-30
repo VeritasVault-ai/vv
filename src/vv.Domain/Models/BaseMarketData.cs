@@ -19,6 +19,8 @@ public abstract class BaseMarketData : IMarketDataEntity, ISoftDeletable
     private DateOnly _asOfDate;
     private string _displayAssetId = string.Empty;
     private List<string> _tags = new();
+    private string? _baseVersionId;
+    private bool _isLatestVersion = true;
 
     // Set of property names that affect ID calculation
     private static readonly HashSet<string> IdDependentProperties = new(StringComparer.OrdinalIgnoreCase)
@@ -171,6 +173,24 @@ public abstract class BaseMarketData : IMarketDataEntity, ISoftDeletable
 
     public TimeOnly? AsOfTime { get; set; }
     public bool IsDeleted { get; set; }
+
+    /// <summary>
+    /// Gets or sets the base version ID
+    /// </summary>
+    public string? BaseVersionId
+    {
+        get => _baseVersionId;
+        set => SetProperty(ref _baseVersionId, value, nameof(BaseVersionId));
+    }
+
+    /// <summary>
+    /// Gets or sets whether this entity is the latest version
+    /// </summary>
+    public bool IsLatestVersion
+    {
+        get => _isLatestVersion;
+        set => SetProperty(ref _isLatestVersion, value, nameof(IsLatestVersion));
+    }
 
     private string CalculateId()
     {

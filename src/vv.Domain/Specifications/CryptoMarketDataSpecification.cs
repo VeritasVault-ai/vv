@@ -37,13 +37,13 @@ namespace vv.Domain.Specifications
 
         public CryptoMarketDataSpecification WithSymbol(string symbol)
         {
-            _criteria = _criteria.And(x => x.Symbol == symbol);
+            _criteria = _criteria.And(x => x.AssetId.Contains(symbol, StringComparison.OrdinalIgnoreCase));
             return this;
         }
 
         public CryptoMarketDataSpecification WithMinVolume(decimal minVolume)
         {
-            _criteria = _criteria.And(x => x.Volume24H >= minVolume);
+            _criteria = _criteria.And(x => x.Volume >= minVolume);
             return this;
         }
 

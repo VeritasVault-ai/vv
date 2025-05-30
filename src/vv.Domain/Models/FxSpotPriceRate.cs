@@ -1,4 +1,5 @@
 using System;
+using vv.Domain.Models.Exceptions;
 
 namespace vv.Domain.Models
 {
@@ -26,6 +27,18 @@ namespace vv.Domain.Models
         /// Date of the rate
         /// </summary>
         public DateOnly AsOfDate { get; set; }
+        
+        /// <summary>
+        /// </summary>
+        public string AssetId { get; set; } = string.Empty;
+        
+        /// <summary>
+        /// </summary>
+        public decimal BidPrice { get; set; }
+        
+        /// <summary>
+        /// </summary>
+        public decimal AskPrice { get; set; }
 
         /// <summary>
         /// Creates a domain object from a data entity
@@ -48,7 +61,10 @@ namespace vv.Domain.Models
                 BaseCurrency = baseCurrency,
                 QuoteCurrency = quoteCurrency,
                 Rate = entity.Rate,
-                AsOfDate = entity.AsOfDate
+                AsOfDate = entity.AsOfDate,
+                AssetId = entity.AssetId ?? string.Empty,
+                BidPrice = entity.Rate * 0.999m, // Slightly lower than mid rate
+                AskPrice = entity.Rate * 1.001m  // Slightly higher than mid rate
             };
         }
 

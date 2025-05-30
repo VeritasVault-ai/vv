@@ -1,52 +1,72 @@
-using vv.Domain.Models;
-using vv.Domain.Models.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using vv.Domain.Models;
 
 namespace vv.Domain.Services
 {
+    /// <summary>
+    /// Service for managing cryptocurrency market data
+    /// </summary>
     public interface ICryptoMarketDataService
     {
-        // Price retrieval operations
-        Task<CryptoSpotPriceData> GetLatestPriceAsync(
+        /// <summary>
+        /// Gets the latest price data for a cryptocurrency trading pair
+        /// </summary>
+        /// <param name="baseAsset">Base asset symbol</param>
+        /// <param name="quoteAsset">Quote asset symbol</param>
+        /// <param name="exchange">Exchange name</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The latest price data, or null if not found</returns>
+        Task<CryptoSpotPriceData?> GetLatestPriceDataAsync(
+            string baseAsset,
+            string quoteAsset,
             string exchange,
-            string baseAsset,
-            string quoteAsset,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<CryptoSpotPriceData>> GetHistoricalPricesAsync(
+        /// <summary>
+        /// Gets historical price data for a cryptocurrency trading pair
+        /// </summary>
+        /// <param name="baseAsset">Base asset symbol</param>
+        /// <param name="quoteAsset">Quote asset symbol</param>
+        /// <param name="exchange">Exchange name</param>
+        /// <param name="startDate">Start date for historical data</param>
+        /// <param name="endDate">End date for historical data</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Collection of historical price data points</returns>
+        Task<IEnumerable<CryptoSpotPriceData?>> GetHistoricalPriceDataAsync(
+            string baseAsset,
+            string quoteAsset,
             string exchange,
-            string baseAsset,
-            string quoteAsset,
-            DateOnly fromDate,
-            DateOnly toDate,
+            DateOnly startDate,
+            DateOnly endDate,
             CancellationToken cancellationToken = default);
 
-        // Market analysis operations
-        Task<decimal> CalculateVolatilityAsync(
+        /// <summary>
+        /// Saves cryptocurrency price data
+        /// </summary>
+        /// <param name="priceData">Price data to save</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The saved price data</returns>
+        Task<CryptoSpotPriceData> SavePriceDataAsync(
+            CryptoSpotPriceData priceData,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Detects anomalies in cryptocurrency price data
+        /// </summary>
+        /// <param name="baseAsset">Base asset symbol</param>
+        /// <param name="quoteAsset">Quote asset symbol</param>
+        /// <param name="exchange">Exchange name</param>
+        /// <param name="lookbackDays">Number of days to look back for anomaly detection</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Collection of anomalous price data points</returns>
+        Task<IEnumerable<CryptoSpotPriceData>> DetectAnomaliesAsync(
+            string baseAsset,
+            string quoteAsset,
             string exchange,
-            string baseAsset,
-            string quoteAsset,
-            int days,
-            CancellationToken cancellationToken = default);
-
-        Task<Dictionary<string, decimal>> GetMarketCapitalizationAsync(
-            string[] assets = null,
-            CancellationToken cancellationToken = default);
-
-        // Cross-exchange operations
-        Task<Dictionary<string, decimal>> GetArbitrageOpportunitiesAsync(
-            string baseAsset,
-            string quoteAsset,
-            string[] exchanges,
-            CancellationToken cancellationToken = default);
-
-        Task<IEnumerable<CryptoSpotPriceData>> GetCrossExchangePricesAsync(
-            string baseAsset,
-            string quoteAsset,
-            string[] exchanges = null,
+            int lookbackDays = 30,
             CancellationToken cancellationToken = default);
     }
 }

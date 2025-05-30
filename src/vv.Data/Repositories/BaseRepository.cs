@@ -7,6 +7,7 @@ using MediatR;
 using vv.Domain.Events;
 using vv.Domain.Models;
 using vv.Domain.Repositories;
+using vv.Domain.Repositories.Components;
 
 namespace vv.Data.Repositories
 {

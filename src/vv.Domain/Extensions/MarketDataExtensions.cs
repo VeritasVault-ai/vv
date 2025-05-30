@@ -1,4 +1,5 @@
 using vv.Domain.Models;
+using vv.Domain.Models.ValueObjects;
 using System;
 
 namespace vv.Domain.Extensions

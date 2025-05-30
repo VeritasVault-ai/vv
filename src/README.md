@@ -80,28 +80,26 @@ A modular, zero-compromise, institution-grade DeFi stack. Each domain is indepen
 
 ---
 
-#### 4. Integration, Analytics & Access
+#### 4. External Interface
 
-> Secure Multi-Chain Interop, API Management, and Analytics
+> Unified Gateway for API, Integration, and Cross-Chain Communication
 
-* **Bridge:** Atomic cross-chain transfer, message delivery.
-* **MessageBus:** Event/notification routing and queueing.
-* **PriceOracle:** Consensus price feeds, anomaly detection.
-* **IntegrationManager:** Protocol adapters, external protocol orchestration.
-* **AdapterManager:** Bot management and integration lifecycle.
-* **APIGateway:** API perimeter with rate limiting, auth, and monitoring.
-* **Identity:** Permissioned access, entity mapping, and onboarding.
-* **WhitelistManager:** Access registry and permissions control.
-* **AnalyticsEngine:** Real-time system metrics, reporting.
-* **DataLake:** Historical data archiving and querying.
+* **APIGateway:** Central entry point for all API requests
+* **Bridge:** Cross-chain communication and asset transfer
+* **MessageBus:** Unified event routing and notification
+* **PriceOracle:** Canonical price data source
+* **IntegrationManager:** Protocol adapters and external system integration
+* **AdapterManager:** External protocol lifecycle management
+* **AnalyticsEngine:** Real-time system metrics, reporting
+* **DataLake:** Historical data archiving and querying
 
 **Domain Models:**
 
-* BridgeTransfer, CrossChainMessage, PriceFeed, Adapter, APIKey, Identity, WhitelistEntry, AnalyticsMetric, DataLakeEntry
+* BridgeTransfer, CrossChainMessage, PriceFeed, Adapter, APIKey, IntegrationConfig, AnalyticsMetric, DataLakeEntry
 
 **Events:**
 
-* BridgeTransferCompleted, MessageDelivered, PriceUpdated, AdapterRegistered, APIKeyIssued, AccessGranted, MetricTracked, DataArchived
+* BridgeTransferCompleted, MessageDelivered, PriceUpdated, AdapterRegistered, APIKeyIssued, IntegrationActivated, MetricTracked, DataArchived
 
 ---
 
@@ -150,22 +148,25 @@ A modular, zero-compromise, institution-grade DeFi stack. Each domain is indepen
 
 ---
 
-#### 7. Integration Gateway
+#### 7. Security
 
-> External Integration and API Management
+> Centralized Security Services and Zero-Trust Implementation
 
-* **APIGateway:** API access, key management, rate limiting, access control
-* **AdapterManager:** Protocol adapter and bot management
-* **IntegrationManager:** Integration orchestration, yield sources, upgrades
-* **MessageBus:** Event delivery, notification routing, state change propagation
+* **IdentityService:** User and entity identity management
+* **AuthenticationService:** Credential verification and session management
+* **AuthorizationService:** Permission and access control
+* **AuditService:** Immutable audit logging across all domains
+* **ThreatDetection:** System-wide threat monitoring
+* **ComplianceEngine:** Regulatory compliance enforcement
+* **RateLimiter:** Unified rate limiting and abuse prevention
 
 **Domain Models:**
 
-APIKey, Adapter, Bot, Integration, IntegrationEvent
+Identity, Credential, Permission, AuditRecord, SecurityIncident, ComplianceReport, RateLimitPolicy
 
 **Events:**
 
-APIKeyCreated, APIKeyRevoked, AdapterRegistered, BotRegistered, IntegrationUpgraded, MessageDelivered
+IdentityCreated, AuthenticationSucceeded, AuthorizationGranted, AuditRecorded, ThreatDetected, ComplianceVerified, RateLimitExceeded
 
 ---
 
@@ -202,8 +203,9 @@ The Domain Layer is the **bedrock** of VeritasVault’s modular, institution-gra
 * **Core Infrastructure:** Finality, consensus, security, chain adaptation
 * **Risk & Compliance:** Risk analytics, compliance logic, immutable audit trails
 * **Asset & Trading:** Asset lifecycle, AMM logic, trading, and settlement
-* **Integration & Analytics:** Bridges, oracles, adapters, analytics contracts
-* **AI/ML:** Model registry, security, fairness, governance, operator incentives, deployment, and regulatory compliance
+* **External Interface:** API gateway, bridges, oracles, adapters, analytics
+* **Security:** Authentication, authorization, audit, threat detection
+* **AI/ML:** Model registry, fairness, governance, operator incentives, deployment, and regulatory compliance
 * **Governance & Ops:** On-chain voting, parameters, upgrades, treasury, custody, arbitration
 
 > *Each folder maps to a primary vertical (business function). All cross-cutting concerns—security, audit, access control—are encoded directly into models or interfaces, never bolted on.*
@@ -262,9 +264,9 @@ All dependencies point inward toward the domain, following the same patterns as 
 * [AI/ML Architecture Reference](./ai/README.md)
 * [Asset & Trading Logic](./assets/README.md)
 * [Core Infrastructure](./core/README.md)
-* [Gateway](./gateway/README.md)
+* [External Interface](./externalinterface/README.md)
 * [Governance & Upgrade Reference](./governance/README.md)
-* [Integration, Analytics & Access](./integration/README.md)
+* [Security](./security/README.md)
 * [Risk, Compliance & Audit](./risk/README.md)
 
 ---

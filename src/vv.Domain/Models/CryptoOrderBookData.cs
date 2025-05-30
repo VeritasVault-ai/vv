@@ -5,10 +5,10 @@ namespace vv.Domain.Models
 {
     public class CryptoOrderBookData : BaseMarketData
     {
-        public string Exchange { get; set; }
-        public string BaseAsset { get; set; }
-        public string QuoteAsset { get; set; }
-        public string Symbol { get; set; }
+        public required string Exchange { get; set; }
+        public required string BaseAsset { get; set; }
+        public required string QuoteAsset { get; set; }
+        public required string Symbol { get; set; }
         public DateTimeOffset Timestamp { get; set; }
         public List<OrderBookLevel> Bids { get; set; } = new List<OrderBookLevel>();
         public List<OrderBookLevel> Asks { get; set; } = new List<OrderBookLevel>();
