@@ -1,7 +1,15 @@
 ---
-
-# VeritasVault Asset, Trading & Settlement – Best Practices, Guidelines, Recommendations, Pitfalls
-
+document_type: guide
+classification: internal
+status: draft
+version: 0.1.0
+last_updated: '2025-05-31'
+applies_to:
+- Asset
+reviewers:
+- '@tech-lead'
+priority: p2
+next_review: '2026-05-31'
 ---
 
 ## 1. Best Practices (Phase 1 – MVP & Beyond)

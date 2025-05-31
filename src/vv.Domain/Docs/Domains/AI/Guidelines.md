@@ -1,9 +1,15 @@
 ---
-
-# AI/ML Architecture Best Practices Canvas (VeritasVault / Phoenix)
-
-> **If you don’t build it to withstand an audit, a rollback, or a targeted attack, you’re not building for DeFi or institutional finance.**
-
+document_type: guide
+classification: internal
+status: draft
+version: 0.1.0
+last_updated: '2025-05-31'
+applies_to:
+- AI
+reviewers:
+- '@tech-lead'
+priority: p2
+next_review: '2026-05-31'
 ---
 
 ## 1. Layout, Coding, and Style Guidelines
