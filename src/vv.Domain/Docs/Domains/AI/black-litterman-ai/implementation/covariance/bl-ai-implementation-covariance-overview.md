@@ -135,6 +135,6 @@ For detailed implementation of specific covariance estimation approaches, refer 
 ---
 
 **Related Documents:**
-* [AI-Enhanced Components Overview](../bl-ai-components.md)
+* [AI-Enhanced Components Overview](../../bl-ai-components.md)
 * [Implementation Overview](../bl-ai-implementation-overview.md)
 * [ML-Enhanced Shrinkage: Overview & Theory](./shrinkage/bl-ai-shrinkage-overview.md)

@@ -26,11 +26,11 @@ This document outlines the standards and best practices for implementing APIs wi
 
 To maintain a well-organized set of standards, we've divided API implementation guidance into the following areas:
 
-* [Request and Response Standards](./api-standards/request-response-standards.md)
-* [API Versioning Standards](./api-standards/versioning-standards.md)
-* [API Security Standards](./api-standards/security-standards.md)
-* [API Documentation Standards](./api-standards/documentation-standards.md)
-* [API Performance Standards](./api-standards/performance-standards.md)
+* [Request and Response Standards](../implementation-guidance/api-standards/request-response-standards.md)
+* [API Versioning Standards](versioning-standards.md)
+* [API Security Standards](security-standards.md)
+* [API Documentation Standards](documentation-standards.md)
+* [API Performance Standards](performance-standards.md)
 
 ## General API Principles
 

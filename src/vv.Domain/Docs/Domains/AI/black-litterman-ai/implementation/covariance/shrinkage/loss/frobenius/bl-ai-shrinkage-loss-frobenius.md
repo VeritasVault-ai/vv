@@ -234,7 +234,7 @@ def test_frobenius_loss():
 ---
 
 **Related Documents:**
-* [ML-Enhanced Shrinkage: Overview & Theory](../bl-ai-shrinkage-overview.md)
-* [ML-Enhanced Shrinkage: Model Architecture](../bl-ai-shrinkage-model.md)
-* [Spectral Norm Loss Function](../loss/spectral/bl-ai-shrinkage-loss-spectral.md)
+* [ML-Enhanced Shrinkage: Overview & Theory](../../bl-ai-shrinkage-overview.md)
+* [ML-Enhanced Shrinkage: Model Architecture](../../bl-ai-shrinkage-model.md)
+* [Spectral Norm Loss Function](../spectral/bl-ai-shrinkage-loss-spectral.md)
 * [KL Divergence Loss Function](../loss/kl/bl-ai-shrinkage-loss-kl.md)

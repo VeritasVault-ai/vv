@@ -26,11 +26,11 @@ This document provides high-level implementation guidance for the External Inter
 
 Each area below has dedicated implementation guidance to ensure consistent implementation of gateway components:
 
-* [API Standards](./implementation-guidance/api-standards.md)
-* [Authentication Implementation](./implementation-guidance/authentication-implementation.md)
-* [UI Implementation](./implementation-guidance/ui-implementation.md)
-* [Visualization Implementation](./implementation-guidance/visualization-implementation.md)
-* [Security Implementation](./implementation-guidance/security-implementation.md)
+* [API Standards](../api-standards/api-standards.md)
+* [Authentication Implementation](../../Security/implementation/authentication-implementation.md)
+* [UI Implementation](../ui/ui-implementation.md)
+* [Visualization Implementation](../visualization/visualization-implementation.md)
+* [Security Implementation](../../Security/implementation-guidance/security-implementation.md)
 
 ## General Implementation Principles
 

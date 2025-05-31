@@ -97,4 +97,4 @@ Covariance matrices are central to modern portfolio theory, risk management, and
 * [Covariance Estimation Methods](./covariance-estimation-methods.md)
 * [Covariance Estimation Implementation](./covariance-estimation-implementation.md)
 * [Covariance Estimation Reference](./covariance-estimation-reference.md)
-* [Black-Litterman Model](../Integration/FinancialModels/BlackLitterman.md)
+* [Black-Litterman Model](FinancialModels/BlackLitterman.md)

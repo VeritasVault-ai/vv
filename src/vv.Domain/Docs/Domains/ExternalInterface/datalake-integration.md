@@ -311,7 +311,7 @@ The Data Lake Integration framework provides a comprehensive solution for connec
 ## 9. References & Resources
 
 * [Time Series Data Management](./time-series-management.md)
-* [Performance Benchmarks](./performance-benchmarks.md)
+* [Performance Benchmarks](../../Crosscutting/Monitoring/performance-benchmarks.md)
 * [API Performance](./benchmarks/api-performance.md)
 * [Data Processing Performance](./benchmarks/data-processing.md)
 * [Storage Performance](./benchmarks/storage-performance.md)

@@ -270,7 +270,7 @@ For detailed testing procedures, refer to [Testing Methodologies](./testing-meth
 
 ## 10. References
 
-* [Performance Benchmarks](../performance-benchmarks.md)
+* [Performance Benchmarks](../../../Crosscutting/Monitoring/performance-benchmarks.md)
 * [API Performance](./api-performance.md)
 * [Data Processing](./data-processing.md)
 * [Resource Utilization](./resource-utilization.md)

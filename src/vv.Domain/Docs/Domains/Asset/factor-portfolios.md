@@ -47,7 +47,7 @@ VeritasVault supports multiple factor modeling approaches:
 * **Implementation**: Rank assets on factor, select/weight highest-ranking securities
 * **Example**: Value-focused portfolio overweighting stocks with low P/B ratios
 
-For details, see [Single-Factor Models](./single-factor-models.md).
+For details, see [Single-Factor Models](factor-models/equity-factors/single-factor-models.md).
 
 #### Multi-Factor Models
 
@@ -56,7 +56,7 @@ For details, see [Single-Factor Models](./single-factor-models.md).
 * **Implementation**: Combined scoring or sequential filtering approaches
 * **Example**: Portfolio targeting value, momentum, and quality factors simultaneously
 
-For details, see [Multi-Factor Models](./multi-factor-models.md).
+For details, see [Multi-Factor Models](factor-models/multi-factor/multi-factor-models.md).
 
 #### Risk Factor Parity
 
@@ -65,7 +65,7 @@ For details, see [Multi-Factor Models](./multi-factor-models.md).
 * **Implementation**: Factor covariance estimation, risk contribution equalization
 * **Example**: Portfolio with equal risk contribution from value, quality, and low volatility factors
 
-For details, see [Risk Factor Parity](./risk-factor-parity.md).
+For details, see [Risk Factor Parity](../Risk/risk-measures/risk-factor-parity.md).
 
 #### Factor Tilting
 
@@ -74,7 +74,7 @@ For details, see [Risk Factor Parity](./risk-factor-parity.md).
 * **Implementation**: Tactical adjustment of factor loadings based on outlook
 * **Example**: Portfolio with market exposure and tactical tilt toward momentum in bull markets
 
-For details, see [Factor Tilting Strategies](./factor-tilting.md).
+For details, see [Factor Tilting Strategies](portfolio-management/factor-tilting.md).
 
 ## Implementation Process
 

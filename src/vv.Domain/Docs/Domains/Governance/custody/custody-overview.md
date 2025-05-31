@@ -158,5 +158,5 @@ The protocol implements a tiered custody architecture that applies different sec
 * [Custody Security Measures](./custody-security.md)
 * [Custody Operations](./custody-operations.md)
 * [Custody Recovery Procedures](./custody-recovery.md)
-* [Treasury Management](./treasury-management.md)
-* [Governance Architecture](./governance-architecture.md)
+* [Treasury Management](../treasury/treasury-management.md)
+* [Governance Architecture](../governance-architecture.md)

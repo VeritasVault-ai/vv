@@ -228,7 +228,7 @@ VeritasVault implements the Risk Management Module with these components:
 ## Related Documentation
 
 * [Core Modules](../core-modules.md) - Overview of all core modules
-* [Risk Measures Overview](../../risk-management/risk-measures-overview.md) - Detailed risk measure documentation
-* [Downside Risk Measures](../../risk-management/downside-risk-measures.md) - Specialized downside risk metrics
-* [Tail Risk Measures](../../risk-management/tail-risk/tail-risk-overview.md) - Extreme risk measurement
-* [Scenario Analysis](../../risk-management/scenario-analysis/index.md) - Scenario-based risk assessment
+* [Risk Measures Overview](../../../Risk/risk-measures/risk-measures-overview.md) - Detailed risk measure documentation
+* [Downside Risk Measures](../../../Risk/risk-measures/downside-risk-measures.md) - Specialized downside risk metrics
+* [Tail Risk Measures](../../../Risk/tail-risk/tail-risk-overview.md) - Extreme risk measurement
+* [Scenario Analysis](../../portfolio-management/index.md) - Scenario-based risk assessment

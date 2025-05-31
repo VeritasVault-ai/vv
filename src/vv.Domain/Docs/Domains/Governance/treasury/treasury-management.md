@@ -246,7 +246,7 @@ Treasury assets are categorized into risk tiers that determine their allocation 
 ## References
 
 * [Treasury Overview](./treasury-overview.md)
-* [Grant Distribution](./grant-distribution.md)
-* [Budget Approval](./budget-approval.md)
-* [Financial Model Governance](./financial-model-governance.md)
-* [Governance Architecture](./governance-architecture.md)
+* [Grant Distribution](../grant-distribution.md)
+* [Budget Approval](../budget-approval.md)
+* [Financial Model Governance](../financial-model-governance.md)
+* [Governance Architecture](../governance-architecture.md)

@@ -286,7 +286,7 @@ This document outlines the comprehensive process for budgeting, approval, and fi
 
 ## References
 
-* [Treasury Overview](./treasury-overview.md)
-* [Treasury Management](./treasury-management.md)
+* [Treasury Overview](treasury/treasury-overview.md)
+* [Treasury Management](treasury/treasury-management.md)
 * [Grant Distribution](./grant-distribution.md)
 * [Governance Architecture](./governance-architecture.md)

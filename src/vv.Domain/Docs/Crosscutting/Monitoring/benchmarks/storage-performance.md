@@ -275,7 +275,7 @@ For detailed testing procedures, refer to [Testing Methodologies](./testing-meth
 * [Data Processing](./data-processing.md)
 * [Resource Utilization](./resource-utilization.md)
 * [Testing Methodologies](./testing-methodologies.md)
-* [Time Series Management](../time-series-management.md)
+* [Time Series Management](../../../Domains/ExternalInterface/time-series-management.md)
 
 ---
 

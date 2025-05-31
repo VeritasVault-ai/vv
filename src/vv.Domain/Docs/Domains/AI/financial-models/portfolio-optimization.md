@@ -67,7 +67,7 @@ The Portfolio Optimization Framework provides a unified infrastructure for const
   * Optimal allocation determination
 
 * **Implementation:**
-  * See [Black-Litterman Model](./FinancialModels/BlackLitterman.md) for details
+  * See [Black-Litterman Model](../FinancialModels/BlackLitterman.md) for details
 
 ### Risk Parity
 
@@ -273,6 +273,6 @@ The Portfolio Optimization Framework provides a unified infrastructure for const
 ---
 
 **Related Documentation:**
-* [Black-Litterman Model](./FinancialModels/BlackLitterman.md)
-* [Time Series Data Management](./time-series-management.md)
-* [Covariance Estimation Techniques](../AI/covariance-estimation.md)
+* [Black-Litterman Model](../FinancialModels/BlackLitterman.md)
+* [Time Series Data Management](../../ExternalInterface/time-series-management.md)
+* [Covariance Estimation Techniques](../covariance-estimation.md)

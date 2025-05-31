@@ -211,9 +211,9 @@ All bridge operations on critical paths must meet:
 ## 7. References & Resources
 
 * [Main Performance Benchmarks](../performance-benchmarks.md)
-* [Bridge Specification](../bridge-specification.md)
+* [Bridge Specification](../../../Domains/ExternalInterface/bridge-specification.md)
 * [Testing Methodologies](./testing-methodologies.md)
-* [Security Standards](../../Crosscutting/implementation-guidance/security.md)
+* [Security Standards](../../implementation-guidance/security.md)
 
 ---
 

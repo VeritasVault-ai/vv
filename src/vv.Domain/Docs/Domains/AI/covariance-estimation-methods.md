@@ -167,4 +167,4 @@ next_review: '2026-05-31'
 * [Covariance Estimation Overview](./covariance-estimation-overview.md)
 * [Covariance Estimation Implementation](./covariance-estimation-implementation.md)
 * [Covariance Estimation Reference](./covariance-estimation-reference.md)
-* [Black-Litterman Model](../Integration/FinancialModels/BlackLitterman.md)
+* [Black-Litterman Model](FinancialModels/BlackLitterman.md)

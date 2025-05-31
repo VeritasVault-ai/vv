@@ -114,4 +114,4 @@ The implementation follows a phased approach:
 * [OAuth 2.0 Framework](https://oauth.net/2/)
 * [OpenID Connect](https://openid.net/connect/)
 * [FIDO Alliance](https://fidoalliance.org/)
-* [Detailed Implementation Guidance](../implementation-guidance/authentication-implementation.md)
+* [Detailed Implementation Guidance](implementation/authentication-implementation.md)

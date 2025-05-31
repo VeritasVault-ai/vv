@@ -476,8 +476,8 @@ This document outlines the architectural design of the VeritasVault governance s
 
 ## References
 
-* [Treasury Operations](./treasury-operations.md)
-* [Custody Protocol](./custody-protocol.md)
+* [Treasury Operations](treasury/treasury-operations.md)
+* [Custody Protocol](custody/custody-protocol.md)
 * [Operations Playbook](./operations-playbook.md)
 * [Financial Model Governance](./financial-model-governance.md)
 * [Compound Governance Framework](https://compound.finance/governance)

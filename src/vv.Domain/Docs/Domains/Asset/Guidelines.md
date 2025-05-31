@@ -90,12 +90,12 @@ next_review: '2026-05-31'
 
 ## 5. References & Implementation Resources
 
-* [Architecture/DDD Spec](./ARCHITECTURE.md)
+* [Architecture/DDD Spec](../../ARCHITECTURE.md)
 * [Risk/Compliance Controls](./RISK_COMPLIANCE.md)
 * [Circuit Breaker Playbook](./CIRCUIT_BREAKERS.md)
 * [Saga/Settlement Guide](./SAGA_SETTLEMENT.md)
 * [Metrics & Monitoring](./MONITORING.md)
 * [Portfolio Construction Guide](./PORTFOLIO_CONSTRUCTION.md)
-* [Black-Litterman Integration Guide](../Integration/FinancialModels/BlackLitterman.md)
+* [Black-Litterman Integration Guide](../AI/FinancialModels/BlackLitterman.md)
 * [Market Cap Weighting Strategies](./MARKET_CAP_WEIGHTING.md)
 * [Allocation Constraint Management](./ALLOCATION_CONSTRAINTS.md)

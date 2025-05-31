@@ -230,4 +230,4 @@ def robust_covariance(returns, contamination=0.1):
 * [Covariance Estimation Overview](./covariance-estimation-overview.md)
 * [Covariance Estimation Methods](./covariance-estimation-methods.md)
 * [Covariance Estimation Reference](./covariance-estimation-reference.md)
-* [Black-Litterman Model](../Integration/FinancialModels/BlackLitterman.md)
+* [Black-Litterman Model](FinancialModels/BlackLitterman.md)

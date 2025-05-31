@@ -203,7 +203,7 @@ All grants must demonstrate clear alignment with at least one of the following s
 
 ## References
 
-* [Treasury Overview](./treasury-overview.md)
-* [Treasury Management](./treasury-management.md)
+* [Treasury Overview](treasury/treasury-overview.md)
+* [Treasury Management](treasury/treasury-management.md)
 * [Budget Approval](./budget-approval.md)
 * [Governance Architecture](./governance-architecture.md)

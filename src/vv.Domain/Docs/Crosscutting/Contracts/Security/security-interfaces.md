@@ -196,8 +196,8 @@ The domains communicate primarily through events to maintain loose coupling:
 
 ## References
 
-* [Security Domain Documentation](../../Domains/Security/README.md)
-* [Core Domain Documentation](../../Domains/Core/README.md)
-* [Asset Domain Documentation](../../Domains/Asset/README.md)
-* [Risk Domain Documentation](../../Domains/Risk/README.md)
-* [Event Schema Standards](../Events/README.md)
+* [Security Domain Documentation](../../Monitoring/README.md)
+* [Core Domain Documentation](../../Monitoring/README.md)
+* [Asset Domain Documentation](../../Monitoring/README.md)
+* [Risk Domain Documentation](../../Monitoring/README.md)
+* [Event Schema Standards](../../Monitoring/README.md)

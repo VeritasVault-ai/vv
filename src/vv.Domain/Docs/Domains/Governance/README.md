@@ -106,7 +106,7 @@ The Governance, Ops & Custody domain manages protocol-wide governance, operation
 ## 6. References
 
 * [Governance Architecture](./governance-architecture.md)
-* [Treasury Operations](./treasury-operations.md)
-* [Custody Protocol](./custody-protocol.md)
+* [Treasury Operations](treasury/treasury-operations.md)
+* [Custody Protocol](custody/custody-protocol.md)
 * [Operations Playbook](./operations-playbook.md)
 * [Financial Model Governance](./financial-model-governance.md)

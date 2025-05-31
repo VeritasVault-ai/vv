@@ -117,7 +117,7 @@ The Treasury maintains the highest standards of transparency through:
 ## References
 
 * [Treasury Management](./treasury-management.md)
-* [Grant Distribution](./grant-distribution.md)
-* [Budget Approval](./budget-approval.md)
-* [Financial Model Governance](./financial-model-governance.md)
-* [Governance Architecture](./governance-architecture.md)
+* [Grant Distribution](../grant-distribution.md)
+* [Budget Approval](../budget-approval.md)
+* [Financial Model Governance](../financial-model-governance.md)
+* [Governance Architecture](../governance-architecture.md)

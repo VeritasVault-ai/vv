@@ -1,0 +1,31 @@
+matrix:
+- name: markdown
+  sources:
+  - 'src/vv.Domain/Docs/**/*.md'
+  aspell:
+    lang: en
+  dictionary:
+    wordlists:
+    - .github/workflows/wordlist.txt
+    encoding: utf-8
+  pipeline:
+  - pyspelling.filters.markdown:
+      markdown_extensions:
+      - markdown.extensions.extra
+  - pyspelling.filters.html:
+      comments: false
+      ignores:
+      - code
+      - pre
+  - pyspelling.filters.url:
+  filters:
+  - - pyspelling.filters.context:
+      context_visible_first: true
+      escapes: \\[\\`~]
+      delimiters:
+      # Ignore text between inline code
+      - open: '(?P<open>`+)'
+        close: '(?P=open)'
+      # Ignore text between YAML frontmatter
+      - open: '---\n'
+        close: '\n---'

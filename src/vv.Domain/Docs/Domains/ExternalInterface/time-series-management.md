@@ -199,10 +199,10 @@ The Time Series Data Management system provides specialized infrastructure for c
   * Scenario data for stress testing
 
 * **Model-Specific Integrations:**
-  * [Markowitz Model](./FinancialModels/MarkowitzModel.md): Return and covariance series
-  * [Black-Litterman Model](./FinancialModels/BlackLitterman.md): Market equilibrium data
-  * [Michaud Resampling](./FinancialModels/MichaudResampling.md): Simulation data generation
-  * [Equal Risk Contribution](./FinancialModels/EqualRiskContribution.md): Risk factor correlation data
+  * [Markowitz Model](../AI/FinancialModels/MarkowitzModel.md): Return and covariance series
+  * [Black-Litterman Model](../AI/FinancialModels/BlackLitterman.md): Market equilibrium data
+  * [Michaud Resampling](../AI/financial-models/MichaudResampling.md): Simulation data generation
+  * [Equal Risk Contribution](../AI/FinancialModels/EqualRiskContribution.md): Risk factor correlation data
 
 ### Risk Analysis Support
 
@@ -343,12 +343,12 @@ The Time Series Data Management system provides specialized infrastructure for c
 
 ## 10. References & Resources
 
-* [Portfolio Optimization Framework](./FinancialModels/PortfolioOptimization.md)
-* [Black-Litterman Model](./FinancialModels/BlackLitterman.md)
-* [Markowitz Model](./FinancialModels/MarkowitzModel.md)
+* [Portfolio Optimization Framework](../AI/financial-models/PortfolioOptimization.md)
+* [Black-Litterman Model](../AI/FinancialModels/BlackLitterman.md)
+* [Markowitz Model](../AI/FinancialModels/MarkowitzModel.md)
 * [Covariance Estimation Techniques](../AI/covariance-estimation.md)
 * [DataLake Integration](./datalake-integration.md)
-* [Performance Benchmarks](./performance-benchmarks.md)
+* [Performance Benchmarks](../../Crosscutting/Monitoring/performance-benchmarks.md)
 
 ---
 

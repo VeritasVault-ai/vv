@@ -56,7 +56,7 @@ This document provides guidance for implementing security measures within the Ve
    * Access controls
 
 4. **Identity Security**
-   * Authentication (covered in [Authentication Implementation](./authentication-implementation.md))
+   * Authentication (covered in [Authentication Implementation](../implementation/authentication-implementation.md))
    * Authorization
    * Identity management
    * Privileged access management

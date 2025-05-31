@@ -425,5 +425,5 @@ For detailed security measures, see [Custody Security Measures](./custody-securi
 * [Custody Overview](./custody-overview.md)
 * [Custody Security Measures](./custody-security.md)
 * [Custody Transaction Management](./custody-transaction-management.md)
-* [Governance Architecture](./governance-architecture.md)
-* [Treasury Management](./treasury-management.md)
+* [Governance Architecture](../governance-architecture.md)
+* [Treasury Management](../treasury/treasury-management.md)

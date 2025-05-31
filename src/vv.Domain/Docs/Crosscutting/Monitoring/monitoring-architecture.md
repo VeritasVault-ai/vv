@@ -173,7 +173,7 @@ The Monitoring Architecture provides the foundation for comprehensive visibility
 
 * [Alerting Framework](./alerting-framework.md)
 * [Operational Runbooks](./operational-runbooks.md)
-* [Performance Benchmarks](../performance-benchmarks.md)
+* [Performance Benchmarks](performance-benchmarks.md)
 
 ### External References
 

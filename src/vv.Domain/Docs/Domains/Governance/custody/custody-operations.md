@@ -649,4 +649,4 @@ This document outlines the operational procedures, workflows, and controls for t
 * [Custody Security Measures](./custody-security.md)
 * [Custody Recovery Procedures](./custody-recovery.md)
 * [Custody Transaction Management](./custody-transaction-management.md)
-* [Governance Architecture](./governance-architecture.md)
+* [Governance Architecture](../governance-architecture.md)

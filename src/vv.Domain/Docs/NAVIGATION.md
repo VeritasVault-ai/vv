@@ -60,49 +60,49 @@ Legend: ✅ **approved** · 🟡 **in-review** · 📝 **draft**
 ### 3.1 Core Infrastructure
 | Doc | Status |
 |-----|--------|
-| [README](Domains/Core/README.md) | 🟡 |
+| [README](Crosscutting/Monitoring/README.md) | 🟡 |
 | [Domain Model](Domains/Core/domain-model.md) | 📝 |
 | [Solidity Interfaces](Domains/Core/solidity-interfaces.md) | 📝 |
 
 ### 3.2 Risk, Compliance & Audit
 | Doc | Status |
 |-----|--------|
-| [README](Domains/Risk/README.md) | 🟡 |
+| [README](Crosscutting/Monitoring/README.md) | 🟡 |
 | [Audit System Design](Domains/Risk/audit-system-design.md) | 📝 |
 
 ### 3.3 Asset, Trading & Settlement
 | Doc | Status |
 |-----|--------|
-| [README](Domains/Asset/README.md) | 🟡 |
-| [Settlement Protocol](Domains/Asset/settlement-protocol.md) | 📝 |
+| [README](Crosscutting/Monitoring/README.md) | 🟡 |
+| [Settlement Protocol](Domains/Asset/settlement/settlement-protocol.md) | 📝 |
 | [Portfolio Optimisation](Domains/Asset/portfolio-optimization.md) | 📝 |
 
 ### 3.4 Integration, Analytics & Access
 | Doc | Status |
 |-----|--------|
-| [README](Domains/Integration/README.md) | 🟡 |
+| [README](Crosscutting/Monitoring/README.md) | 🟡 |
 
 ### 3.5 Governance, Ops & Custody
 | Doc | Status |
 |-----|--------|
-| [README](Domains/Governance/README.md) | 🟡 |
+| [README](Crosscutting/Monitoring/README.md) | 🟡 |
 
 ### 3.6 AI / ML Core
 | Doc | Status |
 |-----|--------|
-| [README](Domains/AI/README.md) | 🟡 |
+| [README](Crosscutting/Monitoring/README.md) | 🟡 |
 | [AI Architecture](Domains/AI/ai-architecture.md) | 🟡 |
 
 ### 3.7 Integration Gateway
 | Doc | Status |
 |-----|--------|
-| [README](Domains/Gateway/README.md) | 🟡 |
-| [API Standards (legacy)](Domains/Gateway/implementation-guidance/api-standards.md) | ⚠️ _deprecated_ – see unified standards |
+| [README](Crosscutting/Monitoring/README.md) | 🟡 |
+| [API Standards (legacy)](Domains/ExternalInterface/api-standards/api-standards.md) | ⚠️ _deprecated_ – see unified standards |
 
 ### 3.8 Cross-Cutting Concerns
 | Doc | Status |
 |-----|--------|
-| [Design](Domains/Crosscutting/Design.md) | 🟡 |
+| [Design](Domains/Asset/Design.md) | 🟡 |
 
 ---
 
@@ -111,7 +111,7 @@ Legend: ✅ **approved** · 🟡 **in-review** · 📝 **draft**
 |-----|---------|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | High-level platform overview |
 | [SECURITY.md](SECURITY.md) | Unified security & audit standard |
-| [standards/api-standards.md](standards/api-standards.md) | Single source API standards |
+| [standards/api-standards.md](Domains/ExternalInterface/api-standards/api-standards.md) | Single source API standards |
 | [templates/master-template.md](templates/master-template.md) | Canonical doc template |
 
 ---
@@ -119,7 +119,7 @@ Legend: ✅ **approved** · 🟡 **in-review** · 📝 **draft**
 ## 5. Cross-References & Integration Points
 * **Security** – All domains reference [`SECURITY.md`](SECURITY.md) in their Security & Compliance sections.
 * **Architecture** – All domain READMEs link to [`ARCHITECTURE.md`](ARCHITECTURE.md) for context.
-* **API Standards** – Gateway & Integration docs must reference [`standards/api-standards.md`](standards/api-standards.md).
+* **API Standards** – Gateway & Integration docs must reference [`standards/api-standards.md`](Domains/ExternalInterface/api-standards/api-standards.md).
 * **Domain Events** – Refer to Core `domain-model.md` for canonical event definitions.
 
 ---

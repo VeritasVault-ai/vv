@@ -255,4 +255,4 @@ VeritasVault provides comprehensive attribution capabilities:
 * [Holdings-Based Attribution](./holdings-based-attribution.md)
 * [Factor Attribution Overview](./factor-attribution-overview.md)
 * [Equity Factor Attribution](./equity-factor-attribution.md)
-* [Risk Measures Overview](../risk-management/risk-measures-overview.md)
+* [Risk Measures Overview](../../../Risk/risk-measures/risk-measures-overview.md)

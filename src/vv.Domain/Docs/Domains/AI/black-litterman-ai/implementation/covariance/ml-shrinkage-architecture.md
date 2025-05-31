@@ -189,6 +189,6 @@ For more detailed information about specific aspects of the ML-Enhanced Shrinkag
 ---
 
 **Related Documents:**
-* [ML-Enhanced Shrinkage: Overview & Theory](../shrinkage/bl-ai-shrinkage-overview.md)
-* [ML-Enhanced Shrinkage: Model Architecture](../shrinkage/bl-ai-shrinkage-model.md)
+* [ML-Enhanced Shrinkage: Overview & Theory](shrinkage/bl-ai-shrinkage-overview.md)
+* [ML-Enhanced Shrinkage: Model Architecture](shrinkage/bl-ai-shrinkage-model.md)
 * [Covariance Estimation Overview](./bl-ai-implementation-covariance-overview.md)

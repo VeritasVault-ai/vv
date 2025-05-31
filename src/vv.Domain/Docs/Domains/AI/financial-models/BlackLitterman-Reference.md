@@ -29,8 +29,8 @@ next_review: '2026-05-31'
 
 ### Internal Documentation
 
-* [Time Series Data Management](../time-series-management.md)
-* [Portfolio Optimization Framework](../portfolio-optimization.md)
+* [Time Series Data Management](../../ExternalInterface/time-series-management.md)
+* [Portfolio Optimization Framework](../../Asset/portfolio-optimization.md)
 * [Covariance Estimation Techniques](../../AI/covariance-estimation.md)
 
 ### External References

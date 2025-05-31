@@ -457,7 +457,7 @@ Operational Runbooks provide step-by-step procedures for routine operations, mai
 
 * [Monitoring Architecture](./monitoring-architecture.md)
 * [Alerting Framework](./alerting-framework.md)
-* [Incident Response](./incident-response.md)
+* [Incident Response](../../Domains/ExternalInterface/benchmarks/incident-response.md)
 * [Disaster Recovery](./disaster-recovery.md)
 
 ### External References

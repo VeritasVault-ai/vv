@@ -352,7 +352,7 @@ def conditional_value_at_risk(returns, alpha=0.05, method='historical'):
         raise ValueError("Method must be 'historical' or 'parametric'")
 ```
 
-For more detailed information on CVaR, see [Conditional Value at Risk](./tail-risk/conditional-value-at-risk.md).
+For more detailed information on CVaR, see [Conditional Value at Risk](../tail-risk/conditional-value-at-risk.md).
 
 ### Entropic Value at Risk (EVaR)
 
@@ -439,7 +439,7 @@ VeritasVault provides comprehensive tools for downside risk analysis:
 ## Related Documentation
 
 * [Risk Measures Overview](./risk-measures-overview.md)
-* [Value at Risk](./tail-risk/value-at-risk.md)
-* [Conditional Value at Risk](./tail-risk/conditional-value-at-risk.md)
-* [Extreme Value Theory](./tail-risk/extreme-value-theory.md)
-* [Stress Testing](./scenario-analysis/stress-testing.md)
+* [Value at Risk](../tail-risk/value-at-risk.md)
+* [Conditional Value at Risk](../tail-risk/conditional-value-at-risk.md)
+* [Extreme Value Theory](../tail-risk/extreme-value-theory.md)
+* [Stress Testing](../scenario-analysis/stress-testing.md)

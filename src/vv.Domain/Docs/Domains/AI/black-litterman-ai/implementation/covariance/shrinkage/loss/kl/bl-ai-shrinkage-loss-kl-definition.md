@@ -122,9 +122,9 @@ This connection is especially relevant for shrinkage targets based on maximum en
 ---
 
 **Related Documents:**
-* [ML-Enhanced Shrinkage: Overview & Theory](../../../bl-ai-shrinkage-overview.md)
+* [ML-Enhanced Shrinkage: Overview & Theory](../../bl-ai-shrinkage-overview.md)
 * [Gaussian KL Implementation](./bl-ai-shrinkage-loss-kl-gaussian.md)
 * [KL Loss Integration](./bl-ai-shrinkage-loss-kl-integration.md)
 * [KL Loss Optimization](./bl-ai-shrinkage-loss-kl-optimization.md)
-* [Frobenius Norm Loss Function](../../frobenius/bl-ai-shrinkage-loss-frobenius.md)
-* [Spectral Norm Loss Function](../../spectral/bl-ai-shrinkage-loss-spectral.md)
+* [Frobenius Norm Loss Function](../frobenius/bl-ai-shrinkage-loss-frobenius.md)
+* [Spectral Norm Loss Function](../spectral/bl-ai-shrinkage-loss-spectral.md)

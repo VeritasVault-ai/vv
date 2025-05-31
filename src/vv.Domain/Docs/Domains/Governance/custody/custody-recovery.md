@@ -553,4 +553,4 @@ This document outlines the recovery procedures, contingency plans, and emergency
 * [Custody Security Measures](./custody-security.md)
 * [Custody Operations](./custody-operations.md)
 * [Custody Transaction Management](./custody-transaction-management.md)
-* [Governance Architecture](./governance-architecture.md)
+* [Governance Architecture](../governance-architecture.md)

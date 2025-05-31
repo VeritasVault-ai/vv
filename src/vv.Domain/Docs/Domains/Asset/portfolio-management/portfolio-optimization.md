@@ -132,7 +132,7 @@ VeritasVault implements multiple portfolio optimization approaches:
 
 ## For more detailed information, see:
 
-* [Black-Litterman Model](./black-litterman-model.md)
+* [Black-Litterman Model](black-litterman/black-litterman-model.md)
 * [Portfolio Construction](./portfolio-construction.md)
 * [Portfolio Constraints](./portfolio-constraints.md)
-* [Market Cap Weighting](./market-cap-weighting.md)
+* [Market Cap Weighting](../market-cap-weighting.md)

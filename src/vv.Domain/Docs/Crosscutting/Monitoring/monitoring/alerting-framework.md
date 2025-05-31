@@ -202,7 +202,7 @@ interface AlertDefinition {
 
 ### Internal Documentation
 
-* [Incident Response](./incident-response.md)
+* [Incident Response](../../../Domains/ExternalInterface/benchmarks/incident-response.md)
 * [Operational Runbooks](./operational-runbooks.md)
 * [Monitoring Architecture](./monitoring-architecture.md)
 

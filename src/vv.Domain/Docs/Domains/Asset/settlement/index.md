@@ -84,7 +84,7 @@ Efficient processing of multiple settlements:
 The Settlement functionality integrates with:
 
 * **[Asset Management](../index.md)**: For asset custody and ownership tracking
-* **[Risk Management](../risk-management/index.md)**: For settlement risk assessment
+* **[Risk Management](../portfolio-management/index.md)**: For settlement risk assessment
 * **[Portfolio Management](../portfolio-management/index.md)**: For trade execution integration
 
 ## VeritasVault Implementation

@@ -490,4 +490,4 @@ This document outlines the patterns, principles, and best practices for visualiz
 * [The Grammar of Graphics (Leland Wilkinson)](https://www.springer.com/gp/book/9780387245447)
 * [Storytelling with Data (Cole Nussbaumer Knaflic)](http://www.storytellingwithdata.com/)
 * [Information Visualization in Finance (Andrew Lo)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=386880)
-* [Detailed Implementation Guidelines](../implementation-guidance/visualization-implementation.md)
+* [Detailed Implementation Guidelines](visualization/visualization-implementation.md)

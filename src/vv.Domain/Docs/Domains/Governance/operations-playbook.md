@@ -827,6 +827,6 @@ This Operations Playbook serves as the comprehensive guide for day-to-day operat
 ## References
 
 * [Governance Architecture](./governance-architecture.md)
-* [Custody Protocol](./custody-protocol.md)
-* [Treasury Operations](./treasury-operations.md)
+* [Custody Protocol](custody/custody-protocol.md)
+* [Treasury Operations](treasury/treasury-operations.md)
 * [Financial Model Governance](./financial-model-governance.md)

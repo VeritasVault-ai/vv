@@ -220,8 +220,8 @@ For more detailed information on specific aspects of factor-based risk managemen
 
 * [Risk Measures Overview](./risk-measures-overview.md) - General framework for risk measurement
 * [Downside Risk Measures](./downside-risk-measures.md) - Focus on negative return distributions
-* [Factor-Based Risk Models](../Asset/factor-models/multi-factor/multi-factor-models.md) - Comprehensive factor model implementations
-* [Stress Testing](./scenario-analysis/stress-testing.md) - Testing factor parity portfolios in different regimes
+* [Factor-Based Risk Models](../../Asset/factor-models/multi-factor/multi-factor-models.md) - Comprehensive factor model implementations
+* [Stress Testing](../scenario-analysis/stress-testing.md) - Testing factor parity portfolios in different regimes
 
 ## VeritasVault Implementation
 

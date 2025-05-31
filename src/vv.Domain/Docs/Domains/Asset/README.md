@@ -26,13 +26,13 @@ For the end-to-end platform architecture see the **[High-Level Architecture Over
 
 ## Table of Contents
 
-* [Purpose & Business Impact](./purpose-impact.md)
-* [Key Concepts & Terminology](./concepts-terminology.md)
-* [Core Modules & Functions](./core-modules.md)
-* [Integration Points](./integration-points.md)
-* [Implementation Phases](./implementation-phases.md)
+* [Purpose & Business Impact](overview/purpose-impact.md)
+* [Key Concepts & Terminology](overview/concepts-terminology.md)
+* [Core Modules & Functions](overview/core-modules.md)
+* [Integration Points](overview/integration-points.md)
+* [Implementation Phases](overview/implementation-phases.md)
 * [Security & Compliance](#security--compliance)
-* [References & Dependencies](./references-dependencies.md)
+* [References & Dependencies](overview/references-dependencies.md)
 
 ---
 
@@ -58,7 +58,7 @@ It collaborates closely with the **AI/ML**, **Risk & Compliance**, and **Core In
 | Order Book Design | [`order-book-design.md`](./order-book-design.md) |
 | **Settlement Protocol** | [`settlement-protocol.md`](./settlement-protocol.md) |
 | Portfolio Optimization Guide | [`portfolio-optimization.md`](./portfolio-optimization.md) |
-| Black-Litterman Integration | [`../Integration/FinancialModels/BlackLitterman-Integration.md`](../Integration/FinancialModels/BlackLitterman-Integration.md) |
+| Black-Litterman Integration | [`../Integration/FinancialModels/BlackLitterman-Integration.md`](../AI/FinancialModels/BlackLitterman-Integration.md) |
 
 ---
 

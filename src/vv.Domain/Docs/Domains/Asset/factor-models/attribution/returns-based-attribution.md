@@ -120,4 +120,4 @@ For more detailed information on specific attribution approaches:
 * [Factor Attribution Overview](./factor-attribution-overview.md)
 * [Performance Attribution Overview](./performance-attribution-overview.md)
 * [Holdings-Based Attribution](./holdings-based-attribution.md)
-* [Risk Measures Overview](../risk-management/risk-measures-overview.md)
+* [Risk Measures Overview](../../../Risk/risk-measures/risk-measures-overview.md)

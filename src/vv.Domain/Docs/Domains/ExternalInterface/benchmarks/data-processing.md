@@ -225,12 +225,12 @@ For detailed testing procedures, refer to [Testing Methodologies](./testing-meth
 
 ## 9. References
 
-* [Performance Benchmarks](../performance-benchmarks.md)
+* [Performance Benchmarks](../../../Crosscutting/Monitoring/performance-benchmarks.md)
 * [API Performance](./api-performance.md)
 * [Storage Performance](./storage-performance.md)
 * [Resource Utilization](./resource-utilization.md)
 * [Testing Methodologies](./testing-methodologies.md)
-* [Operational Monitoring](../operational-monitoring.md)
+* [Operational Monitoring](../../../Crosscutting/Monitoring/operational-monitoring.md)
 
 ---
 

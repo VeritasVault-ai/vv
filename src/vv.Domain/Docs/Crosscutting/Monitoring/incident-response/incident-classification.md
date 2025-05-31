@@ -159,9 +159,9 @@ This document defines the standardized classification system for operational inc
 
 ## 6. References
 
-* [Incident Response Overview](../incident-response.md)
+* [Incident Response Overview](../../../Domains/ExternalInterface/benchmarks/incident-response.md)
 * [Incident Lifecycle](./incident-lifecycle.md)
-* [Communication Templates](./communication-templates.md)
+* [Communication Templates](../benchmarks/incident-response/communication-templates.md)
 
 ---
 

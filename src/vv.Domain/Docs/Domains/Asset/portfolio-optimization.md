@@ -31,7 +31,7 @@ Key capabilities:
 * Classical Markowitz mean-variance optimisation (MVO)  
 * Risk-parity & Equal Risk Contribution (ERC) allocations  
 * Hard & soft constraint handling (position, sector, factor, ESG)  
-* Deterministic rebalancing flows tied to the **[Settlement Protocol](../settlement-protocol.md)**  
+* Deterministic rebalancing flows tied to the **[Settlement Protocol](settlement/settlement-protocol.md)**  
 * Real-time performance analytics and risk monitoring  
 
 All optimisation engines expose uniform interfaces allowing strategy selection at runtime through governance parameters.
@@ -165,11 +165,11 @@ All controls in **[`../../SECURITY.md`](../../SECURITY.md)** apply. Specific poi
 ## 10. References
 
 * Integration Domain specs:  
-  * [`PortfolioOptimization.md`](../../Integration/FinancialModels/PortfolioOptimization.md)  
-  * [`BlackLitterman-Integration.md`](../../Integration/FinancialModels/BlackLitterman-Integration.md)  
+  * [`PortfolioOptimization.md`](../AI/financial-models/PortfolioOptimization.md)  
+  * [`BlackLitterman-Integration.md`](../AI/FinancialModels/BlackLitterman-Integration.md)  
 * AI/ML Domain:  
-  * [`black-litterman-ai/bl-ai-overview.md`](../../AI/black-litterman-ai/bl-ai-overview.md)  
-  * [`ai-architecture.md`](../../AI/ai-architecture.md)  
+  * [`black-litterman-ai/bl-ai-overview.md`](../AI/black-litterman-ai/bl-ai-overview.md)  
+  * [`ai-architecture.md`](../AI/ai-architecture.md)  
 * Risk Parity techniques – Maillard et al. (2010)  
 * Mean-Variance – Markowitz (1952)  
 

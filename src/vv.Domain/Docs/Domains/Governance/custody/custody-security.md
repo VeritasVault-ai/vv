@@ -290,4 +290,4 @@ This document details the security measures implemented by the VeritasVault Prot
 * [Custody Overview](./custody-overview.md)
 * [Custody Operations](./custody-operations.md)
 * [Custody Recovery Procedures](./custody-recovery.md)
-* [Governance Architecture](./governance-architecture.md)
+* [Governance Architecture](../governance-architecture.md)

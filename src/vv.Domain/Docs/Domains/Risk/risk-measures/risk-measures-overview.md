@@ -193,7 +193,7 @@ def calculate_historical_var(returns, confidence=0.95):
     return -1 * np.percentile(returns, (1 - confidence) * 100)
 ```
 
-For more detailed information on VaR and related measures, see [Value at Risk](./tail-risk/value-at-risk.md).
+For more detailed information on VaR and related measures, see [Value at Risk](../tail-risk/value-at-risk.md).
 
 ## Conditional Value at Risk (CVaR)
 
@@ -216,7 +216,7 @@ def calculate_historical_cvar(returns, confidence=0.95):
     return -1 * np.mean(returns[returns <= -var])
 ```
 
-For more detailed information on CVaR, see [Conditional Value at Risk](./tail-risk/conditional-value-at-risk.md).
+For more detailed information on CVaR, see [Conditional Value at Risk](../tail-risk/conditional-value-at-risk.md).
 
 ## Factor-Based Risk Measures
 
@@ -318,7 +318,7 @@ VeritasVault implements a comprehensive risk measurement framework:
 
 * [Downside Risk Measures](./downside-risk-measures.md)
 * [Risk Factor Parity](./risk-factor-parity.md)
-* [Tail Risk Overview](./tail-risk/tail-risk-overview.md)
-* [Value at Risk](./tail-risk/value-at-risk.md)
-* [Conditional Value at Risk](./tail-risk/conditional-value-at-risk.md)
-* [Stress Testing](./scenario-analysis/stress-testing.md)
+* [Tail Risk Overview](../tail-risk/tail-risk-overview.md)
+* [Value at Risk](../tail-risk/value-at-risk.md)
+* [Conditional Value at Risk](../tail-risk/conditional-value-at-risk.md)
+* [Stress Testing](../scenario-analysis/stress-testing.md)

@@ -56,7 +56,7 @@ Portfolios constructed around exposure to specific factors:
 * **Risk Factor Parity**: Equal risk allocation across factors
 * **Factor Tilting**: Selective overweighting of specific factors
 
-For details, see [Factor Portfolios](./factor-portfolios.md).
+For details, see [Factor Portfolios](../factor-portfolios.md).
 
 ### Black-Litterman Portfolios
 
@@ -67,7 +67,7 @@ Approach combining market equilibrium with investor views:
 * **Core Components**: Market equilibrium, investor views, confidence levels
 * **Main Applications**: Active management, view expression
 
-For details, see [Black-Litterman Overview](./black-litterman-overview.md).
+For details, see [Black-Litterman Overview](black-litterman/black-litterman-overview.md).
 
 ## Construction Process
 

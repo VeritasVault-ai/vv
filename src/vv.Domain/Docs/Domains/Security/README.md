@@ -98,7 +98,7 @@ The Security domain provides comprehensive, consistent security services across 
 
 * [Security Architecture](./security-architecture.md)
 * [Identity Management Framework](./identity-management.md)
-* [Audit Logging Specification](./audit-logging.md)
+* [Audit Logging Specification](../../Crosscutting/features/audit-logging.md)
 * [Threat Detection Model](./threat-detection.md)
-* [Compliance Framework](./compliance-framework.md)
+* [Compliance Framework](../Risk/compliance-framework.md)
 * [Security Policy Guidelines](./security-policy.md)

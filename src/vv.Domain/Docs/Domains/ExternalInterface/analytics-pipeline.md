@@ -325,8 +325,8 @@ interface IPipelineStage {
 ### Internal Documentation
 
 * [Time Series Data Management](./time-series-management.md)
-* [Performance Benchmarks](./performance-benchmarks.md)
-* [Security & Compliance](../Crosscutting/implementation-guidance/compliance.md)
+* [Performance Benchmarks](../../Crosscutting/Monitoring/performance-benchmarks.md)
+* [Security & Compliance](../../Crosscutting/implementation-guidance/compliance.md)
 
 ### External References
 
@@ -348,4 +348,4 @@ interface IPipelineStage {
 **Related Documentation:**
 * [Integration & Analytics README](./README.md)
 * [Model Validation](./model-validation.md)
-* [Performance Benchmarks](./performance-benchmarks.md)
+* [Performance Benchmarks](../../Crosscutting/Monitoring/performance-benchmarks.md)

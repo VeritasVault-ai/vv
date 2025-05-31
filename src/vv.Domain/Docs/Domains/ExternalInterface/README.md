@@ -99,7 +99,7 @@ The External Interface domain serves as the primary interface between users, ext
 
 * [API Gateway Design](./api-gateway-design.md)
 * [UI/UX Guidelines](./ui-ux-guidelines.md)
-* [Authentication Framework](./authentication-framework.md)
-* [Portfolio Visualization Guide](./portfolio-visualization.md)
-* [Risk Communication Best Practices](./risk-communication.md)
+* [Authentication Framework](../Security/authentication-framework.md)
+* [Portfolio Visualization Guide](ui/portfolio-visualization.md)
+* [Risk Communication Best Practices](features/risk-communication.md)
 * [Financial Data Visualization Patterns](./financial-visualization.md)

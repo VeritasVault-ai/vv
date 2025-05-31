@@ -179,7 +179,7 @@ The Portfolio Optimization Framework provides a unified approach to asset alloca
 * [Markowitz Model](./MarkowitzModel.md)
 * [Resampled Efficiency](./MichaudResampling.md)
 * [Equal Risk Contribution](./EqualRiskContribution.md)
-* [Time Series Data Management](../time-series-management.md)
+* [Time Series Data Management](../../ExternalInterface/time-series-management.md)
 * [Covariance Estimation Techniques](../../AI/covariance-estimation.md)
 
 ### External References

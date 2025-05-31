@@ -202,7 +202,7 @@ Performance regression testing must verify:
 * [Main Performance Benchmarks](../performance-benchmarks.md)
 * [Testing Methodologies](./testing-methodologies.md)
 * [API Documentation](../api-documentation.md)
-* [Gateway Architecture](../../Gateway/README.md)
+* [Gateway Architecture](../README.md)
 
 ---
 

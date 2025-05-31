@@ -114,4 +114,4 @@ Each domain implements standardized monitoring interfaces:
 * [Health Check Implementation Guide](./health-check-guide.md)
 * [Alerting Framework](./alerting-framework.md)
 * [Dashboard Design Guidelines](./dashboard-design.md)
-* [Incident Response Playbook](./incident-response.md)
+* [Incident Response Playbook](../../Domains/ExternalInterface/benchmarks/incident-response.md)

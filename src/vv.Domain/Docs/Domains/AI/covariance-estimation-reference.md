@@ -325,4 +325,4 @@ def black_litterman_with_robust_covariance(market_caps, returns, views, pick_mat
 * [Covariance Estimation Overview](./covariance-estimation-overview.md)
 * [Covariance Estimation Methods](./covariance-estimation-methods.md)
 * [Covariance Estimation Implementation](./covariance-estimation-implementation.md)
-* [Black-Litterman Model](../Integration/FinancialModels/BlackLitterman.md)
+* [Black-Litterman Model](FinancialModels/BlackLitterman.md)

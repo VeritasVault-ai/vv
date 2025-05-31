@@ -68,7 +68,7 @@ To understand how AI enhances the Black-Litterman model in VeritasVault:
 
 ## Related Documentation
 
-* [Black-Litterman Model](../Integration/FinancialModels/BlackLitterman.md)
+* [Black-Litterman Model](FinancialModels/BlackLitterman.md)
 * [Covariance Estimation Techniques](./covariance-estimation.md)
 * [AI Architecture](./ai-architecture.md)
 * [Model Governance Framework](./model-governance.md)

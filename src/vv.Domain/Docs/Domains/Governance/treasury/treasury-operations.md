@@ -519,7 +519,7 @@ This document details the operational procedures and workflows for managing the 
 
 * [Treasury Overview](./treasury-overview.md)
 * [Treasury Management](./treasury-management.md)
-* [Budget Approval](./budget-approval.md)
-* [Grant Distribution](./grant-distribution.md)
-* [Governance Architecture](./governance-architecture.md)
-* [Financial Model Governance](./financial-model-governance.md)
+* [Budget Approval](../budget-approval.md)
+* [Grant Distribution](../grant-distribution.md)
+* [Governance Architecture](../governance-architecture.md)
+* [Financial Model Governance](../financial-model-governance.md)

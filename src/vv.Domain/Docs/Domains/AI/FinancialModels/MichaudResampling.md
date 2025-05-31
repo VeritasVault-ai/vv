@@ -199,7 +199,7 @@ for lambda in risk_aversion_levels:
 
 * [Portfolio Optimization Framework](./PortfolioOptimization.md)
 * [Markowitz Model](./MarkowitzModel.md)
-* [Time Series Data Management](../time-series-management.md)
+* [Time Series Data Management](../../ExternalInterface/time-series-management.md)
 * [Covariance Estimation Techniques](../../AI/covariance-estimation.md)
 
 ### External References

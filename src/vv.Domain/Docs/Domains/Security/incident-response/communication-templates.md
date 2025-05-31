@@ -241,7 +241,7 @@ Reference Information:
 
 ## 8. References
 
-* [Incident Response Overview](../incident-response.md)
+* [Incident Response Overview](../../ExternalInterface/benchmarks/incident-response.md)
 * [Roles & Responsibilities](./roles-responsibilities.md)
 * [Incident Lifecycle](./incident-lifecycle.md)
 

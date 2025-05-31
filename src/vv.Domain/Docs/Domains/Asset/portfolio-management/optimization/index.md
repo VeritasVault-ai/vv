@@ -47,7 +47,7 @@ Methods to create portfolios resilient to estimation errors:
 * Shrinkage methods
 * Advanced robust techniques
 
-### [Mean-Variance Optimization](./mean-variance-optimization.md)
+### [Mean-Variance Optimization](../mean-variance-optimization.md)
 
 Classic Markowitz portfolio optimization framework:
 

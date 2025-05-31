@@ -347,6 +347,6 @@ The Financial Model Parameter Governance framework establishes a comprehensive s
 ---
 
 **Related Documentation:**
-* [Black-Litterman Model](../Integration/FinancialModels/BlackLitterman.md)
-* [Portfolio Optimization Framework](../Integration/portfolio-optimization.md)
+* [Black-Litterman Model](../AI/FinancialModels/BlackLitterman.md)
+* [Portfolio Optimization Framework](../Asset/portfolio-optimization.md)
 * [Covariance Estimation Techniques](../AI/covariance-estimation.md)

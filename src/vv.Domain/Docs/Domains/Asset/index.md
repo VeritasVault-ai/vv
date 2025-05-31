@@ -77,7 +77,7 @@ Techniques for effective portfolio construction and management:
 
 ### Risk Management
 
-Risk management documentation has been moved to the [Risk Domain](../Risk/index.md):
+Risk management documentation has been moved to the [Risk Domain](portfolio-management/index.md):
 
 * [Risk Measures Overview](../Risk/risk-measures/risk-measures-overview.md) - Guide to investment risk measurement
 * [Downside Risk Measures](../Risk/risk-measures/downside-risk-measures.md) - Focus on negative return distributions
@@ -99,9 +99,9 @@ Processes for secure and efficient asset settlement:
 
 The Asset Domain integrates with other VeritasVault domains:
 
-* **[Portfolio Domain](../Portfolio/index.md)**: Portfolio-level implementation of asset management concepts
-* **[Risk Domain](../Risk/index.md)**: Comprehensive risk management frameworks
-* **[Investment Domain](../Investment/index.md)**: Investment process integration
+* **[Portfolio Domain](portfolio-management/index.md)**: Portfolio-level implementation of asset management concepts
+* **[Risk Domain](portfolio-management/index.md)**: Comprehensive risk management frameworks
+* **[Investment Domain](portfolio-management/index.md)**: Investment process integration
 
 ## VeritasVault Implementation
 
@@ -111,7 +111,7 @@ VeritasVault provides a comprehensive implementation of Asset Domain concepts:
 * **ESG Integration**: ESG data analysis and portfolio construction capabilities
 * **Tax Management**: Tax-aware portfolio management tools
 * **Rebalancing Framework**: Flexible rebalancing tools and analytics
-* **Risk Measurement**: Comprehensive risk analysis and stress testing (see [Risk Domain](../Risk/index.md))
+* **Risk Measurement**: Comprehensive risk analysis and stress testing (see [Risk Domain](portfolio-management/index.md))
 * **Settlement Engine**: Secure and efficient asset settlement processing
 
 For specific implementation details, refer to the API documentation and user guides.

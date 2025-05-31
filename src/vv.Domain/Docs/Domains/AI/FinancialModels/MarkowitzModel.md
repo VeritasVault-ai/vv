@@ -201,7 +201,7 @@ Subject to: sum(w) = 1, w_i ≥ 0 (and other constraints)
 ### Internal Documentation
 
 * [Portfolio Optimization Framework](./PortfolioOptimization.md)
-* [Time Series Data Management](../time-series-management.md)
+* [Time Series Data Management](../../ExternalInterface/time-series-management.md)
 * [Covariance Estimation Techniques](../../AI/covariance-estimation.md)
 
 ### External References

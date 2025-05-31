@@ -29,7 +29,7 @@ The Cross-Cutting Concerns domain defines universal controls and operational pri
 * [Key Features](./key-features.md)
 * [Implementation Guidance](./implementation-guidance.md)
 * [Usage & Integration](./usage-integration.md)
-* [References](./references.md)
+* [References](../Domains/Core/references.md)
 
 ## Domain Scope
 

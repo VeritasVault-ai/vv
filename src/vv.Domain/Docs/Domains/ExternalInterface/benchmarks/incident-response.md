@@ -56,10 +56,10 @@ The Incident Response framework integrates with:
 
 ## 5. References
 
-* [Operational Monitoring Framework](../operational-monitoring.md)
-* [Alerting Framework](./alerting-framework.md)
-* [Disaster Recovery](./disaster-recovery.md)
-* [Operational Runbooks](./operational-runbooks.md)
+* [Operational Monitoring Framework](../../../Crosscutting/Monitoring/operational-monitoring.md)
+* [Alerting Framework](../../../Crosscutting/Monitoring/alerting/alerting-framework.md)
+* [Disaster Recovery](../../../Crosscutting/Monitoring/disaster-recovery/disaster-recovery.md)
+* [Operational Runbooks](../../../Crosscutting/Monitoring/monitoring/operational-runbooks.md)
 
 ---
 

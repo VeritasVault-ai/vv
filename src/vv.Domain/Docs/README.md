@@ -265,19 +265,19 @@ All dependencies point inward toward the domain, following the same patterns as 
 
 ## Reference Docs
 
-* [High-Level Architecture Overview](./ARCHITECTURE.md)
-* [Domain Event Model](./events/README.md)
-* [Key Domain Contracts](./contracts/README.md)
+* [High-Level Architecture Overview](ARCHITECTURE.md)
+* [Domain Event Model](Crosscutting/Monitoring/README.md)
+* [Key Domain Contracts](Crosscutting/Monitoring/README.md)
 
 ## Domain Pillars
 
-* [AI/ML Architecture Reference](./ai/README.md)
-* [Asset & Trading Logic](./assets/README.md)
-* [Core Infrastructure](./core/README.md)
-* [Gateway](./gateway/README.md)
-* [Governance & Upgrade Reference](./governance/README.md)
-* [Integration, Analytics & Access](./integration/README.md)
-* [Risk, Compliance & Audit](./risk/README.md)
+* [AI/ML Architecture Reference](Crosscutting/Monitoring/README.md)
+* [Asset & Trading Logic](Crosscutting/Monitoring/README.md)
+* [Core Infrastructure](Crosscutting/Monitoring/README.md)
+* [Gateway](Crosscutting/Monitoring/README.md)
+* [Governance & Upgrade Reference](Crosscutting/Monitoring/README.md)
+* [Integration, Analytics & Access](Crosscutting/Monitoring/README.md)
+* [Risk, Compliance & Audit](Crosscutting/Monitoring/README.md)
 
 ---
 

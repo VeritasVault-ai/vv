@@ -106,8 +106,8 @@ next_review: '2026-05-31'
 
 ## 8. References & Implementation Resources
 
-* [C4 Model Diagrams](./ARCHITECTURE.md)
+* [C4 Model Diagrams](../../ARCHITECTURE.md)
 * [Interface/Controller Contracts](./Controllers/)
 * [Testing Strategy](./TESTING.md)
-* [Security Playbooks](./SECURITY.md)
+* [Security Playbooks](../../SECURITY.md)
 * [Deployment/CI Docs](./DEPLOYMENT.md)

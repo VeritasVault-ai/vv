@@ -32,7 +32,7 @@ Each area below has dedicated implementation guidance to ensure consistent appli
 * [Monitoring & Alerting Implementation](./implementation-guidance/monitoring.md)
 * [Disaster Recovery Implementation](./implementation-guidance/dr.md)
 * [Operational Automation Implementation](./implementation-guidance/automation.md)
-* [Integration Patterns Implementation](./implementation-guidance/integration.md)
+* [Integration Patterns Implementation](../Domains/Security/authentication/integration.md)
 
 ## General Implementation Principles
 

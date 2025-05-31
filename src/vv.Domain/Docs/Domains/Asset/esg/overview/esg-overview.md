@@ -27,7 +27,7 @@ Environmental, Social, and Governance (ESG) investing incorporates non-financial
 Due to the breadth and complexity of ESG integration techniques, this topic is divided into several specialized documents:
 
 * **[ESG Integration Methods](./esg-integration-methods.md)**: Approaches for incorporating ESG into investment processes
-* **[ESG Data Analysis](./esg-data-analysis.md)**: Sourcing, analyzing, and applying ESG data
+* **[ESG Data Analysis](../implementation/esg-data-analysis.md)**: Sourcing, analyzing, and applying ESG data
 * **[ESG Portfolio Construction](./esg-portfolio-construction.md)**: Building portfolios with ESG considerations
 * **[ESG Reporting and Metrics](./esg-reporting-metrics.md)**: Frameworks and performance measurement
 
