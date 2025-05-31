@@ -3,10 +3,10 @@ document_type: navigation-index
 classification: internal
 status: draft
 version: 0.1.0
-last_updated: 2025-05-30
+last_updated: "2025-05-31"
 applies_to: [platform-wide]
 reviewers: [documentation-lead, lead-architect]
-next_review: 2025-08-01
+next_review: "2026-05-31"
 priority: p2
 ---
 

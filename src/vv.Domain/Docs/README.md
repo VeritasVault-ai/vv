@@ -3,11 +3,11 @@ document_type: overview
 classification: internal
 status: approved
 version: 1.0.0
-last_updated: 2025-05-30
+last_updated: "2025-05-31"
 applies_to: [platform-wide]
 dependencies: []
 reviewers: [lead-architect, all-domain-leads]
-next_review: 2025-07-15
+next_review: "2026-05-31"
 priority: p0
 ---
 # VeritasVault Domain Layer

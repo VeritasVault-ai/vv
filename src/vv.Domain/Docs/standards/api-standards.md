@@ -3,11 +3,11 @@ document_type: api-standards
 classification: internal
 status: draft
 version: 1.0.0
-last_updated: 2025-05-30
+last_updated: "2025-05-31"
 applies_to: [integration-gateway, integration-analytics-access, core-infrastructure]
 dependencies: [../SECURITY.md, ../ARCHITECTURE.md]
 reviewers: [gateway-lead, integration-lead, secops-lead, compliance-officer]
-next_review: 2025-08-01
+next_review: "2026-05-31"
 priority: p0
 ---
 

@@ -3,11 +3,11 @@ document_type: architecture
 classification: internal
 status: draft
 version: 1.0.0
-last_updated: 2025-05-30
+last_updated: "2025-05-31"
 applies_to: [core-infrastructure]
 dependencies: []
 reviewers: [lead-architect, secops-lead, infra-lead]
-next_review: 2025-07-15
+next_review: "2026-05-31"
 priority: p0
 ---
 

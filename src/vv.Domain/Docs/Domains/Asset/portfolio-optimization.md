@@ -3,7 +3,7 @@ document_type: portfolio-optimization-guide
 classification: internal
 status: draft
 version: 1.0.0
-last_updated: 2025-05-30
+last_updated: "2025-05-31"
 applies_to: [asset-trading-settlement]
 dependencies:
   - ../../AI/black-litterman-ai/bl-ai-overview.md
@@ -12,7 +12,7 @@ dependencies:
   - ../../SECURITY.md
   - ../../Integration/FinancialModels/PortfolioOptimization.md
 reviewers: [trading-lead, ai-lead, risk-lead, secops-lead]
-next_review: 2025-07-15
+next_review: "2026-05-31"
 priority: p1
 ---
 

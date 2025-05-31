@@ -1,3 +1,17 @@
+---
+document_type: policy
+classification: internal
+status: draft
+version: 0.1.0
+last_updated: '2025-05-31'
+applies_to:
+- Core
+reviewers:
+- '@tech-lead'
+priority: p2
+next_review: '2026-05-31'
+---
+
 # Limit Management Policy
 
 > Framework for establishing, monitoring, and enforcing risk limits across the platform

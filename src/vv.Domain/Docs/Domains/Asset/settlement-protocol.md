@@ -3,11 +3,11 @@ document_type: settlement-protocol
 classification: internal
 status: draft
 version: 1.0.0
-last_updated: 2025-05-30
+last_updated: "2025-05-31"
 applies_to: [asset-trading-settlement]
 dependencies: [../../Core/domain-model.md, ../../SECURITY.md]
 reviewers: [settlement-lead, risk-lead, secops-lead, compliance-officer]
-next_review: 2025-07-15
+next_review: "2026-05-31"
 priority: p0
 ---
 

@@ -3,11 +3,11 @@ document_type: audit-system-design
 classification: internal
 status: draft
 version: 1.0.0
-last_updated: 2025-05-30
+last_updated: "2025-05-31"
 applies_to: [risk-compliance-audit]
 dependencies: [../../SECURITY.md, ../risk-architecture.md]
 reviewers: [secops-lead, risk-lead, compliance-officer, lead-architect]
-next_review: 2025-07-15
+next_review: "2026-05-31"
 priority: p0
 ---
 

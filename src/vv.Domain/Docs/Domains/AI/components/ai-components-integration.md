@@ -1,3 +1,17 @@
+---
+document_type: guide
+classification: internal
+status: draft
+version: 0.1.0
+last_updated: '2025-05-31'
+applies_to:
+- Core
+reviewers:
+- '@tech-lead'
+priority: p2
+next_review: '2026-05-31'
+---
+
 # AI Architecture: Integration Layer Components
 
 > Components that connect VeritasVault's AI capabilities with other domains and external systems

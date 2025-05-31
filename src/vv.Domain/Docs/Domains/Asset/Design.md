@@ -12,11 +12,11 @@ document_type: architecture
 classification: internal
 status: draft
 version: 1.0.1
-last_updated: 2025-05-24
+last_updated: "2025-05-31"
 applies_to: asset-trading-settlement-domain
 dependencies: [core-infrastructure, risk-compliance-audit, ai-ml-domain]
 reviewers: [product-lead, trading-lead, settlement-lead, security-lead]
-next_review: 2025-07-01
+next_review: "2026-05-31"
 priority: p0
 ---
 ```

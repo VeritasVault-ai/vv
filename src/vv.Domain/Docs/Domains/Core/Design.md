@@ -12,11 +12,11 @@ document_type: architecture
 classification: internal
 status: draft
 version: 1.0.1
-last_updated: 2025-05-24
+last_updated: "2025-05-31"
 applies_to: core-infrastructure
 dependencies: []
 reviewers: [core-lead, protocol-team, security-lead]
-next_review: 2025-06-24
+next_review: "2026-05-31"
 priority: p0
 ---
 ```
